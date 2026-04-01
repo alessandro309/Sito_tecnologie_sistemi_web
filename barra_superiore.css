@@ -1,0 +1,98 @@
+body { /*Colore di tutta la pagina*/
+    background-color: rgb(67, 64, 64);
+}
+ 
+        
+.bottone_login {
+    border: 2px solid rgb(255, 17, 0);
+    background-color: transparent;
+    color: rgb(255, 17, 0);
+}
+ 
+.bottone_login:hover {
+    background-color: rgb(255, 17, 0);
+    color: white;
+}
+ 
+/*Riempimento per il cuore*/
+.link-preferiti:hover .icona-vuota {
+    display: none !important;
+}
+ 
+.link-preferiti:hover .icona-piena {
+    display: inline-block !important; 
+}
+        /**************/
+ 
+.dropdown-submenu {
+    position: relative;
+}
+ 
+.dropdown-submenu .submenu-retro {
+    display: none;
+    position: absolute;
+    left: 100%; 
+    top: 0;     
+}
+ 
+/* Mostra il sottomenu al passaggio del mouse (SOLO SU DESKTOP) */
+@media (min-width: 992px) {
+    .dropdown-submenu:hover > .submenu-retro {
+        display: block;
+    }
+}
+ 
+.dropdown-menu-dark {
+    background-color:rgba(0, 0, 0, 0.67);
+    border: 1px solid #555 !important; 
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; 
+}
+ 
+.dropdown-menu-dark .dropdown-item:hover,
+.dropdown-menu-dark .dropdown-item:focus {
+    background-color: rgb(255, 17, 0); 
+    color: white; 
+}
+ 
+/* FIX E OTTIMIZZAZIONI PER MOBILE E TABLET */
+@media (max-width: 991px) {
+            
+    .miei-menu-mobile .dropdown-menu {
+        position: static !important;
+        transform: none !important; /* Evita glictch visivo bootstrap */
+        float: none;
+        width: 100%;
+        text-align: center;
+        background-color: transparent;
+        border: none !important;
+        padding-bottom: 15px; /* Un po' di spazio tra un menù e l'altro */
+    }
+ 
+    .dropdown-submenu .submenu-retro {
+        position: static !important; 
+        transform: none !important;
+        left: 0;
+        top: 0;
+        width: 100%;
+        border: none !important;
+        padding-left: 0;
+        box-shadow: none !important;
+        background-color: rgba(0, 0, 0, 0.4); 
+        display: none; 
+        margin-top: 5px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+ 
+    .dropdown-submenu .submenu-retro.show {
+        display: block;
+    }
+            
+    .nav-item {
+        margin-bottom: 15px; 
+    }
+ 
+    .nav.flex-column {
+        padding-top: 20px !important;
+    }
+}

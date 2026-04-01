@@ -1,0 +1,79 @@
+.search_bar{
+    background-color: rgba(0, 0, 0, 0.5);   /*nero con trasparenza al 50%*/         
+}
+
+.container.my-4 {
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+ 
+.form-control::placeholder { /*Colore dei placeholder bianchi così dato che gli sfondi sono neri o grigi*/
+    color: white;
+    opacity: 0.5;
+}
+ 
+.colore_menu{
+    background-color:rgba(0, 0, 0, 0.67)
+}
+
+.box_categoria {
+    width: 100%;
+    max-width: 1000px; 
+    height: 230px;   
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* permette l'animazione */
+}
+
+/*Ingrandimento del box del menu al passaggio del mouse*/
+.box_categoria:hover {
+    transform: scale(1.02);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8) !important;
+}
+ 
+        /*Box per le console fisse*/
+#box_fisse {
+    background-image: linear-gradient(to right, rgba(20, 20, 20, 0.95) 10%, rgba(255, 17, 0, 0.3) 30%, rgba(0, 0, 0, 0) 60%), url('Home_console.png');            
+    background-position: right center; 
+    background-size: contain; 
+    background-repeat: no-repeat;
+    background-color: #000;
+    border: 1px solid rgba(255, 17, 0, 0.2); /* Bordo leggero rosso per riprendere il tema */
+}
+
+.titolo_box {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 1), 0 0 20px rgba(255, 17, 0, 0.6); /*Effetto aura sul testo*/
+    letter-spacing: 2px;
+}
+
+/* Animazione per la freccia quando si passa sopra il box con il mouse */
+.box_categoria .scopri_di_piu i {
+    transition: transform 0.3s ease; /*fai l'animazione in 0.3 sec*/
+}
+
+.box_categoria:hover .scopri_di_piu i {
+    transform: translateX(8px); /* La freccia si sposta a destra di 8px quando passi col mouse */
+}
+
+        /*box per la console portatili, l'immagine è a sinistra)*/
+#box_portatili{
+            
+    background-image: linear-gradient(to left, rgba(20, 20, 20, 0.95) 10%, rgba(255, 17, 0, 0.3) 30%, rgba(0, 0, 0, 0) 60%), url('Portatili.png'); /*Specchiato rispetto al box fisse*/        
+    background-position: left center; /*immagine a sinistra e spostata sennò troppo appiccicata*/
+            
+    background-size: contain; 
+    background-repeat: no-repeat;
+    background-color: #000; 
+    border: 1px solid rgba(255, 17, 0, 0.2); 
+} 
+        
+        /*box per cgli accessori (identico alle fisse)*/
+#box_accessori {
+    background-image: linear-gradient(to right, rgba(20, 20, 20, 0.95) 10%, rgba(255, 17, 0, 0.3) 40%, rgba(0, 0, 0, 0) 70%), url('controller.png');            
+    background-position: right center; 
+    background-size: contain; 
+    background-repeat: no-repeat;
+    background-color: #000;
+    border: 1px solid rgba(255, 17, 0, 0.2); /* Bordo leggero rosso per riprendere il tema */
+}
