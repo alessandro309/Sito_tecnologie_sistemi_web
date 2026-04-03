@@ -1,7 +1,10 @@
 body { /*Colore di tutta la pagina*/
     background-color: rgb(67, 64, 64);
 }
- 
+
+.scritte_arancioni{
+    color: rgb(255, 17, 0);
+}
         
 .bottone_login {
     border: 2px solid rgb(255, 17, 0);

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="bootstrap.css">
+    <link rel="stylesheet" href="barra_superiore.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">    <link rel="stylesheet" href="oggetti_home.css">
+
+    <title>RetroShop</title>
+    <style>
+        .container-immagine-principale {
+            height: 450px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #1a1a1a;
+            border-radius: 0.375rem;
+            overflow: hidden;
+        }
+
+        .container-immagine-principale img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .thumbnail-img {
+            width: 90px;
+            height: 90px;
+            object-fit: cover;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .thumbnail-img:hover {
+            opacity: 0.8;
+        }
+
+        .thumbnail-img.attiva {
+            opacity: 1;
+            border-color: #dc3545; /* Colore rosso (danger) */
+        }
+
+        .scrollbar-nascosta::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .scrollbar-nascosta::-webkit-scrollbar-thumb {
+            background-color: #6c757d;
+            border-radius: 10px;
+        }
+
+        .box_citta_descrizione{
+            background-color: rgb(0, 0, 0, 0.5);
+        }
+
+
+        /* Nuovi Stili per la Navigazione Frecce */
+        
+        /* Assicuriamoci che il contenitore principale sia relativo */
+        .container-immagine-principale {
+            position: relative;
+        }
+
+        .btn-navigazione {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%); /* Centra verticalmente */
+            background-color: rgba(0, 0, 0, 0.5); /* Sfondo semi-trasparente */
+            color: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%; /* Tondi */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10; /* Sopra l'immagine */
+            
+            /* Nascondi di default */
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* Mostra le frecce quando passi il mouse sul CONTENITORE principale */
+        .container-immagine-principale:hover .btn-navigazione {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .btn-navigazione:hover {
+            background-color: rgb(255, 17, 0, 0.5); /* Rosso RetroShop al passaggio */
+            transform: translateY(-50%) scale(1.1); /* Leggero ingrandimento */
+        }
+
+        .btn-navigazione.prev {
+            left: 15px; /* Posizione a sinistra */
+        }
+
+        .btn-navigazione.next {
+            right: 15px; /* Posizione a destra */
+        }
+
+        .pulsante_verde {
+            background-color: rgb(3, 235, 72); 
+            color: white;
+            border: 2px solid rgb(3, 235, 72); 
+            transition: all 0.3s ease; 
+        }
+
+        .pulsante_verde:hover {
+            background-color: transparent; /* Rimuove lo sfondo */
+            border-color: rgb(3, 235, 72);  /* Mantiene la cornice verde */
+            color: rgb(3, 235, 72);  /* Mantiene la scritta bianca */
+        }
+
+        .pulsante_arancione{
+            background-color: rgb(255, 17, 0);
+            color: white;
+            border: 2px solid rgb(255, 17, 0);
+            transition: all 0.3s ease; 
+        }
+
+        .pulsante_arancione:hover{
+            background-color: transparent;
+            border-color: rgb(255, 17, 0);
+            color: rgb(255, 17, 0);
+        }
+
+        .colore-titoli {
+            color: rgb(220, 80, 80) ; /* Questo è l'arancione del tuo pulsante "Contatta" */
+            
+        }
+
+        .colore_prezzo{
+            color: rgb(255, 80, 180);
+        }
+
+        .colore_descrizione{
+            color: rgb(200, 200, 210);
+        }
+
+        .box_citta_descrizione {
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg bg-black border-bottom border-secondary" data-bs-theme="dark">
+            <div class="container-fluid">
+                <a class="navbar-brand font-monospace text-uppercase d-flex align-items-center" href="home.html">
+                    <img src="Arcade_png-removebg-preview.png" alt="Logo Arcade" style="height: 45px; width: auto; margin-right: 10px;">
+                    RetroShop
+                </a>
+ 
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".miei-menu-mobile">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+ 
+                <div class="collapse navbar-collapse miei-menu-mobile">
+                    <div class="navbar-nav ms-auto align-items-center gap-3 mt-4 mt-lg-0 pb-3 pb-lg-0">
+                        <a class="nav-link font-monospace d-flex text-white align-items-center link-preferiti" href="#">
+                            <i class="bi bi-heart text-danger me-2 fs-5 icona-vuota"></i>
+                            <i class="bi bi-heart-fill text-danger me-2 fs-5 icona-piena d-none"></i>
+                            Preferiti
+                        </a>
+ 
+                        <a href="#" class="btn bottone_login font-monospace text-uppercase rounded-1 d-flex align-items-center ms-lg-4" id="pulsante_login" data-bs-toggle="modal" data-bs-target="#modalLogin">
+                            <i class="bi bi-person-fill me-2 fs-5"></i>
+                            Accedi
+                        </a>
+                    </div> 
+                </div>
+            </div>
+        </nav>
+    </header>
+
+
+    <main>
+        <div class="container my-5">
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <div class="container-immagine-principale border border-secondary mb-3 shadow-sm">
+                        <button class="btn-navigazione prev" onclick="precedente()">
+                            <i class="bi bi-chevron-left"></i>
+                        </button>
+                        <img id="immaginePrincipale" src="https://craftsmanave.com/wp-content/uploads/2024/11/IMG_9562-scaled.jpg" alt="Immagine annuncio">
+                        <button class="btn-navigazione next" onclick="successiva()">
+                            <i class="bi bi-chevron-right"></i>
+                        </button>
+                    </div>
+
+                    <div class="d-flex gap-2 overflow-auto pb-4 scrollbar-nascosta" id="contenitoreMiniature">
+                        <img src="https://craftsmanave.com/wp-content/uploads/2024/11/IMG_9562-scaled.jpg" class="img-thumbnail thumbnail-img bg-black attiva" onclick="cambiaImmagine(this)">
+                        <img src="https://www.giantfreakinrobot.com/wp-content/uploads/2022/08/rick-astley-1200x675.jpg" class="img-thumbnail thumbnail-img bg-black" onclick="cambiaImmagine(this)">
+                        <img src="https://images.unsplash.com/photo-1629429408209-1f912961dbd8?q=80&w=1000&auto=format&fit=crop" class="img-thumbnail thumbnail-img bg-black" onclick="cambiaImmagine(this)">
+                    </div>
+                </div>
+
+                <div class="col-lg-6 d-flex flex-column text-white">
+                    <div class="box_citta_descrizione shadow-sm mb-4">
+                        <div class="mb-4">
+                            <h1 class="fw-bold font-monospace mb-2" id="nome_annuncio">Titolo dell'Annuncio</h1>
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h2 class="scritte_arancioni font-monospace fw-bold mb-0" id="prezzo_annuncio">€ 150,00</h2>
+                                <button class="btn btn-outline-danger font-monospace d-flex align-items-center gap-2 rounded-1" onclick="togglePreferito(this)">
+                                    <i class="bi bi-heart fs-5"></i>
+                                    <span class="d-none d-sm-inline">Salva</span>
+                                </button>
+                            </div>
+
+                            <div class="d-flex gap-3 mt-2">
+                                <button class="btn pulsante_verde font-monospace px-4 py-2 rounded-2 shadow-sm d-flex align-items-center justify-content-center flex-grow-1" style="font-size: 0.95rem;">
+                                    <i class="bi bi-cart-fill me-2"></i>Acquista
+                                </button>
+                                <button class="btn pulsante_arancione font-monospace px-4 py-2 rounded-2 shadow-sm d-flex align-items-center justify-content-center flex-grow-1" style="font-size: 0.95rem;">
+                                    <i class="bi bi-chat-dots-fill me-2"></i>Contatta
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="mb-4 font-monospace" style="font-size: 0.95rem;">
+                            <div class="row mb-2"><div class="col-5 colore-titoli">Piattaforma</div><div class="col-7 fw-bold" id="Piattaforma">Nintendo 64</div></div>
+                            <div class="row mb-2"><div class="col-5 colore-titoli">Tipologia</div><div class="col-7 fw-bold" id="Tipologia">Console</div></div>
+
+                            <div class="row mb-2"><div class="col-5 colore-titoli">Condizioni</div><div class="col-7 fw-bold" id="Condizioni">Ottime / Usato</div></div>
+                            <div class="row mb-2"><div class="col-5 colore-titoli" id="Spedizione">Spedizione</div><div class="col-7 fw-bold" id="Spedizione">Si (Poste)</div></div>
+                            <div class="row mb-2"><div class="col-5 colore-titoli">Consegna a mano</div><div class="col-7 fw-bold" id="AMano">Si</div></div>
+
+                        </div>
+
+                        <hr class="border-secondary">
+
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center gap-3">
+                                <i class="bi bi-person-circle text-secondary" style="font-size: 2.5rem;"></i>
+                                <h5 class="mb-0 font-monospace">RetroUser99</h5>
+                            </div>
+                            <div class="text-end">
+                                <span class="d-block text-secondary small font-monospace">Località:</span>
+                                <div class="d-flex align-items-center gap-2 justify-content-end">
+                                    <i class="bi bi-geo-alt-fill text-danger"></i>
+                                    <h6 class="mb-0 font-monospace fw-bold">Roma (RM)</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-2">
+                        <h5 class="font-monospace text-uppercase colore_descrizione mb-3">Descrizione</h5>
+                        <p class="font-monospace text-light" style="line-height: 1.6; font-size: 0.95rem;">
+                            Descrizione PlaceHolder
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+
+    <footer class="bg-black text-white border-top border-secondary mt-4 py-2">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <h5 class="font-monospace text-uppercase">RetroShop</h5>
+                    <p class="small text-secondary mb-0">&copy;2026 (by Alessandro Bogdan & Luca Montefusco) Tutti i diritti riservati.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end mt-3 mt-md-0">
+                    <a href="https://youtu.be/QDia3e12czc?si=flfCdFpj-f2wJr3u" class="text-secondary me-3"><i class="bi bi-youtube fs-5"></i></a>
+                    <a href="#" class="text-secondary me-3"><i class="bi bi-instagram fs-5"></i></a>
+                    <a href="#" class="text-secondary"><i class="bi bi-envelope-fill fs-5"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+
+</body>
+
+
+    <script src="script_foto_pulsanti_annunci.js"></script>
+
+    
+</html>
