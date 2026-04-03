@@ -14,7 +14,8 @@
     <header>
         <nav class="navbar navbar-expand-lg bg-black border-bottom border-secondary" data-bs-theme="dark">
             <div class="container-fluid">
-                <a class="navbar-brand font-monospace text-uppercase" href="#">
+                <a class="navbar-brand font-monospace text-uppercase d-flex align-items-center" href="#">
+                    <img src="Arcade_png-removebg-preview.png" alt="Logo Arcade" style="height: 45px; width: auto; margin-right: 10px;">
                     NOMESITO
                 </a>
  
@@ -30,9 +31,9 @@
                             Preferiti
                         </a>
  
-                        <a href="#" class="btn bottone_login font-monospace text-uppercase rounded-1 d-flex align-items-center ms-lg-4" id="pulsante_login">
+                        <a href="#" class="btn bottone_login font-monospace text-uppercase rounded-1 d-flex align-items-center ms-lg-4" id="pulsante_login" data-bs-toggle="modal" data-bs-target="#modalLogin">
                             <i class="bi bi-person-fill me-2 fs-5"></i>
-                            Login
+                            Accedi
                         </a>
                     </div> 
                 </div>
@@ -432,13 +433,14 @@
             </ul>
         </div>
  
-        <div class="container my-4"> <div class="search_bar p-2 rounded-2 shadow border border-secondary d-flex flex-column flex-lg-row align-items-center gap-2">
+        <div class="container my-4"> 
+            <form action="#" method="GET" class="search_bar p-2 rounded-2 shadow border border-secondary d-flex flex-column flex-lg-row align-items-center gap-2">
                 
                 <div class="input-group border-0 w-100">
                     <span class="input-group-text bg-transparent border-0 text-secondary">
                         <i class="bi bi-search"></i>
                     </span>
-                    <input type="text" class="form-control bg-transparent border-0 text-white shadow-none" placeholder="Cerca, es: Gameboy, PS1">
+                    <input type="text" name="ricerca" class="form-control bg-transparent border-0 text-white shadow-none" placeholder="Cerca">
                 </div>
  
                 <div class="vr text-secondary d-none d-lg-block mx-1"></div>
@@ -448,7 +450,7 @@
                     <span class="input-group-text bg-transparent border-0 text-secondary">
                         <i class="bi bi-geo-alt"></i>
                     </span>
-                    <input type="text" class="form-control bg-transparent border-0 text-white shadow-none" placeholder="Tutta Italia">
+                    <input type="text" name="luogo" class="form-control bg-transparent border-0 text-white shadow-none" placeholder="Tutta Italia">
                 </div>
  
                 <div class="vr text-secondary d-none d-lg-block mx-1"></div>
@@ -458,12 +460,11 @@
                     <i class="bi bi-sliders"></i> Filtri
                 </button>
  
-                <button type="button" class="btn bottone_login rounded-3 px-4 py-2 w-100 w-lg-auto text-nowrap fw-bold">
+                <button type="submit" class="btn bottone_login rounded-3 px-4 py-2 w-100 w-lg-auto text-nowrap fw-bold">
                     Cerca
                 </button>
  
-            </div>
-        </div>
+            </form> </div>
     </header>
 
     <main>
@@ -520,6 +521,46 @@
             </div>
         </div>
     </footer>
+
+    <div class="modal fade" id="modalLogin" tabindex="-1" aria-labelledby="modalLoginLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-black border border-secondary shadow-lg">
+                
+                <div class="modal-header border-0">
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body px-5 pb-5">
+                    <div class="text-center mb-4">
+                        <img src="Arcade_png-removebg-preview.png" alt="Logo Arcade" style="height: 60px; width: auto;" class="mb-2">
+                        <h3 class="modal-title font-monospace text-white text-uppercase" id="modalLoginLabel">Accedi</h3>
+                    </div>
+
+                    <form>
+                        <div class="mb-3">
+                            <label for="nickname" class="form-label font-monospace text-secondary small">NICKNAME</label>
+                            <input type="text" class="form-control bg-transparent border-secondary text-white shadow-none font-monospace" id="nickname" placeholder="Inserisci il tuo nickname" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="password" class="form-label font-monospace text-secondary small">PASSWORD</label>
+                            <input type="password" class="form-control bg-transparent border-secondary text-white shadow-none font-monospace" id="password" placeholder="********" required>
+                        </div>
+
+                        <button type="submit" class="btn bottone_login w-100 font-monospace text-uppercase fw-bold py-2 mb-3">
+                            Entra
+                        </button>
+                    </form>
+
+                    <div class="text-center mt-3">
+                        <p class="font-monospace text-secondary small">
+                            Non sei registrato? <br>
+                            <a href="registrazione.html" class="text-danger text-decoration-none fw-bold">REGISTRATI ORA!</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <script src="bootstrap.bundle.min.js"></script>
  

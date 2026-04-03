@@ -77,3 +77,36 @@
     background-color: #000;
     border: 1px solid rgba(255, 17, 0, 0.2); /* Bordo leggero rosso per riprendere il tema */
 }
+
+#formRegistrazione .form-control, 
+#formRegistrazione .form-select {
+    background-color: transparent !important;
+    border: 1px solid #6c757d;
+    color: white !important;
+    box-shadow: none !important;
+}
+
+/* Effetto rosso al click SOLO nella registrazione */
+#formRegistrazione .form-control:focus, 
+#formRegistrazione .form-select:focus {
+    border-color: #dc3545;
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Colore scuro per il menu a tendina SOLO nella registrazione */
+#formRegistrazione option {
+    background-color: #000;
+    color: white;
+}
+
+/* Cambia il colore della checkbox in rosso quando viene spuntata */
+#formRegistrazione .form-check-input:checked {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+/* Cambia l'alone luminoso (focus) da blu a rosso quando ci clicchi sopra */
+#formRegistrazione .form-check-input:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+}

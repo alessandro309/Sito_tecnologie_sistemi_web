@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="bootstrap.css">
+    <link rel="stylesheet" href="barra_superiore.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">    <link rel="stylesheet" href="oggetti_home.css">
+    
+    <title>Registrazione - RetroShop</title>
+</head>
+<body class="font-monospace text-white">
+    
+    <header class="mb-5">
+        <nav class="navbar bg-black border-bottom border-secondary p-3">
+            <div class="container">
+                <a class="text-white text-decoration-none d-flex align-items-center" href="home.html">
+                    <i class="bi bi-arrow-left fs-4 me-2"></i> Torna al negozio
+                </a>
+                <img src="Arcade_png-removebg-preview.png" alt="Logo" style="height: 40px;">
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mb-5">
+        <div class="bg-black p-4 p-md-5 rounded-4 shadow border border-secondary mx-auto" style="max-width: 900px;">
+            
+            <h2 class="text-uppercase fw-bold mb-4 text-center border-bottom border-secondary pb-3">Registrazione account</h2>
+
+            <form id="formRegistrazione">
+                
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <label for="nome" class="form-label small text-secondary mb-1">Nome*</label>
+                        <input type="text" class="form-control rounded-1" id="nome" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="cognome" class="form-label small text-secondary mb-1">Cognome*</label>
+                        <input type="text" class="form-control rounded-1" id="cognome" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="nickname" class="form-label small text-secondary mb-1">Nickname*</label>
+                        <input type="text" class="form-control rounded-1" id="nickname" required>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <label for="dataNascita" class="form-label small text-secondary mb-1">Data di nascita* <span class="text-danger" style="font-size: 0.7rem;">(Solo > 18 anni)</span></label>
+                        <input type="date" class="form-control rounded-1" id="dataNascita" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="sesso" class="form-label small text-secondary mb-1">Sesso</label>
+                        <select class="form-select rounded-1" id="sesso">
+                            <option value="" selected disabled>Seleziona...</option>
+                            <option value="M">Uomo</option>
+                            <option value="F">Donna</option>
+                            <option value="A">Altro</option>
+                            <option value="ND">Preferisco non specificare</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row g-2">
+                            <div class="col-8">
+                                <label for="citta" class="form-label small text-secondary mb-1">Città</label>
+                                <input type="text" class="form-control rounded-1" id="citta">
+                            </div>
+                            <div class="col-4">
+                                <label for="provincia" class="form-label small text-secondary mb-1">Prov.</label>
+                                <input type="text" class="form-control rounded-1 text-uppercase" id="provincia" maxlength="2" placeholder="RM">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label for="email" class="form-label small text-secondary mb-1">Mail*</label>
+                        <input type="email" class="form-control rounded-1" id="email" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="confermaEmail" class="form-label small text-secondary mb-1">Conferma mail*</label>
+                        <input type="email" class="form-control rounded-1" id="confermaEmail" required>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4 align-items-center">
+                    <div class="col-md-4">
+                        <label for="password" class="form-label small text-secondary mb-1">Password*</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="password" required>
+                            <button class="btn btn-outline-secondary border-secondary text-white bg-transparent" type="button" id="btnTogglePass">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="confermaPassword" class="form-label small text-secondary mb-1">Conferma password*</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="confermaPassword" required>
+                            <button class="btn btn-outline-secondary border-secondary text-white bg-transparent" type="button" id="btnToggleConf">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-secondary small mt-3 mt-md-0 pt-md-3">
+                            <i class="bi bi-shield-lock text-danger"></i> Regole consigliate:<br>
+                            <span style="font-size: 0.8rem;">Minimo 8 caratteri, una lettera maiuscola e un numero.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-check mt-5 mb-4">
+                    <input class="form-check-input rounded-0 border-secondary" type="checkbox" id="informativa" required>
+                    <label class="form-check-label text-secondary small" for="informativa">
+                        Ho letto e accetto l'informativa sul trattamento dei dati personali*
+                    </label>
+                </div>
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-danger font-monospace text-uppercase fw-bold px-5 py-3 rounded-1 w-100 w-md-auto">
+                        Crea Account
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </main>
+
+    <script src="bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Calcola la data esatta di 18 anni fa e la imposta come limite massimo
+        document.addEventListener("DOMContentLoaded", function() {
+            let dataInput = document.getElementById("dataNascita");
+            
+            let oggi = new Date();
+            let anno = oggi.getFullYear() - 18;
+            let mese = (oggi.getMonth() + 1).toString().padStart(2, '0');
+            let giorno = oggi.getDate().toString().padStart(2, '0');
+            
+            let dataMax = `${anno}-${mese}-${giorno}`;
+            dataInput.setAttribute("max", dataMax);
+        });
+
+    const toggleButtons = [
+        { btn: 'btnTogglePass', input: 'password' },
+        { btn: 'btnToggleConf', input: 'confermaPassword' }
+    ];
+
+    toggleButtons.forEach(item => {
+        document.getElementById(item.btn).addEventListener('click', function() {
+            const input = document.getElementById(item.input);
+            const icon = this.querySelector('i');
+
+            // Se è password diventa testo, e l'icona cambia nell'occhio sbarrato
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('bi-eye', 'bi-eye-slash');
+            } else {
+                // Viceversa torna a pallini
+                input.type = 'password';
+                icon.classList.replace('bi-eye-slash', 'bi-eye');
+            }
+        });
+    });
+    </script>
+
+</body>
+</html>
