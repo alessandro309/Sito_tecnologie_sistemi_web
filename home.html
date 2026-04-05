@@ -456,8 +456,9 @@
                 <div class="vr text-secondary d-none d-lg-block mx-1"></div>
                 <hr class="text-secondary d-lg-none w-100 my-0">
  
-                <button type="button" class="btn btn-dark bg-transparent border-0 text-white d-flex align-items-center gap-2 px-3 w-100 w-lg-auto justify-content-center text-nowrap">
+                <button type="button" class="btn btn-dark bg-transparent border-0 text-white d-flex align-items-center gap-2 px-3 w-100 w-lg-auto justify-content-center text-nowrap" data-bs-toggle="modal" data-bs-target="#modalFiltri">
                     <i class="bi bi-sliders"></i> Filtri
+                    <span id="badgeFiltri" class="badge rounded-pill d-none">0</span>
                 </button>
  
                 <button type="submit" class="btn bottone_login rounded-3 px-4 py-2 w-100 w-lg-auto text-nowrap fw-bold">
@@ -562,6 +563,90 @@
         </div>
     </div>
     
+    <div class="modal fade" id="modalFiltri" tabindex="-1" aria-labelledby="modalFiltriLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-black border border-secondary rounded-1 shadow-lg font-monospace text-white">
+                
+                <div class="modal-header border-0">
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body px-5 pb-5">
+                    <div class="text-center mb-4 border-bottom border-secondary pb-2">
+                        <h3 class="modal-title text-uppercase fw-bold" id="modalFiltriLabel">Filtri</h3>
+                    </div>
+
+                    <form id="formFiltri">
+                        
+                        <div class="mb-4">
+                            <label for="console" class="form-label small text-secondary mb-1">CONSOLE</label>
+                            <select class="form-select" id="console">
+                                <option value="" selected disabled>Seleziona console...</option>
+                                <option value="playstation">PlayStation</option>
+                                <option value="xbox">Xbox</option>
+                                <option value="nintendo">Nintendo</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label small text-secondary mb-1 d-block">CONDIZIONI</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="condizione" id="condizNuovo" value="nuovo">
+                                <label class="form-check-label small" for="condizNuovo">Nuovo</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="condizione" id="condizComeNuovo" value="come_nuovo">
+                                <label class="form-check-label small" for="condizComeNuovo">Come Nuovo</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="condizione" id="condizBuono" value="buone">
+                                <label class="form-check-label small" for="condizBuono">Buone</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="condizione" id="condizAccettabile" value="discrete">
+                                <label class="form-check-label small" for="condizAccettabile">Discrete</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="condizione" id="condizAccettabile" value="pezzi_di_ricambio">
+                                <label class="form-check-label small" for="condizAccettabile">Pezzi di ricambio</label>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label small text-secondary mb-2 d-block">PREZZO</label>
+                            <div class="d-flex justify-content-between text-white mb-2 font-monospace fw-bold">
+                                <span id="prezzoMinLabel">€ 0</span>
+                                <span id="prezzoMaxLabel">€ 1000</span>
+                            </div>
+                            
+                            <div class="range-slider-container position-relative">
+                                <div class="slider-track" id="sliderTrack"></div>
+                                <input type="range" min="0" max="1000" value="0" id="rangeMin" class="double-slider">
+                                <input type="range" min="0" max="1000" value="1000" id="rangeMax" class="double-slider">
+                            </div>
+                        </div>
+
+                        <div class="mb-5 mt-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="spedizione">
+                                <label class="form-check-label small text-secondary" for="spedizione">
+                                    Necessaria spedizione
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn bottone_login w-100 text-uppercase fw-bold py-2">
+                                Applica filtri
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="bootstrap.bundle.min.js"></script>
  
     <script>
@@ -591,6 +676,106 @@
                 });
             });
         });
+        
+        //Cursore prezzo
+        const rangeMin = document.getElementById('rangeMin');
+        const rangeMax = document.getElementById('rangeMax');
+        const prezzoMinLabel = document.getElementById('prezzoMinLabel');
+        const prezzoMaxLabel = document.getElementById('prezzoMaxLabel');
+        const sliderTrack = document.getElementById('sliderTrack');
+
+        // Distanza minima tra i due cursori (es. 10 euro)
+        const minGap = 10; 
+
+        function updateSlider() {
+            let minVal = parseInt(rangeMin.value);
+            let maxVal = parseInt(rangeMax.value);
+
+            // Impedisce ai due pallini di sorpassarsi
+            if (maxVal - minVal < minGap) {
+                if (this.id === "rangeMin") {
+                    rangeMin.value = maxVal - minGap;
+                    minVal = parseInt(rangeMin.value);
+                } else {
+                    rangeMax.value = minVal + minGap;
+                    maxVal = parseInt(rangeMax.value);
+                }
+            }
+
+            // Aggiorna le etichette di testo
+            prezzoMinLabel.textContent = "€ " + minVal;
+            prezzoMaxLabel.textContent = "€ " + maxVal;
+
+            // Calcola le percentuali per colorare di rosso solo la parte in mezzo
+            const percentMin = (minVal / rangeMin.max) * 100;
+            const percentMax = (maxVal / rangeMax.max) * 100;
+            
+            sliderTrack.style.left = percentMin + "%";
+            sliderTrack.style.width = (percentMax - percentMin) + "%";
+        }
+
+        // Associa la funzione al movimento dei cursori
+        if (rangeMin && rangeMax) {
+            rangeMin.addEventListener('input', updateSlider);
+            rangeMax.addEventListener('input', updateSlider);
+            
+            // Avvia la barra rossa all'apertura della pagina
+            updateSlider(); 
+        }
+
+        //Counter filtri
+        const formFiltri = document.getElementById('formFiltri');
+        const badgeFiltri = document.getElementById('badgeFiltri');
+
+        if (formFiltri) {
+            formFiltri.addEventListener('submit', function(event) {
+                // Previene il ricaricamento della pagina per gestire il pallino dinamicamente
+                event.preventDefault(); 
+
+                let conteggioFiltri = 0;
+
+                // 1. Categoria Console: controlla se è stata scelta un'opzione diversa dal default (vuoto)
+                const consoleSelect = document.getElementById('console');
+                if (consoleSelect && consoleSelect.value !== "") {
+                    conteggioFiltri++;
+                }
+
+                // 2. Categoria Condizioni: controlla se almeno una spunta è attiva
+                // Cerca tutti gli input di tipo checkbox dentro il blocco delle condizioni
+                const condizioniSpuntate = document.querySelectorAll('#modalFiltri input[type="checkbox"][id^="condiz"]:checked');
+                if (condizioniSpuntate.length > 0) {
+                    conteggioFiltri++;
+                }
+
+                // 3. Categoria Prezzo: controlla se il prezzo è diverso da 0 - 1000
+                const minVal = parseInt(document.getElementById('rangeMin').value);
+                const maxVal = parseInt(document.getElementById('rangeMax').value);
+                if (minVal > 0 || maxVal < 1000) {
+                    conteggioFiltri++;
+                }
+
+                // 4. Categoria Spedizione: controlla se è spuntata
+                const spedizioneCheck = document.getElementById('spedizione');
+                if (spedizioneCheck && spedizioneCheck.checked) {
+                    conteggioFiltri++;
+                }
+
+                // Aggiorna il pallino visivo
+                if (conteggioFiltri > 0) {
+                    badgeFiltri.textContent = conteggioFiltri;
+                    badgeFiltri.classList.remove('d-none'); // Mostra il pallino
+                } else {
+                    badgeFiltri.classList.add('d-none'); // Nascondi il pallino se è 0
+                }
+
+                // Chiude automaticamente il pop-up dopo aver cliccato "Applica"
+                const modalInstance = bootstrap.Modal.getInstance(document.getElementById('modalFiltri'));
+                if (modalInstance) {
+                    modalInstance.hide();
+                }
+            });
+        }
+
     </script>
 </body>
 </html>

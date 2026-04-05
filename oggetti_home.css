@@ -110,3 +110,103 @@
     border-color: #dc3545;
     box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
 }
+
+/* Pop-up filtri home */
+/* Rende gli input trasparenti e coerenti col tema scuro solo nel pop-up filtri */
+#modalFiltri .form-control,
+#modalFiltri .form-select {
+    background-color: transparent !important;
+    border: 1px solid #6c757d; /* Grigio secondario */
+    color: white !important;
+    box-shadow: none !important;
+    border-radius: 4px; /* Un po' più squadrati retro */
+}
+
+/* Effetto rosso al focus */
+#modalFiltri .form-control:focus,
+#modalFiltri .form-select:focus {
+    border-color: #dc3545; /* Rosso preferiti */
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Colore scuro per le opzioni dei menu a tendina */
+#modalFiltri option {
+    background-color: #000;
+    color: white;
+}
+
+/* Cambia il colore della checkbox e dei radio in rosso quando vengono spuntati */
+#modalFiltri .form-check-input:checked {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+/* Cambia l'alone luminoso (focus) da blu a rosso quando ci clicchi sopra */
+#modalFiltri .form-check-input:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+}
+
+/* Prezzo stile Booking */
+.range-slider-container {
+    height: 6px;
+    background-color: #3b3b3b; /* Sfondo della barra */
+    border-radius: 5px;
+    position: relative;
+    width: 100%;
+}
+
+.slider-track {
+    height: 100%;
+    background-color: #dc3545; /* La linea rossa tra i due pallini */
+    position: absolute;
+    border-radius: 5px;
+    top: 0;
+    z-index: 1;
+}
+
+.double-slider {
+    position: absolute;
+    width: 100%;
+    height: 6px;
+    top: -2px; 
+    background: none;
+    pointer-events: none; /* Rende trasparenti i click sulla barra finta */
+    -webkit-appearance: none;
+    appearance: none;
+    z-index: 2;
+}
+
+/* Design del pallino (Thumb) per Chrome/Safari */
+.double-slider::-webkit-slider-thumb {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background-color: #000;
+    border: 3px solid #dc3545; /* Bordo rosso */
+    pointer-events: auto; /* Riattiva i click solo sul pallino */
+    -webkit-appearance: none;
+    cursor: pointer;
+}
+
+/* Design del pallino per Firefox */
+.double-slider::-moz-range-thumb {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background-color: #000;
+    border: 3px solid #dc3545;
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+/* Contatore filtri */
+#badgeFiltri {
+    background-color: #000 !important;      /* Interno nero */
+    color: #dc3545 !important;              /* Numero rosso */
+    border: 2px solid #dc3545 !important;   /* Contorno rosso di 2 pixel */
+    font-size: 0.9rem !important;           /* Più grande rispetto al default */
+    padding: 0.35em 0.65em !important;      /* Spazio interno per farlo tondo */
+    transform: translateY(2px);             /* Lo spinge in basso di 2 pixel per allinearlo */
+    font-weight: bold;
+}
