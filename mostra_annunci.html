@@ -5,18 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="bootstrap.css">
     <link rel="stylesheet" href="barra_superiore.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">    <link rel="stylesheet" href="oggetti_home.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">    
+    <link rel="stylesheet" href="oggetti_home.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <title>RetroShop</title>
+    <title>RetroShop - Ricerca Annunci</title>
+
+    <style>
+        /* Stili aggiuntivi specifici per le card degli annunci */
+        .card-annuncio:hover {
+            border-color: #dc3545 !important; /* Bordo rosso al passaggio del mouse */
+            transition: border-color 0.3s ease;
+        }
+        .img-annuncio {
+            height: 200px;
+            object-fit: cover;
+        }
+        .btn-salva {
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+        }
+        .btn-salva:hover {
+            background-color: black;
+        }
+    </style>
 </head>
-<body>
-    
-    <header>
+<body class="bg-dark text-white"> <header>
         <nav class="navbar navbar-expand-lg bg-black border-bottom border-secondary" data-bs-theme="dark">
             <div class="container-fluid">
-                <a class="navbar-brand font-monospace text-uppercase d-flex align-items-center" href="#">
+                <a class="navbar-brand font-monospace text-uppercase d-flex align-items-center" href="home.html">
                     <img src="Arcade_png-removebg-preview.png" alt="Logo Arcade" style="height: 45px; width: auto; margin-right: 10px;">
                     RetroShop
                 </a>
@@ -470,46 +488,118 @@
             </form> </div>
     </header>
 
-    <main>
-        <div class="container mt-5 d-flex flex-column align-items-center gap-4">
+    <main class="container mb-5">
+        
+        <div class="d-flex justify-content-between align-items-end mb-4 border-bottom border-secondary pb-2">
+            <h2 class="font-monospace text-uppercase fw-bold m-0">Risultati della ricerca</h2>
+            <span class="text-secondary font-monospace small">Trovati 4 annunci</span>
+        </div>
 
-            <a href="#" class="box_categoria rounded-4 d-flex align-items-center text-decoration-none shadow" id="box_fisse">
-                <div class="ms-4 ms-md-5 d-flex flex-column justify-content-center" style="z-index: 2;">
-                    <h2 class="text-white fw-bold text-uppercase font-monospace m-0 titolo_box">
-                        Console<br>Fisse
-                    </h2>
-                    <span class="font-monospace mt-3 text-uppercase d-flex align-items-center gap-2 text-danger fw-bold scopri_di_piu" style="font-size: 0.9rem;">
-                        Esplora il catalogo <i class="bi bi-arrow-right fs-5"></i>
-                    </span>
-                </div>
-            </a>
+        <div class="row g-4">
 
-            <a href="#" class="box_categoria rounded-4 d-flex align-items-center text-decoration-none shadow" id="box_portatili">
-                <div class="ms-auto me-4 me-md-5 d-flex flex-column justify-content-center text-end" style="z-index: 2;">
-                    <h2 class="text-white fw-bold text-uppercase font-monospace m-0 titolo_box">
-                        Console<br>Portatili
-                    </h2>
-                    <span class="font-monospace mt-3 text-uppercase d-flex align-items-center justify-content-end gap-2 text-danger fw-bold scopri_di_piu" style="font-size: 0.9rem;">
-                        Esplora il catalogo <i class="bi bi-arrow-right fs-5"></i>
-                    </span>
+            <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+                <div class="card card-annuncio bg-black border-secondary h-100 text-white shadow overflow-hidden">
+                    <div class="position-relative">
+                        <img src="https://placehold.co/600x400/1a1a1a/FFF?text=Foto+PS1" class="card-img-top img-annuncio" alt="Immagine annuncio">
+                        
+                        <button class="btn btn-salva position-absolute top-0 end-0 m-2 rounded-circle border-secondary d-flex align-items-center justify-content-center p-0" style="width: 40px; height: 40px; z-index: 10;" onclick="toggleSalva(this)">
+                            <i class="bi bi-floppy text-danger fs-5 icona-vuota"></i>
+                            <i class="bi bi-floppy-fill text-danger fs-5 icona-piena d-none"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="card-body d-flex flex-column p-3">
+                        <h5 class="card-title font-monospace text-uppercase mb-1 fs-6 fw-bold">Sony PlayStation 1 Fat + 2 Controller</h5>
+                        <p class="text-secondary small font-monospace mb-2">Condizioni: Buone</p>
+                        <h4 class="text-danger fw-bold font-monospace mb-3 mt-auto">€ 45,00</h4>
+                        <div class="d-flex justify-content-between align-items-center font-monospace small text-secondary">
+                            <span><i class="bi bi-geo-alt"></i> Roma (RM)</span>
+                            <span>Oggi, 15:30</span>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 p-0">
+                        <a href="#" class="btn w-100 bottone_login font-monospace text-uppercase fw-bold rounded-0 py-2">Mostra Dettagli</a>
+                    </div>
                 </div>
-            </a>
+            </div>
 
-            <a href="#" class="box_categoria rounded-4 d-flex align-items-center text-decoration-none shadow" id="box_accessori">
-                <div class="ms-4 ms-md-5 d-flex flex-column justify-content-center" style="z-index: 2;">
-                    <h2 class="text-white fw-bold text-uppercase font-monospace m-0 titolo_box">
-                        Accessori
-                    </h2>
-                    <span class="font-monospace mt-3 text-uppercase d-flex align-items-center gap-2 text-danger fw-bold scopri_di_piu" style="font-size: 0.9rem;">
-                        Esplora il catalogo <i class="bi bi-arrow-right fs-5"></i>
-                    </span>
+            <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+                <div class="card card-annuncio bg-black border-secondary h-100 text-white shadow overflow-hidden">
+                    <div class="position-relative">
+                        <img src="https://placehold.co/600x400/1a1a1a/FFF?text=Foto+GameBoy" class="card-img-top img-annuncio" alt="Immagine annuncio">
+                        <button class="btn btn-salva position-absolute top-0 end-0 m-2 rounded-circle border-secondary d-flex align-items-center justify-content-center p-0" style="width: 40px; height: 40px; z-index: 10;" onclick="toggleSalva(this)">
+                            <i class="bi bi-floppy text-danger fs-5 icona-vuota"></i>
+                            <i class="bi bi-floppy-fill text-danger fs-5 icona-piena d-none"></i>
+                        </button>
+                    </div>
+                    <div class="card-body d-flex flex-column p-3">
+                        <h5 class="card-title font-monospace text-uppercase mb-1 fs-6 fw-bold">Nintendo GameBoy Color Giallo Boxato</h5>
+                        <p class="text-secondary small font-monospace mb-2">Condizioni: Come Nuovo</p>
+                        <h4 class="text-danger fw-bold font-monospace mb-3 mt-auto">€ 120,00</h4>
+                        <div class="d-flex justify-content-between align-items-center font-monospace small text-secondary">
+                            <span><i class="bi bi-geo-alt"></i> Milano (MI)</span>
+                            <span>Ieri, 10:15</span>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 p-0">
+                        <a href="#" class="btn w-100 bottone_login font-monospace text-uppercase fw-bold rounded-0 py-2">Mostra Dettagli</a>
+                    </div>
                 </div>
-            </a>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+                <div class="card card-annuncio bg-black border-secondary h-100 text-white shadow overflow-hidden">
+                    <div class="position-relative">
+                        <img src="https://placehold.co/600x400/1a1a1a/FFF?text=Foto+Xbox" class="card-img-top img-annuncio" alt="Immagine annuncio">
+                        <button class="btn btn-salva position-absolute top-0 end-0 m-2 rounded-circle border-secondary d-flex align-items-center justify-content-center p-0" style="width: 40px; height: 40px; z-index: 10;" onclick="toggleSalva(this)">
+                            <i class="bi bi-floppy text-danger fs-5 icona-vuota"></i>
+                            <i class="bi bi-floppy-fill text-danger fs-5 icona-piena d-none"></i>
+                        </button>
+                    </div>
+                    <div class="card-body d-flex flex-column p-3">
+                        <h5 class="card-title font-monospace text-uppercase mb-1 fs-6 fw-bold">Lotto Giochi XBOX Originale (Halo, Fable)</h5>
+                        <p class="text-secondary small font-monospace mb-2">Condizioni: Discrete</p>
+                        <h4 class="text-danger fw-bold font-monospace mb-3 mt-auto">€ 35,00</h4>
+                        <div class="d-flex justify-content-between align-items-center font-monospace small text-secondary">
+                            <span><i class="bi bi-geo-alt"></i> Napoli (NA)</span>
+                            <span>3 Apr, 18:40</span>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 p-0">
+                        <a href="#" class="btn w-100 bottone_login font-monospace text-uppercase fw-bold rounded-0 py-2">Mostra Dettagli</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+                <div class="card card-annuncio bg-black border-secondary h-100 text-white shadow overflow-hidden">
+                    <div class="position-relative">
+                        <img src="https://placehold.co/600x400/1a1a1a/FFF?text=Foto+Amiga" class="card-img-top img-annuncio" alt="Immagine annuncio">
+                        <button class="btn btn-salva position-absolute top-0 end-0 m-2 rounded-circle border-secondary d-flex align-items-center justify-content-center p-0" style="width: 40px; height: 40px; z-index: 10;" onclick="toggleSalva(this)">
+                            <i class="bi bi-floppy text-danger fs-5 icona-vuota"></i>
+                            <i class="bi bi-floppy-fill text-danger fs-5 icona-piena d-none"></i>
+                        </button>
+                    </div>
+                    <div class="card-body d-flex flex-column p-3">
+                        <h5 class="card-title font-monospace text-uppercase mb-1 fs-6 fw-bold">Commodore Amiga 500 Completo</h5>
+                        <p class="text-secondary small font-monospace mb-2">Condizioni: Pezzi di ricambio</p>
+                        <h4 class="text-danger fw-bold font-monospace mb-3 mt-auto">€ 50,00</h4>
+                        <div class="d-flex justify-content-between align-items-center font-monospace small text-secondary">
+                            <span><i class="bi bi-geo-alt"></i> Torino (TO)</span>
+                            <span>1 Apr, 09:10</span>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 p-0">
+                        <a href="#" class="btn w-100 bottone_login font-monospace text-uppercase fw-bold rounded-0 py-2">Mostra Dettagli</a>
+                    </div>
+                </div>
+            </div>
 
         </div>
+
     </main>
 
-    <footer class="bg-black text-white border-top border-secondary mt-4 py-2">
+    <footer class="bg-black text-white border-top border-secondary mt-auto py-2">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-6 text-center text-md-start">
@@ -528,17 +618,14 @@
     <div class="modal fade" id="modalLogin" tabindex="-1" aria-labelledby="modalLoginLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content bg-black border border-secondary shadow-lg">
-                
                 <div class="modal-header border-0">
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <div class="modal-body px-5 pb-5">
                     <div class="text-center mb-4">
                         <img src="Arcade_png-removebg-preview.png" alt="Logo Arcade" style="height: 60px; width: auto;" class="mb-2">
                         <h3 class="modal-title font-monospace text-white text-uppercase" id="modalLoginLabel">Accedi</h3>
                     </div>
-
                     <form>
                         <div class="mb-3">
                             <label for="nickname" class="form-label font-monospace text-secondary small">NICKNAME</label>
@@ -548,12 +635,8 @@
                             <label for="password" class="form-label font-monospace text-secondary small">PASSWORD</label>
                             <input type="password" class="form-control bg-transparent border-secondary text-white shadow-none font-monospace" id="password" placeholder="********" required>
                         </div>
-
-                        <button type="submit" class="btn bottone_login w-100 font-monospace text-uppercase fw-bold py-2 mb-3">
-                            Entra
-                        </button>
+                        <button type="submit" class="btn bottone_login w-100 font-monospace text-uppercase fw-bold py-2 mb-3">Entra</button>
                     </form>
-
                     <div class="text-center mt-3">
                         <p class="font-monospace text-secondary small">
                             Non sei registrato? <br>
@@ -566,22 +649,20 @@
     </div>
     
     <div class="modal fade" id="modalFiltri" tabindex="-1" aria-labelledby="modalFiltriLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-xl"> <div class="modal-content bg-black border border-secondary rounded-1 shadow-lg font-monospace text-white">
-                
+        <div class="modal-dialog modal-dialog-centered modal-xl"> 
+            <div class="modal-content bg-black border border-secondary rounded-1 shadow-lg font-monospace text-white">
                 <div class="modal-header border-bottom border-secondary mb-4">
                     <h5 class="modal-title text-uppercase fw-bold ps-2" id="modalFiltriLabel">Filtri di Ricerca</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <div class="modal-body px-4 px-md-5 pb-5 pt-0">
                     <div class="row g-5">
                         
                         <div class="col-lg-5">
                             <form id="formFiltri" class="d-flex flex-column h-100">
-                                
                                 <div class="mb-4">
                                     <label for="console" class="form-label small text-secondary mb-1">CONSOLE</label>
-                                    <select class="form-select" id="console">
+                                    <select class="form-select bg-black text-white border-secondary" id="console">
                                         <option value="" selected disabled>Seleziona console...</option>
                                         <option value="playstation">PlayStation</option>
                                         <option value="xbox">Xbox</option>
@@ -643,7 +724,6 @@
                                         Applica filtri
                                     </button>
                                 </div>
-
                             </form>
                         </div>
 
@@ -651,7 +731,6 @@
                             <label class="form-label small text-secondary mb-2 d-block">ZONA DI RICERCA (Trascina per spostare)</label>
                             <div class="position-relative flex-grow-1 rounded-2 overflow-hidden border border-secondary" style="min-height: 400px; background-color: #1a1a1a;">
                                 <div id="mappaContainer" class="w-100 h-100 position-absolute top-0 start-0"></div>
-                                
                                 <div class="mappa-mirino"></div>
                             </div>
                         </div>
@@ -665,35 +744,17 @@
     <script src="bootstrap.bundle.min.js"></script>
  
     <script>
-        document.addEventListener("DOMContentLoaded", function(){
-            let dropdownSubmenus = document.querySelectorAll('.dropdown-submenu > a');
- 
-            dropdownSubmenus.forEach(function(submenuToggle){
-                submenuToggle.addEventListener('click', function(e){
-                    
-                    if (window.innerWidth < 992) {
-                        e.preventDefault();     
-                        e.stopPropagation();    
-                        
-                        let submenu = this.nextElementSibling;
-                        
-                        let parent = this.closest('.dropdown-menu');
-                        if (parent) {
-                            parent.querySelectorAll('.submenu-retro.show').forEach(function(openSubmenu){
-                                if (openSubmenu !== submenu) {
-                                    openSubmenu.classList.remove('show');
-                                }
-                            });
-                        }
-                        
-                        submenu.classList.toggle('show');
-                    }
-                });
-            });
-        });
-        
-    </script>    
+        // JS PER LE CARD DEGLI ANNUNCI: Cambia l'icona del floppy
+        function toggleSalva(button) {
+            const iconaVuota = button.querySelector('.icona-vuota');
+            const iconaPiena = button.querySelector('.icona-piena');
+            
+            if (iconaVuota && iconaPiena) {
+                iconaVuota.classList.toggle('d-none');
+                iconaPiena.classList.toggle('d-none');
+            }
+        }
+    </script>
     <script src="script_filtri.js"></script>
-
 </body>
 </html>

@@ -9,6 +9,7 @@ async function caricaDatiAnnuncio() {
         let risposta = await fetch(`${indirizzo}/annunci/${idAnnuncio}`);
         let dati = await risposta.json(); 
 
+        // --- POPOLAMENTO TESTI ---
         document.getElementById('nome_annuncio').innerText = dati.nome;
         document.getElementById('prezzo_annuncio').innerText = "€ " + dati.prezzo;
         document.getElementById('Piattaforma').innerText = dati.marca;
@@ -18,23 +19,48 @@ async function caricaDatiAnnuncio() {
         document.getElementById('posizione_utente').innerText = dati.posizione;
         document.getElementById('Descrizione').innerText = dati.descrizione;
 
-
-        //spedizione?
         if (dati.spedizione === true) {
             document.getElementById('ValoreSpedizione').innerText = "Sì (€ " + dati.prezzo_spedizione + ")";
         } else {
             document.getElementById('ValoreSpedizione').innerText = "No";
         }
 
-        //consegna a mano?
+        // Gestione Consegna a mano
         if (dati.presenza === true) {
             document.getElementById('AMano').innerText = "Sì";
         } else {
             document.getElementById('AMano').innerText = "No";
         }
 
+        const contenitoreMiniature = document.getElementById('contenitoreMiniature');
+        const immaginePrincipale = document.getElementById('immaginePrincipale');
 
-    //errore
+        contenitoreMiniature.innerHTML = '';
+
+        if (dati.immagini && dati.immagini.length > 0) {
+            
+
+            immaginePrincipale.src = indirizzo + dati.immagini[0].url_immagine;
+
+            dati.immagini.forEach((img, index) => {
+                let nuovaMiniatura = document.createElement('img');
+                nuovaMiniatura.src = indirizzo + img.url_immagine;
+                nuovaMiniatura.className = 'img-thumbnail thumbnail-img bg-black';
+
+                // Evidenzia la prima miniatura come "attiva"
+                if (index === 0) {
+                    nuovaMiniatura.classList.add('attiva');
+                }
+
+                nuovaMiniatura.setAttribute('onclick', 'cambiaImmagine(this)');
+
+                contenitoreMiniature.appendChild(nuovaMiniatura);
+            });
+
+        } else {
+            immaginePrincipale.src = "https://via.placeholder.com/800x450/1a1a1a/ffffff?text=Nessuna+Immagine";
+        }
+
     } catch (errore) {
         console.log("C'è stato un problema nel caricare l'annuncio:", errore);
     }
