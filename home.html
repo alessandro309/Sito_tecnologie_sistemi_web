@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="bootstrap.css">
     <link rel="stylesheet" href="barra_superiore.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">    <link rel="stylesheet" href="oggetti_home.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <title>RetroShop</title>
 </head>
@@ -26,8 +28,8 @@
                 <div class="collapse navbar-collapse miei-menu-mobile">
                     <div class="navbar-nav ms-auto align-items-center gap-3 mt-4 mt-lg-0 pb-3 pb-lg-0">
                         <a class="nav-link font-monospace d-flex text-white align-items-center link-preferiti" href="#">
-                            <i class="bi bi-heart text-danger me-2 fs-5 icona-vuota"></i>
-                            <i class="bi bi-heart-fill text-danger me-2 fs-5 icona-piena d-none"></i>
+                            <i class="bi bi-floppy text-danger me-2 fs-5 icona-vuota"></i>
+                            <i class="bi bi-floppy-fill text-danger me-2 fs-5 icona-piena d-none"></i>
                             Preferiti
                         </a>
  
@@ -564,84 +566,97 @@
     </div>
     
     <div class="modal fade" id="modalFiltri" tabindex="-1" aria-labelledby="modalFiltriLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content bg-black border border-secondary rounded-1 shadow-lg font-monospace text-white">
+        <div class="modal-dialog modal-dialog-centered modal-xl"> <div class="modal-content bg-black border border-secondary rounded-1 shadow-lg font-monospace text-white">
                 
-                <div class="modal-header border-0">
+                <div class="modal-header border-bottom border-secondary mb-4">
+                    <h5 class="modal-title text-uppercase fw-bold ps-2" id="modalFiltriLabel">Filtri di Ricerca</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
-                <div class="modal-body px-5 pb-5">
-                    <div class="text-center mb-4 border-bottom border-secondary pb-2">
-                        <h3 class="modal-title text-uppercase fw-bold" id="modalFiltriLabel">Filtri</h3>
-                    </div>
-
-                    <form id="formFiltri">
+                <div class="modal-body px-4 px-md-5 pb-5 pt-0">
+                    <div class="row g-5">
                         
-                        <div class="mb-4">
-                            <label for="console" class="form-label small text-secondary mb-1">CONSOLE</label>
-                            <select class="form-select" id="console">
-                                <option value="" selected disabled>Seleziona console...</option>
-                                <option value="playstation">PlayStation</option>
-                                <option value="xbox">Xbox</option>
-                                <option value="nintendo">Nintendo</option>
-                            </select>
+                        <div class="col-lg-5">
+                            <form id="formFiltri" class="d-flex flex-column h-100">
+                                
+                                <div class="mb-4">
+                                    <label for="console" class="form-label small text-secondary mb-1">CONSOLE</label>
+                                    <select class="form-select" id="console">
+                                        <option value="" selected disabled>Seleziona console...</option>
+                                        <option value="playstation">PlayStation</option>
+                                        <option value="xbox">Xbox</option>
+                                        <option value="nintendo">Nintendo</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label small text-secondary mb-1 d-block">CONDIZIONI</label>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="condizNuovo" value="nuovo">
+                                        <label class="form-check-label small" for="condizNuovo">Nuovo</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="condizComeNuovo" value="come_nuovo">
+                                        <label class="form-check-label small" for="condizComeNuovo">Come Nuovo</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="condizBuono" value="buone">
+                                        <label class="form-check-label small" for="condizBuono">Buone</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" name="condizione" id="condizDiscrete" value="discrete">
+                                        <label class="form-check-label small" for="condizDiscrete">Discrete</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="condizPezziRicambio" value="pezzi_di_ricambio">
+                                        <label class="form-check-label small" for="condizPezziRicambio">Pezzi di ricambio</label>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label small text-secondary mb-2 d-block">PREZZO</label>
+                                    <div class="d-flex justify-content-between text-white mb-2 font-monospace fw-bold">
+                                        <span id="prezzoMinLabel">€ 0</span>
+                                        <span id="prezzoMaxLabel">€ 1000</span>
+                                    </div>
+                                    <div class="range-slider-container position-relative">
+                                        <div class="slider-track" id="sliderTrack"></div>
+                                        <input type="range" min="0" max="1000" value="0" id="rangeMin" class="double-slider">
+                                        <input type="range" min="0" max="1000" value="1000" id="rangeMax" class="double-slider">
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="spedizione">
+                                        <label class="form-check-label small text-secondary" for="spedizione">
+                                            Necessaria spedizione
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="mt-auto d-flex gap-2 pt-3">
+                                    <button type="button" id="btnAzzera" class="btn btn-outline-secondary w-50 text-uppercase fw-bold py-2">
+                                        Azzera filtri
+                                    </button>
+                                    <button type="submit" class="btn bottone_login w-50 text-uppercase fw-bold py-2">
+                                        Applica filtri
+                                    </button>
+                                </div>
+
+                            </form>
                         </div>
 
-                        <div class="mb-4">
-                            <label class="form-label small text-secondary mb-1 d-block">CONDIZIONI</label>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" name="condizione" id="condizNuovo" value="nuovo">
-                                <label class="form-check-label small" for="condizNuovo">Nuovo</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" name="condizione" id="condizComeNuovo" value="come_nuovo">
-                                <label class="form-check-label small" for="condizComeNuovo">Come Nuovo</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" name="condizione" id="condizBuono" value="buone">
-                                <label class="form-check-label small" for="condizBuono">Buone</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" name="condizione" id="condizAccettabile" value="discrete">
-                                <label class="form-check-label small" for="condizAccettabile">Discrete</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" name="condizione" id="condizAccettabile" value="pezzi_di_ricambio">
-                                <label class="form-check-label small" for="condizAccettabile">Pezzi di ricambio</label>
+                        <div class="col-lg-7 d-flex flex-column border-start border-secondary ps-lg-5">
+                            <label class="form-label small text-secondary mb-2 d-block">ZONA DI RICERCA (Trascina per spostare)</label>
+                            <div class="position-relative flex-grow-1 rounded-2 overflow-hidden border border-secondary" style="min-height: 400px; background-color: #1a1a1a;">
+                                <div id="mappaContainer" class="w-100 h-100 position-absolute top-0 start-0"></div>
+                                
+                                <div class="mappa-mirino"></div>
                             </div>
                         </div>
 
-                        <div class="mb-4">
-                            <label class="form-label small text-secondary mb-2 d-block">PREZZO</label>
-                            <div class="d-flex justify-content-between text-white mb-2 font-monospace fw-bold">
-                                <span id="prezzoMinLabel">€ 0</span>
-                                <span id="prezzoMaxLabel">€ 1000</span>
-                            </div>
-                            
-                            <div class="range-slider-container position-relative">
-                                <div class="slider-track" id="sliderTrack"></div>
-                                <input type="range" min="0" max="1000" value="0" id="rangeMin" class="double-slider">
-                                <input type="range" min="0" max="1000" value="1000" id="rangeMax" class="double-slider">
-                            </div>
-                        </div>
-
-                        <div class="mb-5 mt-4">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="spedizione">
-                                <label class="form-check-label small text-secondary" for="spedizione">
-                                    Necessaria spedizione
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="text-center">
-                            <button type="submit" class="btn bottone_login w-100 text-uppercase fw-bold py-2">
-                                Applica filtri
-                            </button>
-                        </div>
-
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -723,52 +738,138 @@
             updateSlider(); 
         }
 
-        //Counter filtri
+        //Azzera filtri
+        const btnAzzera = document.getElementById('btnAzzera');
         const formFiltri = document.getElementById('formFiltri');
         const badgeFiltri = document.getElementById('badgeFiltri');
 
+        if (btnAzzera && formFiltri) {
+            btnAzzera.addEventListener('click', function() {
+                // 1. Svuota tutti i campi standard (select, checkbox)
+                formFiltri.reset();
+
+                // 2. Resetta forzatamente il doppio cursore del prezzo
+                const rangeMin = document.getElementById('rangeMin');
+                const rangeMax = document.getElementById('rangeMax');
+                if (rangeMin && rangeMax) {
+                    rangeMin.value = 0;
+                    rangeMax.value = 1000;
+                    if (typeof updateSlider === 'function') {
+                        updateSlider(); // Richiama la funzione per rimettere a posto la linea rossa e i testi
+                    }
+                }
+
+                // 3. Nasconde il pallino contatore sulla barra di ricerca
+                if (badgeFiltri) {
+                    badgeFiltri.textContent = "0";
+                    badgeFiltri.classList.add('d-none');
+                }
+
+                // 4. Resetta la mappa alla posizione iniziale
+                if (map) {
+                    // Reinseriamo le coordinate esatte e il livello di zoom (13) di partenza
+                    map.setView([41.9032, 12.5113], 13);
+                }
+            });
+        }
+
+        //Mappa
+        let map;
+
+        // Funzione per inizializzare la mappa
+        function inizializzaMappa() {
+            // Se la mappa è già stata creata, non facciamo nulla
+            if (map) return;
+
+            // 1. Crea la mappa e centrala su Roma (Sapienza)
+            // Coordinate: [41.9032, 12.5113] - Zoom: 13
+            map = L.map('mappaContainer').setView([41.9032, 12.5113], 13);
+
+            // 2. Aggiungi i "Tiles" (i disegni della mappa) da OpenStreetMap
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            // 3. Stile scuro opzionale
+            const leafletContainer = document.querySelector('.leaflet-container');
+            if (leafletContainer) {
+                leafletContainer.style.filter = "brightness(0.8) contrast(1.2) invert(100%) hue-rotate(180deg) saturate(0.5)";
+            }
+        }
+
+        const modalFiltri = document.getElementById('modalFiltri');
+        if (modalFiltri) {
+            modalFiltri.addEventListener('shown.bs.modal', function () {
+                if (!map) {
+                    inizializzaMappa();
+                } else {
+                    // Forza il ricalcolo delle dimensioni
+                    map.invalidateSize();
+                }
+            });
+        }
+
+        //Applica filtri e contatore
         if (formFiltri) {
             formFiltri.addEventListener('submit', function(event) {
-                // Previene il ricaricamento della pagina per gestire il pallino dinamicamente
+                // Previene il ricaricamento della pagina
                 event.preventDefault(); 
 
                 let conteggioFiltri = 0;
 
-                // 1. Categoria Console: controlla se è stata scelta un'opzione diversa dal default (vuoto)
+                // 1. Categoria Console
                 const consoleSelect = document.getElementById('console');
                 if (consoleSelect && consoleSelect.value !== "") {
                     conteggioFiltri++;
                 }
 
-                // 2. Categoria Condizioni: controlla se almeno una spunta è attiva
-                // Cerca tutti gli input di tipo checkbox dentro il blocco delle condizioni
+                // 2. Categoria Condizioni
                 const condizioniSpuntate = document.querySelectorAll('#modalFiltri input[type="checkbox"][id^="condiz"]:checked');
                 if (condizioniSpuntate.length > 0) {
                     conteggioFiltri++;
                 }
 
-                // 3. Categoria Prezzo: controlla se il prezzo è diverso da 0 - 1000
-                const minVal = parseInt(document.getElementById('rangeMin').value);
-                const maxVal = parseInt(document.getElementById('rangeMax').value);
-                if (minVal > 0 || maxVal < 1000) {
-                    conteggioFiltri++;
+                // 3. Categoria Prezzo
+                const rangeMin = document.getElementById('rangeMin');
+                const rangeMax = document.getElementById('rangeMax');
+                if (rangeMin && rangeMax) {
+                    const minVal = parseInt(rangeMin.value);
+                    const maxVal = parseInt(rangeMax.value);
+                    if (minVal > 0 || maxVal < 1000) {
+                        conteggioFiltri++;
+                    }
                 }
 
-                // 4. Categoria Spedizione: controlla se è spuntata
+                // 4. Categoria Spedizione
                 const spedizioneCheck = document.getElementById('spedizione');
                 if (spedizioneCheck && spedizioneCheck.checked) {
                     conteggioFiltri++;
                 }
 
-                // Aggiorna il pallino visivo
-                if (conteggioFiltri > 0) {
-                    badgeFiltri.textContent = conteggioFiltri;
-                    badgeFiltri.classList.remove('d-none'); // Mostra il pallino
-                } else {
-                    badgeFiltri.classList.add('d-none'); // Nascondi il pallino se è 0
+                // 5. Categoria Mappa
+                if (map) {
+                    const centroMappa = map.getCenter();
+                    console.log("Ricerca centrata su:", centroMappa.lat, centroMappa.lng);
+                    console.log("Livello di zoom (raggio):", map.getZoom());
+
+                    // Se la mappa è stata spostata dal centro iniziale, contiamola come un filtro attivo (+1)
+                    if (centroMappa.lat.toFixed(4) !== "41.9032" || centroMappa.lng.toFixed(4) !== "12.5113") {
+                        conteggioFiltri++;
+                    }
                 }
 
-                // Chiude automaticamente il pop-up dopo aver cliccato "Applica"
+                // 6. Aggiorna il pallino visivo rosso
+                if (badgeFiltri) {
+                    if (conteggioFiltri > 0) {
+                        badgeFiltri.textContent = conteggioFiltri;
+                        badgeFiltri.classList.remove('d-none');
+                    } else {
+                        badgeFiltri.textContent = "0";
+                        badgeFiltri.classList.add('d-none');
+                    }
+                }
+
+                // 7. Chiude automaticamente il pop-up
                 const modalInstance = bootstrap.Modal.getInstance(document.getElementById('modalFiltri'));
                 if (modalInstance) {
                     modalInstance.hide();

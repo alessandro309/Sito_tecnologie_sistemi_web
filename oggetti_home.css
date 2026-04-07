@@ -210,3 +210,23 @@
     transform: translateY(2px);             /* Lo spinge in basso di 2 pixel per allinearlo */
     font-weight: bold;
 }
+
+
+/* Mappa e mirino */
+#mappaContainer {
+    z-index: 1; /* Sta sotto il cerchio */
+}
+
+.mappa-mirino {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+    border: 2px dashed #dc3545; /* Bordo rosso tratteggiato */
+    background-color: rgba(220, 53, 69, 0.15); /* Rosso semi-trasparente */
+    border-radius: 50%;
+    z-index: 2; /* Sta sopra la mappa */
+    pointer-events: none; /* FONDAMENTALE: permette di cliccare attraverso il cerchio */
+}
