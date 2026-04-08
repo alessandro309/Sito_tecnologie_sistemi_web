@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, ForeignKey
+from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, ForeignKey, Date, DateTime, func
 from sqlalchemy.orm import declarative_base, relationship, sessionmaker
 
 # Usiamo SQLite per il salvataggio in un file locale
@@ -17,12 +17,13 @@ class UtenteDB(Base):
     nickname = Column(String, primary_key=True, index=True)
     nome = Column(String, nullable=False)
     cognome = Column(String, nullable=False)
-    nascita = Column(String, nullable=False)
+    nascita = Column(Date, nullable=False) # Ora è un tipo Date
     sesso = Column(String, nullable=True)
     citta = Column(String, nullable=True)
     provincia = Column(String, nullable=True)
     mail = Column(String, unique=True, index=True, nullable=False)
     password = Column(String, nullable=False) 
+    foto_profilo = Column(String, nullable=True) # Nuova colonna
 
     # Relazione: Un utente può avere più annunci
     annunci = relationship("AnnuncioDB", back_populates="proprietario")
@@ -34,10 +35,14 @@ class AnnuncioDB(Base):
     nome = Column(String, nullable=False)
     prezzo = Column(Float, nullable=False)
     condizione = Column(String, nullable=False)
-    marca = Column(String, nullable=False)
+    
+    # --- MODIFICHE QUI ---
+    piattaforma = Column(String, nullable=False) # Ex "marca"
+    modello = Column(String, nullable=False)     # Nuovo campo
+    # --------------------
+    
     tipologia = Column(String, nullable=False)
     
-    # Chiave esterna che collega l'annuncio all'utente (tramite nickname)
     utente = Column(String, ForeignKey("utenti.nickname"))
     
     spedizione = Column(Boolean, default=False)
@@ -45,10 +50,10 @@ class AnnuncioDB(Base):
     presenza = Column(Boolean, default=True)
     posizione = Column(String, nullable=False)
     descrizione = Column(String, nullable=False)
+    
+    data_pubblicazione = Column(DateTime, server_default=func.now())
 
-    # Relazioni
     proprietario = relationship("UtenteDB", back_populates="annunci")
-    # L'argomento order_by garantisce che le immagini escano sempre ordinate
     immagini = relationship(
         "ImmagineAnnuncioDB", 
         back_populates="annuncio", 
@@ -61,7 +66,7 @@ class ImmagineAnnuncioDB(Base):
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     url_immagine = Column(String, nullable=False)
-    ordine = Column(Integer, default=0) # 0 = thumbnail, 1 = seconda foto, ecc.
+    ordine = Column(Integer, default=0)
     annuncio_id = Column(Integer, ForeignKey("annunci.idAnnuncio"))
 
     annuncio = relationship("AnnuncioDB", back_populates="immagini")

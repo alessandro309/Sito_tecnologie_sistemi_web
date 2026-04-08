@@ -1,16 +1,18 @@
 from pydantic import BaseModel
 from typing import Optional, List
+from datetime import date, datetime
 
 # --- SCHEMI UTENTE ---
 class UtenteBase(BaseModel):
     nome: str
     cognome: str
     nickname: str
-    nascita: str
+    nascita: date # Ora è di tipo date
     sesso: Optional[str] = None
     citta: Optional[str] = None
     provincia: Optional[str] = None
     mail: str
+    foto_profilo: Optional[str] = None # Nuova colonna
 
 class UtenteCreate(UtenteBase):
     password: str 
@@ -33,7 +35,8 @@ class AnnuncioBase(BaseModel):
     nome: str
     prezzo: float
     condizione: str
-    marca: str
+    piattaforma: str
+    modello: str
     tipologia: str
     utente: str 
     spedizione: bool
@@ -47,6 +50,7 @@ class AnnuncioCreate(AnnuncioBase):
 
 class AnnuncioResponse(AnnuncioBase):
     idAnnuncio: int
+    data_pubblicazione: datetime # Restituisce la data di pubblicazione
     immagini: List[ImmagineResponse] = []
 
     class Config:

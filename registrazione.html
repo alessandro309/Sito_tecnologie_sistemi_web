@@ -27,8 +27,7 @@
             
             <h2 class="text-uppercase fw-bold mb-4 text-center border-bottom border-secondary pb-3">Registrazione account</h2>
 
-            <form id="formRegistrazione">
-                
+            <form id="formRegistrazione" enctype="multipart/form-data">                
                 <div class="row g-3 mb-4">
                     <div class="col-md-4">
                         <label for="nome" class="form-label small text-secondary mb-1">Nome*</label>
@@ -111,6 +110,17 @@
                     </div>
                 </div>
 
+                <div class="row g-3 mb-4">
+                    <div class="col-12">
+                        <label for="fotoProfilo" class="form-label small text-secondary mb-1">Foto Profilo <span class="text-secondary" style="font-size: 0.7rem;">(Opzionale - Max 2MB)</span></label>
+                        <input class="form-control rounded-1 bg-black text-white border-secondary" type="file" id="fotoProfilo" name="fotoProfilo" accept="image/png, image/jpeg, image/webp">
+                        
+                        <div class="mt-3 text-center d-none" id="previewContainer">
+                            <img id="previewImage" src="" alt="Anteprima Foto" class="rounded-circle border border-secondary shadow" style="width: 100px; height: 100px; object-fit: cover;">
+                        </div>
+                    </div>
+                </div>
+
                 <div class="form-check mt-5 mb-4">
                     <input class="form-check-input rounded-0 border-secondary" type="checkbox" id="informativa" required>
                     <label class="form-check-label text-secondary small" for="informativa">
@@ -165,7 +175,39 @@
             }
         });
     });
+
+    // --- 1. DATA DI NASCITA (Imposta il limite a 18 anni fa) ---
+    let oggi = new Date();
+    let anno = oggi.getFullYear() - 18;
+    let mese = String(oggi.getMonth() + 1).padStart(2, '0');
+    let giorno = String(oggi.getDate()).padStart(2, '0');
+    
+    document.getElementById("dataNascita").max = `${anno}-${mese}-${giorno}`;
+
+
+    // Applichiamo la funzione ai due bottoni
+    document.getElementById('btnTogglePass').onclick = function() { cambiaVisibilita('btnTogglePass', 'password'); };
+    document.getElementById('btnToggleConf').onclick = function() { cambiaVisibilita('btnToggleConf', 'confermaPassword'); };
+
+
+    // --- 3. ANTEPRIMA FOTO PROFILO ---
+    document.getElementById('fotoProfilo').onchange = function(event) {
+        let file = event.target.files[0];
+        let contenitore = document.getElementById('previewContainer');
+        let immagine = document.getElementById('previewImage');
+
+        if (file) {
+            // URL.createObjectURL crea un indirizzo temporaneo per mostrare l'immagine subito
+            immagine.src = URL.createObjectURL(file); 
+            contenitore.classList.remove('d-none'); // Mostra il contenitore
+        } else {
+            contenitore.classList.add('d-none'); // Nascondi se non c'è il file
+        }
+    };
+
+
     </script>
+    <script src="iscrizione.js"></script>
 
 </body>
 </html>
