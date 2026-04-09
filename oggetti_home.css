@@ -230,3 +230,113 @@
     z-index: 2; /* Sta sopra la mappa */
     pointer-events: none; /* FONDAMENTALE: permette di cliccare attraverso il cerchio */
 }
+
+/* STILI SIDEBAR PROFILO UTENTE */
+.sidebar-profilo {
+    border: 1px solid #6c757d;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.sidebar-profilo .list-group-item {
+    background-color: #000;
+    color: #fff;
+    border: none;
+    border-bottom: 1px solid #333;
+    transition: all 0.2s ease-in-out;
+}
+
+.sidebar-profilo .list-group-item:last-child {
+    border-bottom: none;
+}
+
+/* Effetto al passaggio del mouse */
+.sidebar-profilo .list-group-item:hover {
+    background-color: rgba(220, 53, 69, 0.1); /* Rosso leggerissimo */
+    color: #dc3545;
+}
+
+/* Stato attivo (La pagina in cui mi trovo) */
+.sidebar-profilo .list-group-item.active {
+    background-color: #dc3545 !important;
+    color: #fff !important;
+    border-color: #dc3545 !important;
+}
+
+/* Tema della Wii */
+/* Sfondi Base e Testo */
+body.tema-chiaro {
+    background-color: #D9D9D9 !important; /* Ex #141414 */
+    color: #000000 !important;
+}
+
+body.tema-chiaro .bg-black {
+    background-color: #F8F8F8 !important; /* Ex #000000 */
+}
+
+/* Bordi generali */
+body.tema-chiaro .border-secondary {
+    border-color: #7A7A7A !important; /* Ex #6C757D */
+}
+
+/* Colori Testo */
+body.tema-chiaro .text-white, 
+body.tema-chiaro h2, body.tema-chiaro h3, body.tema-chiaro h4, body.tema-chiaro h5, body.tema-chiaro h6 {
+    color: #000000 !important; /* Invertiamo il bianco in nero */
+}
+
+body.tema-chiaro .text-secondary {
+    color: #7A7A7A !important; /* Ex #6C757D */
+}
+
+/* --- SOSTITUZIONE ACCENTI ROSSI IN AZZURRO --- */
+body.tema-chiaro .text-danger { color: #0096D6 !important; }      /* Ex #DC3545 */
+body.tema-chiaro .bg-danger { background-color: #0096D6 !important; }
+body.tema-chiaro .border-danger { border-color: #0096D6 !important; }
+body.tema-chiaro .btn-danger, body.tema-chiaro .btn-outline-danger {
+    background-color: #0096D6 !important;
+    border-color: #0096D6 !important;
+    color: #F8F8F8 !important;
+}
+body.tema-chiaro .btn-outline-danger:hover { background-color: #84C9F0 !important; }
+
+/* Controlli Form, Checkbox e Input (Trasparenze) */
+body.tema-chiaro .form-control:focus, 
+body.tema-chiaro .form-select:focus,
+body.tema-chiaro .form-check-input:focus {
+    border-color: #84C9F0 !important; /* Ex #FF1100 */
+    box-shadow: 0 0 0 0.25rem rgba(132, 201, 240, 0.25) !important; /* Ex rgba(220,53,69...) */
+}
+
+body.tema-chiaro .form-check-input:checked {
+    background-color: #0096D6 !important;
+    border-color: #0096D6 !important;
+}
+
+/* Elementi Specifici (Mappa e Sidebar) */
+body.tema-chiaro .mappa-mirino {
+    border-color: #0096D6 !important;
+    background-color: rgba(0, 150, 214, 0.15) !important; 
+}
+
+body.tema-chiaro .sidebar-profilo .list-group-item {
+    background-color: #F8F8F8 !important;
+    color: #000000 !important;
+    border-bottom-color: #BFBFBF !important; /* Ex #3B3B3B */
+}
+
+body.tema-chiaro .sidebar-profilo .list-group-item:hover {
+    background-color: rgba(0, 150, 214, 0.1) !important;
+    color: #0096D6 !important;
+}
+
+body.tema-chiaro .sidebar-profilo .list-group-item.active {
+    background-color: #0096D6 !important;
+    color: #F8F8F8 !important;
+    border-color: #0096D6 !important;
+}
+
+body.tema-chiaro .form-control::placeholder {
+    color: #7A7A7A !important;
+    opacity: 0.8 !important;
+}

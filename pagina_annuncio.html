@@ -147,6 +147,11 @@
     </style>
 </head>
 <body>
+    <script>
+        if (localStorage.getItem('temaSelezionato') === 'light') {
+            document.body.classList.add('tema-chiaro');
+        }
+    </script>
     <header>
         <nav class="navbar navbar-expand-lg bg-black border-bottom border-secondary" data-bs-theme="dark">
             <div class="container-fluid">

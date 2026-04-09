@@ -86,7 +86,7 @@ document.getElementById('formRegistrazione').onsubmit = async function(event) {
         
         // Aspetta 1.5 secondi per far leggere il messaggio, poi va alla Home
         setTimeout(() => {
-            window.location.href = "home.html";
+            window.location.href = "profilo.html";
         }, 1500);
 
     } catch (errore) {

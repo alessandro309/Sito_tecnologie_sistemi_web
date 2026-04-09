@@ -10,6 +10,11 @@
     <title>Registrazione - RetroShop</title>
 </head>
 <body class="font-monospace text-white">
+    <script>
+        if (localStorage.getItem('temaSelezionato') === 'light') {
+            document.body.classList.add('tema-chiaro');
+        }
+    </script>
     
     <header class="mb-5">
         <nav class="navbar bg-black border-bottom border-secondary p-3">

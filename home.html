@@ -12,6 +12,11 @@
     <title>RetroShop</title>
 </head>
 <body>
+    <script>
+        if (localStorage.getItem('temaSelezionato') === 'light') {
+            document.body.classList.add('tema-chiaro');
+        }
+    </script>
     
     <header>
         <nav class="navbar navbar-expand-lg bg-black border-bottom border-secondary" data-bs-theme="dark">
@@ -691,6 +696,27 @@
                 });
             });
         });
+
+        // Esempio: Controlla se abbiamo salvato i dati dell'utente nel browser
+        const utenteLoggato = localStorage.getItem('utente_registrato'); 
+
+        if (utenteLoggato) {
+            // 1. Seleziona il bottone del login e cambialo
+            const btnLogin = document.getElementById('btnAccediTop'); // Usa l'ID reale del tuo bottone
+            if(btnLogin) {
+                // Cambia il testo e l'icona
+                btnLogin.innerHTML = '<i class="bi bi-person-circle"></i> Profilo';
+                
+                // Rimuove l'apertura del Modal del login
+                btnLogin.removeAttribute('data-bs-toggle'); 
+                btnLogin.removeAttribute('data-bs-target');
+                
+                // Lo trasforma in un link alla pagina profilo
+                btnLogin.addEventListener('click', function() {
+                    window.location.href = "profilo.html";
+                });
+            }
+        }
         
     </script>    
     <script src="script_filtri.js"></script>
