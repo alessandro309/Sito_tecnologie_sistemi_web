@@ -1,30 +1,48 @@
 import os
 import shutil
-from fastapi import FastAPI, HTTPException, Depends, UploadFile, File
+from fastapi import FastAPI, HTTPException, Depends, UploadFile, File, Request, Response
 from typing import Annotated, List
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
+from datetime import datetime, timedelta, timezone
+from passlib.context import CryptContext
 
-# Importazioni
+
 from database import database 
 from server import schemi
 
 # 1. Configurazione Cartelle
-BASE_DIR_IMMAGINI = "static/annunci"
+BASE_DIR_IMMAGINI = "static/annunci" # cartella per le foto annunci
 BASE_DIR_UTENTI = "static/utenti" # Cartella per le foto profilo
 
 os.makedirs(BASE_DIR_IMMAGINI, exist_ok=True)
 os.makedirs(BASE_DIR_UTENTI, exist_ok=True)
 
-# Crea le tabelle nel database SQLite se non esistono
+# Crea le tabelle nel database PostgreSQL se non esistono
 database.Base.metadata.create_all(bind=database.engine)
+
+
+#Funzioni che servono per "hashare" e "dehashare" la password
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def ottieni_hash_password(password: str):
+    return pwd_context.hash(password)
+
+def verifica_password(plain_password: str, hashed_password: str):
+    return pwd_context.verify(plain_password, hashed_password)
+#fine funzioni sicurezza
 
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://127.0.0.1:5500", 
+        "http://localhost:5500",
+        "http://127.0.0.1:8000",
+        "http://localhost:8000"
+    ], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -51,7 +69,12 @@ def registra_utente(utente: schemi.UtenteCreate, db: Session = Depends(get_db)):
     if db_user_mail:
         raise HTTPException(status_code=400, detail="Email già registrata")
 
-    nuovo_utente = database.UtenteDB(**utente.model_dump())
+    #criptiamo la password
+    dati_utente = utente.model_dump()
+    dati_utente["password"] = ottieni_hash_password(dati_utente["password"])
+
+
+    nuovo_utente = database.UtenteDB(**dati_utente)
     db.add(nuovo_utente)
     db.commit()
     db.refresh(nuovo_utente)
@@ -153,3 +176,66 @@ def ottieni_utente(nickname: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Utente non trovato")
     
     return utente
+
+
+@app.post("/login")
+def login(credenziali: schemi.LoginRequest, response: Response, db: Session = Depends(get_db)):
+    # 1. Cerca l'utente
+    utente = db.query(database.UtenteDB).filter(database.UtenteDB.nickname == credenziali.nickname).first()
+    
+    # NB: Qui dovresti verificare l'hash della password, per ora simuliamo un check base
+    if not utente or not verifica_password(credenziali.password, utente.password):
+        raise HTTPException(status_code=401, detail="Credenziali non valide")
+
+    # 2. Crea la sessione (valida ad es. per 7 giorni)
+    scadenza = datetime.now(timezone.utc) + timedelta(days=7)
+    nuova_sessione = database.SessioneDB(
+        nickname_utente=utente.nickname,
+        data_scadenza=scadenza
+    )
+    db.add(nuova_sessione)
+    db.commit()
+    db.refresh(nuova_sessione)
+
+    # 3. Imposta il Cookie sicuro nel browser
+    response.set_cookie(
+        key="sessione_retroshop",
+        value=nuova_sessione.id_sessione,
+        httponly=True,  # Impedisce ad altri JS di leggere il cookie (sicurezza)
+        samesite="lax",
+        expires=scadenza
+    )
+    
+    return {"message": "Login effettuato con successo", "utente": utente.nickname}
+
+
+def ottieni_utente_loggato(request: Request, db: Session = Depends(get_db)):
+    sessione_id = request.cookies.get("sessione_retroshop")
+    
+    if not sessione_id:
+        raise HTTPException(status_code=401, detail="Non autenticato")
+
+    sessione = db.query(database.SessioneDB).filter(database.SessioneDB.id_sessione == sessione_id).first()
+    
+    if not sessione or sessione.data_scadenza < datetime.now():
+        raise HTTPException(status_code=401, detail="Sessione scaduta o non valida")
+        
+    return sessione.nickname_utente
+
+@app.post("/logout")
+def logout(request: Request, response: Response, db: Session = Depends(get_db)):
+    sessione_id = request.cookies.get("sessione_retroshop")
+    
+    if sessione_id:
+        # Elimina la sessione dal database
+        db.query(database.SessioneDB).filter(database.SessioneDB.id_sessione == sessione_id).delete()
+        db.commit()
+        
+    # Cancella il cookie dal browser
+    response.delete_cookie("sessione_retroshop")
+    return {"message": "Logout effettuato"}
+
+
+@app.get("/utente/me")
+def controlla_sessione(utente_corrente: str = Depends(ottieni_utente_loggato)):
+    return {"nickname": utente_corrente, "loggato": True}

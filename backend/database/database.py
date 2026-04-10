@@ -1,16 +1,16 @@
 from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, ForeignKey, Date, DateTime, func
 from sqlalchemy.orm import declarative_base, relationship, sessionmaker
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
+import uuid
 
-# Usiamo SQLite per il salvataggio in un file locale
-SQLALCHEMY_DATABASE_URL = "sqlite:///./retroshop.db"
+SQLALCHEMY_DATABASE_URL = "postgresql://postgres:biar@localhost:5432/retroshop_db"
 
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+    SQLALCHEMY_DATABASE_URL
 )
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
 Base = declarative_base()
-
 class UtenteDB(Base):
     __tablename__ = "utenti"
 
@@ -35,24 +35,16 @@ class AnnuncioDB(Base):
     nome = Column(String, nullable=False)
     prezzo = Column(Float, nullable=False)
     condizione = Column(String, nullable=False)
-    
-    # --- MODIFICHE QUI ---
-    piattaforma = Column(String, nullable=False) # Ex "marca"
-    modello = Column(String, nullable=False)     # Nuovo campo
-    # --------------------
-    
+    piattaforma = Column(String, nullable=False)
+    modello = Column(String, nullable=False)    
     tipologia = Column(String, nullable=False)
-    
     utente = Column(String, ForeignKey("utenti.nickname"))
-    
     spedizione = Column(Boolean, default=False)
     prezzo_spedizione = Column(Float, default=0.0)
     presenza = Column(Boolean, default=True)
     posizione = Column(String, nullable=False)
     descrizione = Column(String, nullable=False)
-    
     data_pubblicazione = Column(DateTime, server_default=func.now())
-
     proprietario = relationship("UtenteDB", back_populates="annunci")
     immagini = relationship(
         "ImmagineAnnuncioDB", 
@@ -70,3 +62,14 @@ class ImmagineAnnuncioDB(Base):
     annuncio_id = Column(Integer, ForeignKey("annunci.idAnnuncio"))
 
     annuncio = relationship("AnnuncioDB", back_populates="immagini")
+
+class SessioneDB(Base):
+    __tablename__ = "sessioni"
+
+    # Genera automaticamente un ID univoco casuale (es. "f47ac10b-58cc-4372-a567-0e02b2c3d479")
+    id_sessione = Column(String, primary_key=True, index=True, default=lambda: str(uuid.uuid4()))
+    nickname_utente = Column(String, ForeignKey("utenti.nickname", ondelete="CASCADE"), nullable=False)
+    data_scadenza = Column(DateTime, nullable=False)
+
+    # Relazione con l'utente
+    utente = relationship("UtenteDB")

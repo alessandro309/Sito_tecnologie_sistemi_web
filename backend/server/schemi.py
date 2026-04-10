@@ -55,3 +55,8 @@ class AnnuncioResponse(AnnuncioBase):
 
     class Config:
         from_attributes = True
+
+
+class LoginRequest(BaseModel):
+    nickname: str
+    password: str

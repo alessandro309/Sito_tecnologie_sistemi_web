@@ -78,6 +78,19 @@
     border: 1px solid rgba(255, 17, 0, 0.2); /* Bordo leggero rosso per riprendere il tema */
 }
 
+        /*box per i giochi*/
+#box_giochi{
+            
+    background-image: linear-gradient(to left, rgba(20, 20, 20, 0.95) 10%, rgba(255, 17, 0, 0.3) 30%, rgba(0, 0, 0, 0) 60%), url('giochi_totali.png'); /*Specchiato rispetto al box fisse*/        
+    background-position: left center; /*immagine a sinistra e spostata sennò troppo appiccicata*/
+            
+    background-size: contain; 
+    background-repeat: no-repeat;
+    background-color: #000; 
+    border: 1px solid rgba(255, 17, 0, 0.2); 
+    background-size: 100% 100%, 50%;
+} 
+
 #formRegistrazione .form-control, 
 #formRegistrazione .form-select {
     background-color: transparent !important;

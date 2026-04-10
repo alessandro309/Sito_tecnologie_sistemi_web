@@ -4,7 +4,6 @@ document.getElementById('formRegistrazione').onsubmit = async function(event) {
     const form = document.getElementById('formRegistrazione');
     const btnSubmit = document.querySelector('button[type="submit"]');
 
-    // --- FUNZIONE PER MOSTRARE ERRORI A SCHERMO SENZA ALERT ---
     function mostraErrore(messaggio) {
         // Se c'è già un messaggio precedente, lo cancella
         let vecchioMessaggio = document.getElementById('messaggioFeedback');
