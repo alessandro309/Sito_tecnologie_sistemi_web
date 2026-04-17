@@ -12,26 +12,91 @@
 
     <title>RetroShop - Ricerca Annunci</title>
 
-    <style>
-        /* Stili aggiuntivi specifici per le card degli annunci */
+<style>
+        body {
+            background-color: rgb(67, 64, 64) !important;
+            color: #ffffff;
+        }
+
+        
+        .card-annuncio {
+            /* Sfondo della card reso ancora più scuro per maggiore contrasto */
+            background-color: rgb(35, 33, 33) !important; 
+            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            border-radius: 20px !important; 
+            overflow: hidden; 
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            position: relative; 
+            z-index: 1; 
+        }
+
+        /* Effetto Hover e Ombra */
         .card-annuncio:hover {
-            border-color: #dc3545 !important; /* Bordo rosso al passaggio del mouse */
-            transition: border-color 0.3s ease;
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8) !important; 
+            border-color: #dc3545 !important; 
+            z-index: 10;
         }
+
+        /* Immagine con angoli superiori arrotondati e zoom al passaggio */
         .img-annuncio {
-            height: 200px;
+            height: 220px;
             object-fit: cover;
+            width: 100%;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            transition: transform 0.5s ease;
         }
+
+        .card-annuncio:hover .img-annuncio {
+            transform: scale(1.05);
+        }
+
+        /* Spaziatura dei testi */
+        .card-body {
+            padding: 1.5rem !important; 
+        }
+
+        /* Colori testi ottimizzati */
+        .card-title {
+            color: #ffffff !important;
+            font-weight: bold;
+        }
+
+        /* Testi secondari resi molto chiari per risaltare sul nuovo fondo scuro */
+        .card-annuncio .text-secondary,
+        .card-annuncio p {
+            color: #e9ecef !important; 
+        }
+
+        /* Prezzo in rosso */
+        .card-annuncio .text-danger {
+            color: #ff4d4d !important; 
+        }
+
+        /* Bottone Salva / Cuore */
         .btn-salva {
-            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 50%; 
+            background-color: rgba(67, 64, 64, 0.8); 
             backdrop-filter: blur(5px);
+            color: white; 
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+
         .btn-salva:hover {
-            background-color: black;
+            background-color: #dc3545; 
+            transform: scale(1.1);
         }
     </style>
 </head>
-<body class="bg-dark text-white"> <header>
+<body > 
+    <header>
         <nav class="navbar navbar-expand-lg bg-black border-bottom border-secondary" data-bs-theme="dark">
             <div class="container-fluid">
                 <a class="navbar-brand font-monospace text-uppercase d-flex align-items-center" href="home.html">
@@ -492,110 +557,11 @@
         
         <div class="d-flex justify-content-between align-items-end mb-4 border-bottom border-secondary pb-2">
             <h2 class="font-monospace text-uppercase fw-bold m-0">Risultati della ricerca</h2>
-            <span class="text-secondary font-monospace small">Trovati 4 annunci</span>
+            <span class="text-secondary font-monospace small" id="contatore-annunci">Ricerca in corso...</span>
         </div>
 
-        <div class="row g-4">
-
-            <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-                <div class="card card-annuncio bg-black border-secondary h-100 text-white shadow overflow-hidden">
-                    <div class="position-relative">
-                        <img src="https://placehold.co/600x400/1a1a1a/FFF?text=Foto+PS1" class="card-img-top img-annuncio" alt="Immagine annuncio">
-                        
-                        <button class="btn btn-salva position-absolute top-0 end-0 m-2 rounded-circle border-secondary d-flex align-items-center justify-content-center p-0" style="width: 40px; height: 40px; z-index: 10;" onclick="toggleSalva(this)">
-                            <i class="bi bi-floppy text-danger fs-5 icona-vuota"></i>
-                            <i class="bi bi-floppy-fill text-danger fs-5 icona-piena d-none"></i>
-                        </button>
-                    </div>
-                    
-                    <div class="card-body d-flex flex-column p-3">
-                        <h5 class="card-title font-monospace text-uppercase mb-1 fs-6 fw-bold">Sony PlayStation 1 Fat + 2 Controller</h5>
-                        <p class="text-secondary small font-monospace mb-2">Condizioni: Buone</p>
-                        <h4 class="text-danger fw-bold font-monospace mb-3 mt-auto">€ 45,00</h4>
-                        <div class="d-flex justify-content-between align-items-center font-monospace small text-secondary">
-                            <span><i class="bi bi-geo-alt"></i> Roma (RM)</span>
-                            <span>Oggi, 15:30</span>
-                        </div>
-                    </div>
-                    <div class="card-footer bg-transparent border-0 p-0">
-                        <a href="#" class="btn w-100 bottone_login font-monospace text-uppercase fw-bold rounded-0 py-2">Mostra Dettagli</a>
-                    </div>
-                </div>
+        <div class="row g-4" id="contenitore-annunci">
             </div>
-
-            <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-                <div class="card card-annuncio bg-black border-secondary h-100 text-white shadow overflow-hidden">
-                    <div class="position-relative">
-                        <img src="https://placehold.co/600x400/1a1a1a/FFF?text=Foto+GameBoy" class="card-img-top img-annuncio" alt="Immagine annuncio">
-                        <button class="btn btn-salva position-absolute top-0 end-0 m-2 rounded-circle border-secondary d-flex align-items-center justify-content-center p-0" style="width: 40px; height: 40px; z-index: 10;" onclick="toggleSalva(this)">
-                            <i class="bi bi-floppy text-danger fs-5 icona-vuota"></i>
-                            <i class="bi bi-floppy-fill text-danger fs-5 icona-piena d-none"></i>
-                        </button>
-                    </div>
-                    <div class="card-body d-flex flex-column p-3">
-                        <h5 class="card-title font-monospace text-uppercase mb-1 fs-6 fw-bold">Nintendo GameBoy Color Giallo Boxato</h5>
-                        <p class="text-secondary small font-monospace mb-2">Condizioni: Come Nuovo</p>
-                        <h4 class="text-danger fw-bold font-monospace mb-3 mt-auto">€ 120,00</h4>
-                        <div class="d-flex justify-content-between align-items-center font-monospace small text-secondary">
-                            <span><i class="bi bi-geo-alt"></i> Milano (MI)</span>
-                            <span>Ieri, 10:15</span>
-                        </div>
-                    </div>
-                    <div class="card-footer bg-transparent border-0 p-0">
-                        <a href="#" class="btn w-100 bottone_login font-monospace text-uppercase fw-bold rounded-0 py-2">Mostra Dettagli</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-                <div class="card card-annuncio bg-black border-secondary h-100 text-white shadow overflow-hidden">
-                    <div class="position-relative">
-                        <img src="https://placehold.co/600x400/1a1a1a/FFF?text=Foto+Xbox" class="card-img-top img-annuncio" alt="Immagine annuncio">
-                        <button class="btn btn-salva position-absolute top-0 end-0 m-2 rounded-circle border-secondary d-flex align-items-center justify-content-center p-0" style="width: 40px; height: 40px; z-index: 10;" onclick="toggleSalva(this)">
-                            <i class="bi bi-floppy text-danger fs-5 icona-vuota"></i>
-                            <i class="bi bi-floppy-fill text-danger fs-5 icona-piena d-none"></i>
-                        </button>
-                    </div>
-                    <div class="card-body d-flex flex-column p-3">
-                        <h5 class="card-title font-monospace text-uppercase mb-1 fs-6 fw-bold">Lotto Giochi XBOX Originale (Halo, Fable)</h5>
-                        <p class="text-secondary small font-monospace mb-2">Condizioni: Discrete</p>
-                        <h4 class="text-danger fw-bold font-monospace mb-3 mt-auto">€ 35,00</h4>
-                        <div class="d-flex justify-content-between align-items-center font-monospace small text-secondary">
-                            <span><i class="bi bi-geo-alt"></i> Napoli (NA)</span>
-                            <span>3 Apr, 18:40</span>
-                        </div>
-                    </div>
-                    <div class="card-footer bg-transparent border-0 p-0">
-                        <a href="#" class="btn w-100 bottone_login font-monospace text-uppercase fw-bold rounded-0 py-2">Mostra Dettagli</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-                <div class="card card-annuncio bg-black border-secondary h-100 text-white shadow overflow-hidden">
-                    <div class="position-relative">
-                        <img src="https://placehold.co/600x400/1a1a1a/FFF?text=Foto+Amiga" class="card-img-top img-annuncio" alt="Immagine annuncio">
-                        <button class="btn btn-salva position-absolute top-0 end-0 m-2 rounded-circle border-secondary d-flex align-items-center justify-content-center p-0" style="width: 40px; height: 40px; z-index: 10;" onclick="toggleSalva(this)">
-                            <i class="bi bi-floppy text-danger fs-5 icona-vuota"></i>
-                            <i class="bi bi-floppy-fill text-danger fs-5 icona-piena d-none"></i>
-                        </button>
-                    </div>
-                    <div class="card-body d-flex flex-column p-3">
-                        <h5 class="card-title font-monospace text-uppercase mb-1 fs-6 fw-bold">Commodore Amiga 500 Completo</h5>
-                        <p class="text-secondary small font-monospace mb-2">Condizioni: Pezzi di ricambio</p>
-                        <h4 class="text-danger fw-bold font-monospace mb-3 mt-auto">€ 50,00</h4>
-                        <div class="d-flex justify-content-between align-items-center font-monospace small text-secondary">
-                            <span><i class="bi bi-geo-alt"></i> Torino (TO)</span>
-                            <span>1 Apr, 09:10</span>
-                        </div>
-                    </div>
-                    <div class="card-footer bg-transparent border-0 p-0">
-                        <a href="#" class="btn w-100 bottone_login font-monospace text-uppercase fw-bold rounded-0 py-2">Mostra Dettagli</a>
-                    </div>
-                </div>
-            </div>
-
-        </div>
 
     </main>
 
@@ -756,5 +722,6 @@
         }
     </script>
     <script src="script_filtri.js"></script>
+    <script src="login.js"></script>
 </body>
 </html>

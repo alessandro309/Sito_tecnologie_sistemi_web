@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="bootstrap.css">
+    <link rel="stylesheet" href="barra_superiore.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">    
+    <link rel="stylesheet" href="oggetti_home.css">
+    <title>Crea Annuncio - RetroShop</title>
+
+
+</head>
+<style>
+    body { /*Colore di tutta la pagina*/
+        background-color: rgb(67, 64, 64);
+    }
+
+    .form-check-input:checked {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+    body.tema-chiaro .form-check-input:checked {
+        background-color: #0096D6 !important;
+        border-color: #0096D6 !important;
+    }
+
+    .box_citta_descrizione {
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Mantiene il testo bianco e forza lo sfondo trasparente sui form-control generali */
+    .form-control, .form-select {
+        color: white !important;
+    }
+
+    /* Risolve il problema del focus sulla descrizione */
+    .box_citta_descrizione:focus {
+        background-color: rgba(0, 0, 0, 0.5) !important;
+        color: white !important;
+        border-color: rgba(255, 255, 255, 0.3) !important; /* Colore bordo al click */
+        box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.1) !important; /* Rimuove l'ombra azzurra di Bootstrap e ne mette una neutra */
+    }
+
+    /* Fix per i placeholder che altrimenti potrebbero non vedersi bene */
+    .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.5) !important;
+    }
+
+</style>
+
+<body class="text-white font-monospace">
+    
+    <script>
+        if (localStorage.getItem('temaSelezionato') === 'light') {
+            document.body.classList.add('tema-chiaro');
+        }
+    </script>
+
+    <main class="container my-5">
+        <form id="formPubblicazione" action="/api/annunci" method="POST" enctype="multipart/form-data">
+            
+            <div class="mb-4">
+                <input type="text" name="nome" class="form-control form-control-lg bg-transparent border-0 border-bottom border-secondary rounded-0 px-0 fw-bold text-uppercase" 
+                       placeholder="TITOLO DELL'ANNUNCIO..." style="font-size: 2rem;" required>
+            </div>
+
+            <div class="row g-5">
+                <div class="col-lg-7">
+                    <div class="upload-area border border-dark rounded-4 d-flex flex-column align-items-center justify-content-center position-relative" 
+                         style="height: 450px; background-color: rgba(255,255,255,0.02);">
+                        
+                        <div class="text-center p-4">
+                            <i class="bi bi-images fs-1 text-secondary mb-3"></i>
+                            <h4 class="text-uppercase fw-bold">Carica le foto</h4>
+                            <p class="text-secondary small">Trascina qui i file o clicca per selezionarli</p>
+                        </div>
+                        
+                        <input type="file" id="inputImmagini" name="immagini" class="position-absolute top-0 start-0 w-100 h-100 opacity-0" accept="image/*" multiple style="cursor: pointer;" required>
+                    </div>
+                    
+                    <div class="d-flex gap-2 mt-3" id="contenitoreAnteprime" style="min-height: 80px;">
+                        <div class="border border-secondary rounded-2" style="width: 80px; height: 80px; border-style: dashed !important;"></div>
+                        <div class="border border-secondary rounded-2" style="width: 80px; height: 80px; border-style: dashed !important;"></div>
+                        <div class="border border-secondary rounded-2" style="width: 80px; height: 80px; border-style: dashed !important;"></div>
+                    </div>
+                </div>
+
+                <div class="col-lg-5 ">
+                    <div class="p-4 rounded-4 border border-secondary shadow-lg box_citta_descrizione">
+                        
+                        <div class="mb-4">
+                            <label class="small text-secondary text-uppercase mb-2">Prezzo Richiesto</label>
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text bg-transparent border-secondary text-white">€</span>
+                                <input type="number" name="prezzo" class="form-control border-secondary" placeholder="0.00" step="0.01" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="small text-secondary text-uppercase mb-2">Dettagli Articolo</label>
+                            <div class="d-flex flex-column gap-3">
+                                <select name="condizione" class="form-select border-secondary" required>
+                                    <option value="" disabled selected>Condizione...</option>
+                                    <option>Nuovo</option>
+                                    <option>Come Nuovo</option>
+                                    <option>Ottime</option>
+                                    <option>Buone</option>
+                                    <option>Pezzi di ricambio</option>
+                                </select>
+
+                                <select name="piattaforma" class="form-select border-secondary" required>
+                                    <option value="" disabled selected>Piattaforma...</option>
+                                    <option>PlayStation</option>
+                                    <option>Nintendo</option>
+                                    <option>Xbox</option>
+                                    <option>Sega</option>
+                                </select>
+
+                                <input type="text" name="modello" class="form-control border-secondary" placeholder="Modello (es. PS2 Slim)">
+                                
+                                <select name="tipologia" class="form-select border-secondary" required>
+                                    <option value="" disabled selected>Tipologia...</option>
+                                    <option>Console</option>
+                                    <option>Gioco</option>
+                                    <option>Accessorio</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="small text-secondary text-uppercase mb-2">Luogo e Spedizione</label>
+                            <input type="text" name="posizione" class="form-control border-secondary mb-3" placeholder="Località (es. Milano)">
+                            
+                            <div class="form-check form-switch p-0 d-flex align-items-center justify-content-between">
+                                <label class="form-check-label text-white" for="spedizione">Disponibile a spedire</label>
+                                <input class="form-check-input ms-0 mt-0" type="checkbox" role="switch" id="spedizione" name="spedizione">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn bottone_login w-100 py-3 text-uppercase fw-bold rounded-3 shadow mt-2">
+                            Pubblica ora l'annuncio
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-5">
+                <div class="col-12">
+                    <h3 class="text-uppercase fw-bold border-bottom border-secondary pb-2 mb-4">Descrizione dell'articolo</h3>
+                    <textarea name="descrizione" class="box_citta_descrizione form-control border-secondary rounded-3" 
+                              rows="8" placeholder="Inserisci qui tutti i dettagli dell'oggetto, graffi, funzionamento, accessori inclusi..." required></textarea>
+                </div>
+            </div>
+        </form>
+    </main>
+
+    <script src="bootstrap.bundle.min.js"></script>
+    <script>
+        const inputImmagini = document.getElementById('inputImmagini');
+        const contenitoreAnteprime = document.getElementById('contenitoreAnteprime');
+
+        inputImmagini.addEventListener('change', function() {
+            // Svuota i quadratini tratteggiati di default
+            contenitoreAnteprime.innerHTML = ''; 
+
+            if (this.files && this.files.length > 0) {
+                // Mostriamo un massimo di 3 anteprime per non rompere il layout
+                const fileDaMostrare = Math.min(this.files.length, 3); 
+
+                for(let i = 0; i < fileDaMostrare; i++) {
+                    const file = this.files[i];
+                    const imageUrl = URL.createObjectURL(file);
+
+                    // Crea il contenitore dell'immagine
+                    const imgContainer = document.createElement('div');
+                    imgContainer.className = 'border border-secondary rounded-2 overflow-hidden shadow-sm';
+                    imgContainer.style.width = '80px';
+                    imgContainer.style.height = '80px';
+
+                    // Crea l'immagine vera e propria
+                    const img = document.createElement('img');
+                    img.src = imageUrl;
+                    img.style.width = '100%';
+                    img.style.height = '100%';
+                    img.style.objectFit = 'cover'; // Evita che l'immagine si deformi
+
+                    imgContainer.appendChild(img);
+                    contenitoreAnteprime.appendChild(imgContainer);
+                }
+            } else {
+                // Se l'utente annulla la selezione, rimettiamo i box vuoti tratteggiati
+                for(let i=0; i<3; i++){
+                    contenitoreAnteprime.innerHTML += '<div class="border border-secondary rounded-2" style="width: 80px; height: 80px; border-style: dashed !important;"></div>';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

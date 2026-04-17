@@ -1,12 +1,14 @@
 import os
 import shutil
 from fastapi import FastAPI, HTTPException, Depends, UploadFile, File, Request, Response
-from typing import Annotated, List
+from typing import Annotated, List, Optional
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta, timezone
 from passlib.context import CryptContext
+from sqlalchemy import or_
+from fastapi import Query
 
 
 from database import database 
@@ -239,3 +241,46 @@ def logout(request: Request, response: Response, db: Session = Depends(get_db)):
 @app.get("/utente/me")
 def controlla_sessione(utente_corrente: str = Depends(ottieni_utente_loggato)):
     return {"nickname": utente_corrente, "loggato": True}
+
+
+@app.get("/annunci/ricerca/", response_model=List[schemi.AnnuncioResponse])
+def ricerca_annunci(
+    ricerca: Optional[str] = None,
+    console: Optional[str] = None,
+    condizioni: Optional[List[str]] = Query(None), # Permette selezioni multiple
+    prezzo_min: Optional[float] = None,
+    prezzo_max: Optional[float] = None,
+    spedizione: Optional[bool] = None,
+    db: Session = Depends(get_db)
+):
+    query = db.query(database.AnnuncioDB)
+
+    if ricerca:
+        query = query.filter(
+            or_(
+                database.AnnuncioDB.nome.ilike(f"%{ricerca}%"),
+                database.AnnuncioDB.descrizione.ilike(f"%{ricerca}%")
+            )
+        )
+    
+    # 2. Filtro Piattaforma/Console
+    if console:
+        query = query.filter(database.AnnuncioDB.piattaforma.ilike(f"%{console}%"))
+
+    # 3. Filtro Condizioni (es. ['nuovo', 'buone'])
+    if condizioni and len(condizioni) > 0:
+        query = query.filter(database.AnnuncioDB.condizione.in_(condizioni))
+
+    # 4. Filtro Prezzo
+    if prezzo_min is not None:
+        query = query.filter(database.AnnuncioDB.prezzo >= prezzo_min)
+    if prezzo_max is not None:
+        query = query.filter(database.AnnuncioDB.prezzo <= prezzo_max)
+
+    # 5. Filtro Spedizione
+    if spedizione:
+        query = query.filter(database.AnnuncioDB.spedizione == True)
+
+    # Esegui la query e restituisci i risultati ordinati dal più recente
+    annunci_filtrati = query.order_by(database.AnnuncioDB.data_pubblicazione.desc()).all()
+    return annunci_filtrati
