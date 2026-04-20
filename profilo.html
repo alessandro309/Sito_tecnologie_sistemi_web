@@ -9,9 +9,176 @@
     <link rel="stylesheet" href="oggetti_home.css">
     <title>Area Personale - RetroShop</title>
 
+    <style>
+        /* ============================================================
+           CARD ANNUNCIO — IDENTICHE A MOSTRA_ANNUNCI.HTML
+        ============================================================ */
+        .card-annuncio {
+            background-color: rgb(35, 33, 33) !important;
+            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            border-radius: 20px !important;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+        .card-annuncio:hover {
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8) !important;
+            border-color: #dc3545 !important;
+            z-index: 10;
+        }
+        .img-annuncio {
+            height: 220px;
+            object-fit: cover;
+            width: 100%;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            transition: transform 0.5s ease;
+        }
+        .card-annuncio:hover .img-annuncio {
+            transform: scale(1.05);
+        }
+        .card-body {
+            padding: 1.5rem !important;
+        }
+        .card-title {
+            color: #ffffff !important;
+            font-weight: bold;
+        }
+        .card-annuncio .text-secondary,
+        .card-annuncio p {
+            color: #e9ecef !important;
+        }
+        .card-annuncio .text-danger {
+            color: #ff4d4d !important;
+        }
+
+        /* Bottone salva (identico a mostra_annunci) */
+        .btn-salva {
+            border-radius: 50%;
+            background-color: rgba(67, 64, 64, 0.8);
+            backdrop-filter: blur(5px);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-salva:hover {
+            background-color: #dc3545;
+            transform: scale(1.1);
+        }
+
+        /* Bottone elimina (stessa forma, icona diversa) */
+        .btn-elimina-card {
+            border-radius: 50%;
+            background-color: rgba(67, 64, 64, 0.8);
+            backdrop-filter: blur(5px);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-elimina-card:hover {
+            background-color: #dc3545;
+            transform: scale(1.1);
+        }
+
+        /* ============================================================
+           HEADER PROFILO — senza gradiente e senza stat boxes
+        ============================================================ */
+        .profilo-header {
+            background-color: #000;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+        }
+        .avatar-wrapper img {
+            width: 110px;
+            height: 110px;
+            object-fit: cover;
+            border: 3px solid #dc3545;
+        }
+
+        /* ============================================================
+           SEZIONI
+        ============================================================ */
+        .sezione-titolo {
+            border-bottom: 1px solid #333;
+            padding-bottom: 0.6rem;
+            margin-bottom: 1.5rem;
+        }
+        .sezione-titolo h4 {
+            font-size: 0.95rem;
+            letter-spacing: 0.08em;
+            margin: 0;
+        }
+
+        .panel-impostazioni {
+            background-color: #000;
+            border: 1px solid #333;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.25rem;
+        }
+        .panel-impostazioni h6 {
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+
+        #formInfoPersonali .form-control:focus,
+        #formPassword .form-control:focus {
+            border-color: #dc3545;
+            background-color: rgba(255, 255, 255, 0.05) !important;
+            box-shadow: none !important;
+        }
+        .form-control::placeholder {
+            color: white;
+            opacity: 0.35;
+        }
+
+        .stato-vuoto {
+            background-color: #000;
+            border: 1px dashed rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+        }
+
+        .sidebar-profilo .list-group-item {
+            background-color: transparent !important;
+            color: #e9ecef !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+            transition: all 0.3s ease;
+        }
+
+        /* Effetto hover per le voci NON attive */
+        .sidebar-profilo .list-group-item:hover:not(.active) {
+            background-color: rgba(255, 17, 0, 0.1) !important;
+            color: rgb(255, 17, 0) !important;
+            padding-left: 1.5rem; /* Piccolo effetto di scorrimento al passaggio del mouse */
+        }
+
+        /* Stile per la voce ATTIVA (Scroll-spy) */
+        .sidebar-profilo .list-group-item.active {
+            background-color: rgb(255, 17, 0) !important;
+            border-color: rgb(255, 17, 0) !important;
+            color: #ffffff !important;
+        }
+
+
+
+    </style>
 </head>
 
-<body data-bs-spy="scroll" data-bs-target="#scroll-spy-nav" data-bs-offset="120" class="bg-black text-white">
+<body data-bs-spy="scroll" data-bs-target="#scroll-spy-nav" data-bs-offset="120" class="text-white font-monospace">
 
     <script>
         if (localStorage.getItem('temaSelezionato') === 'light') {
@@ -19,165 +186,553 @@
         }
     </script>
 
-    <header>
-        <nav id="scroll-spy-nav" class="navbar sticky-top bg-black border-bottom border-secondary px-4 py-2 shadow">
+    <header class="mb-5 sticky-top">
+        <nav class="navbar bg-black border-bottom border-secondary p-3 shadow">
             <div class="container d-flex justify-content-between align-items-center">
-                <a class="navbar-brand font-monospace text-danger fw-bold text-uppercase d-none d-md-block" href="home.html">
+
+                <a class="text-white text-decoration-none d-flex align-items-center gap-2 font-monospace" href="home.html">
+                    <i class="bi bi-arrow-left fs-5"></i>
+                    <span class="d-none d-sm-inline small text-uppercase fw-bold">Torna al negozio</span>
+                </a>
+
+                <a href="home.html" class="navbar-brand font-monospace text-uppercase d-flex align-items-center">
+                    <img src="Arcade_png-removebg-preview.png" alt="Logo Arcade" style="height: 40px; width: auto; margin-right: 8px;">
                     RetroShop
+                </a>
+
+                <a href="crea_annuncio.html"
+                   class="btn bottone_login font-monospace text-uppercase rounded-1 d-flex align-items-center gap-2 py-1 px-3">
+                    <i class="bi bi-plus-circle fs-6"></i>
+                    <span class="d-none d-sm-inline">Crea Annuncio</span>
+                </a>
+
             </div>
         </nav>
     </header>
 
-    <main class="container mt-5 font-monospace">
-        <div class="row justify-content-center">
-            <div class="col-lg-10">
+    <main class="container mb-5">
+        <div class="row g-4">
 
-                <section id="sezioneProfilo" class="py-5 mb-5 border-bottom border-secondary">
-                    <div class="d-flex align-items-center gap-4 mb-5 p-4 bg-black border border-secondary rounded-2 shadow-sm">
-                        <div class="position-relative">
-                            <img src="https://dummyimage.com/150x150/1a1a1a/dc3545.png&text=User" 
-                                 alt="Foto Profilo" 
-                                 id="foto_profilo_utente" 
-                                 class="rounded-circle border border-3 border-danger img-profilo-cerchio">
-                        </div>
-                        
-                        <div>
-                            <h2 class="fw-bold mb-1 text-uppercase" id="nome_utente_profilo">Alessandro Bogdan</h2>
-                            <p class="text-secondary mb-0 small font-monospace">
-                                Iscritto dal: <span class="text-white">12 Aprile 2024</span>
-                            </p>
-                        </div>
+            <!-- SIDEBAR -->
+            <div class="col-lg-3 d-none d-lg-block">
+                <div class="sidebar-profilo sticky-top bg-black" style="top: 100px;">
+                    <div class="list-group list-group-flush" id="scroll-spy-nav">
+                        <a href="#sezioneProfilo" class="list-group-item list-group-item-action active fw-bold text-uppercase py-3">
+                            <i class="bi bi-person-fill me-2"></i> Il mio profilo
+                        </a>
+                        <a href="#sezioneMieiAnnunci" class="list-group-item list-group-item-action fw-bold text-uppercase py-3">
+                            <i class="bi bi-tags-fill me-2"></i> I miei annunci
+                        </a>
+                        <a href="#sezionePreferiti" class="list-group-item list-group-item-action fw-bold text-uppercase py-3">
+                            <i class="bi bi-floppy-fill me-2"></i> Annunci salvati
+                        </a>
+                        <a href="#sezioneImpostazioni" class="list-group-item list-group-item-action fw-bold text-uppercase py-3">
+                            <i class="bi bi-gear-fill me-2"></i> Impostazioni
+                        </a>
                     </div>
+                </div>
+            </div>
 
-                    <div class="border-bottom border-secondary pb-2 mb-4">
-                        <h4 class="fw-bold m-0">I MIEI ANNUNCI <span class="text-danger">(2)</span></h4>
-                    </div>
+            <div class="col-lg-9">
 
-                    <div class="row g-4">
-                        <div class="col-md-6 col-xl-4">
-                            <div class="card bg-black border-secondary h-100 text-white">
-                                <div class="bg-secondary" style="height: 160px; opacity: 0.3;"></div>
-                                <div class="card-body py-2">
-                                    <h6 class="card-title fw-bold text-truncate mb-1">Nintendo 64 + Mario</h6>
-                                    <p class="card-text text-danger fw-bold m-0 small">€ 120,00</p>
-                                </div>
-                                <div class="card-footer border-secondary bg-transparent d-flex justify-content-between p-2">
-                                    <button class="btn btn-sm btn-outline-light py-0 px-2"><i class="bi bi-pencil small"></i></button>
-                                    <button class="btn btn-sm btn-outline-danger py-0 px-2"><i class="bi bi-trash small"></i></button>
-                                </div>
+                <section id="sezioneProfilo" class="pb-5 mb-5 border-bottom border-secondary">
+                    <div class="profilo-header p-4 mb-4 shadow">
+                        <div class="d-flex align-items-center gap-4 flex-wrap">
+
+                            <div class="avatar-wrapper">
+                                <img src="https://dummyimage.com/150x150/1a1a1a/dc3545.png&text=..."
+                                     id="foto_profilo_utente"
+                                     alt="Foto Profilo"
+                                     class="rounded-circle shadow">
                             </div>
+
+                            <div>
+                                <h2 class="fw-bold mb-1 text-uppercase text-white" id="nome_utente_profilo">
+                                    <span class="spinner-border spinner-border-sm text-danger me-2" role="status"></span>
+                                    Caricamento...
+                                </h2>
+                                <p class="text-secondary mb-1 small">
+                                    <i class="bi bi-at me-1"></i>
+                                    <span id="nickname_utente_profilo" class="text-white">—</span>
+                                </p>
+                                <p class="text-secondary mb-1 small">
+                                    <i class="bi bi-geo-alt me-1"></i>
+                                    <span id="citta_utente_profilo">—</span>
+                                </p>
+                            </div>
+
                         </div>
                     </div>
+                </section>
+
+                <section id="sezioneMieiAnnunci" class="pb-5 mb-5 border-bottom border-secondary">
+
+                    <div class="sezione-titolo d-flex justify-content-between align-items-center">
+                        <h4 class="fw-bold text-uppercase">
+                            <i class="bi bi-tags-fill text-danger me-2"></i>
+                            I miei annunci
+                            <span class="text-danger" id="contatore-miei-annunci"></span>
+                        </h4>
+                    </div>
+
+                    <div class="row g-4" id="contenitore-miei-annunci">
+                        <div class="col-12 text-center py-4" id="spinner-miei-annunci">
+                            <div class="spinner-border text-danger" role="status"></div>
+                            <p class="mt-2 small text-secondary">Caricamento annunci...</p>
+                        </div>
+                    </div>
+
                 </section>
 
                 <section id="sezionePreferiti" class="py-5 mb-5 border-bottom border-secondary">
-                    <h4 class="fw-bold mb-4 text-uppercase">
-                        <i class="bi bi-floppy-fill text-danger me-2"></i> Annunci Salvati
-                    </h4>
-                    
-                    <div class="row g-4">
-                        <div class="col-12">
-                            <div class="card bg-black border-secondary border-dashed">
-                                <div class="card-body d-flex flex-column justify-content-center align-items-center py-5 text-secondary">
-                                    <i class="bi bi-floppy fs-1 mb-3 opacity-25"></i>
-                                    <p class="small text-uppercase tracking-widest">Nessun annuncio salvato nei preferiti</p>
-                                    <a href="home.html" class="btn btn-sm btn-outline-danger mt-2">Esplora Negozio</a>
-                                </div>
-                            </div>
+
+                    <div class="sezione-titolo">
+                        <h4 class="fw-bold text-uppercase">
+                            <i class="bi bi-floppy-fill text-danger me-2"></i>
+                            Annunci Salvati
+                        </h4>
+                    </div>
+
+                    <div class="stato-vuoto">
+                        <div class="d-flex flex-column justify-content-center align-items-center py-5 text-secondary">
+                            <i class="bi bi-floppy fs-1 mb-3 opacity-50 text-danger"></i>
+                            <p class="small text-uppercase mb-3">Nessun annuncio salvato nei preferiti</p>
+                            <a href="home.html" class="btn bottone_login rounded-1 text-uppercase fw-bold px-4">Esplora Negozio</a>
                         </div>
                     </div>
+
                 </section>
 
                 <section id="sezioneImpostazioni" class="py-5">
-                    <h4 class="fw-bold mb-4 text-uppercase">
-                        <i class="bi bi-gear-fill text-danger me-2"></i> Impostazioni Account
-                    </h4>
 
-                    <div class="bg-black border border-secondary rounded-2 p-4 mb-4 shadow-sm">
-                        <h6 class="text-secondary fw-bold mb-3 small">TEMA DELL'INTERFACCIA</h6>
-                        <div class="btn-group w-100" role="group" aria-label="Cambio Tema">
+                    <div class="sezione-titolo">
+                        <h4 class="fw-bold text-uppercase">
+                            <i class="bi bi-gear-fill text-danger me-2"></i>
+                            Impostazioni Account
+                        </h4>
+                    </div>
+
+                    <div class="panel-impostazioni">
+                        <h6 class="fw-bold text-uppercase">Tema dell'interfaccia</h6>
+                        <div class="btn-group w-100 shadow-sm" role="group">
                             <input type="radio" class="btn-check" name="sceltaTema" id="temaScuro" value="dark" checked>
-                            <label class="btn btn-outline-danger text-uppercase fw-bold py-2" for="temaScuro">Retro Dark</label>
-                            
+                            <label class="btn btn-outline-danger text-uppercase fw-bold py-2 rounded-start-1" for="temaScuro">
+                                <i class="bi bi-moon-stars-fill me-2"></i>Retro Dark
+                            </label>
                             <input type="radio" class="btn-check" name="sceltaTema" id="temaChiaro" value="light">
-                            <label class="btn btn-outline-danger text-uppercase fw-bold py-2" for="temaChiaro">Modern Blue</label>
+                            <label class="btn btn-outline-danger text-uppercase fw-bold py-2 rounded-end-1" for="temaChiaro">
+                                <i class="bi bi-sun-fill me-2"></i>Modern Wii
+                            </label>
                         </div>
                     </div>
 
-                    <div class="bg-black border border-secondary rounded-2 p-4 mb-4">
-                        <h6 class="text-secondary fw-bold mb-3 small">PREFERENZE ACCOUNT</h6>
-                        <div class="row g-4">
+                    <!--
+                    <div class="panel-impostazioni">
+                        <h6 class="fw-bold text-uppercase">Preferenze Account</h6>
+                        <div class="row g-3">
                             <div class="col-md-6">
                                 <div class="form-check form-switch mb-3">
-                                    <input class="form-check-input" type="checkbox" id="notifEmail" checked>
-                                    <label class="form-check-label small text-secondary" for="notifEmail">Email per nuovi messaggi</label>
+                                    <input class="form-check-input border-secondary" type="checkbox" id="notifEmail" checked>
+                                    <label class="form-check-label small text-white" for="notifEmail">Email per nuovi messaggi</label>
                                 </div>
                                 <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" id="notifPrezzi">
-                                    <label class="form-check-label small text-secondary" for="notifPrezzi">Notifiche calo prezzi preferiti</label>
+                                    <input class="form-check-input border-secondary" type="checkbox" id="notifPrezzi">
+                                    <label class="form-check-label small text-white" for="notifPrezzi">Notifiche calo prezzi preferiti</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-check mb-3">
-                                    <input class="form-check-input" type="checkbox" id="mostraCitta">
-                                    <label class="form-check-label small text-secondary" for="mostraCitta">Mostra la mia città negli annunci</label>
+                                    <input class="form-check-input border-secondary" type="checkbox" id="mostraCitta">
+                                    <label class="form-check-label small text-white" for="mostraCitta">Mostra la mia città negli annunci</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="profiloPubblico" checked>
-                                    <label class="form-check-label small text-secondary" for="profiloPubblico">Profilo visibile ai non iscritti</label>
+                                    <input class="form-check-input border-secondary" type="checkbox" id="profiloPubblico" checked>
+                                    <label class="form-check-label small text-white" for="profiloPubblico">Profilo visibile ai non iscritti</label>
                                 </div>
                             </div>
                         </div>
                     </div>
+                -->
 
-                    <div class="bg-black border border-secondary rounded-2 p-4 mb-4">
-                        <h6 class="text-secondary fw-bold mb-3 small text-uppercase">Informazioni Personali</h6>
+                    <div class="panel-impostazioni">
+                        <h6 class="fw-bold text-uppercase">Informazioni Personali</h6>
                         <form id="formInfoPersonali">
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <input type="text" class="form-control bg-transparent text-white border-secondary small" placeholder="Nome">
+                                    <label class="form-label small text-secondary mb-1">Nome</label>
+                                    <input type="text" id="input-nome" class="form-control bg-transparent text-white border-secondary rounded-1" placeholder="Nome">
                                 </div>
                                 <div class="col-md-6">
-                                    <input type="text" class="form-control bg-transparent text-white border-secondary small" placeholder="Cognome">
+                                    <label class="form-label small text-secondary mb-1">Cognome</label>
+                                    <input type="text" id="input-cognome" class="form-control bg-transparent text-white border-secondary rounded-1" placeholder="Cognome">
                                 </div>
-                                <div class="col-12 mt-3 text-end">
-                                    <button type="submit" class="btn btn-outline-light btn-sm text-uppercase fw-bold px-4">Salva modifiche</button>
+                                <div class="col-md-6">
+                                    <label class="form-label small text-secondary mb-1">Email</label>
+                                    <input type="email" id="input-mail" class="form-control bg-transparent text-white border-secondary rounded-1" placeholder="email@esempio.com">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small text-secondary mb-1">Città</label>
+                                    <input type="text" id="input-citta" class="form-control bg-transparent text-white border-secondary rounded-1" placeholder="Città">
+                                </div>
+                                <div class="col-12 mt-2 text-end">
+                                    <button type="submit" class="btn bottone_login rounded-1 text-uppercase fw-bold px-4">Salva modifiche</button>
                                 </div>
                             </div>
                         </form>
                     </div>
 
-                    <div class="bg-black border border-secondary rounded-2 p-4">
-                        <h6 class="text-secondary fw-bold mb-3 small text-uppercase">Sicurezza</h6>
+                    <div class="panel-impostazioni">
+                        <h6 class="fw-bold text-uppercase">Sicurezza Password</h6>
                         <form id="formPassword">
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <input type="password" class="form-control bg-transparent text-white border-secondary small" placeholder="Nuova Password">
+                                    <label class="form-label small text-secondary mb-1">Nuova Password</label>
+                                    <input type="password" class="form-control bg-transparent text-white border-secondary rounded-1" placeholder="********">
                                 </div>
                                 <div class="col-md-6">
-                                    <input type="password" class="form-control bg-transparent text-white border-secondary small" placeholder="Conferma Password">
+                                    <label class="form-label small text-secondary mb-1">Conferma Password</label>
+                                    <input type="password" class="form-control bg-transparent text-white border-secondary rounded-1" placeholder="********">
                                 </div>
-                                <div class="col-12 mt-3 text-end">
-                                    <button type="submit" class="btn btn-outline-danger btn-sm text-uppercase fw-bold px-4">Aggiorna Password</button>
+                                <div class="col-12 mt-2 text-end">
+                                    <button type="submit" class="btn bottone_login rounded-1 text-uppercase fw-bold px-4">Aggiorna Password</button>
                                 </div>
                             </div>
                         </form>
                     </div>
 
-                    <div class="mt-5 pt-4 border-top border-secondary opacity-50">
-                        <button class="btn btn-sm btn-dark border-secondary text-secondary text-uppercase small">Disabilita Account</button>
+                    <div class="mt-4 pt-4 border-top border-secondary d-flex justify-content-between align-items-center opacity-75">
+                        <span class="small text-secondary">Zona pericolosa</span>
+                        <button class="btn btn-sm btn-outline-secondary text-uppercase fw-bold px-3 rounded-1">
+                            <i class="bi bi-person-x me-1"></i>Disabilita Account
+                        </button>
                     </div>
 
                 </section>
-            </div>
-        </div>
+
+            </div><!-- /col-lg-9 -->
+        </div><!-- /row -->
     </main>
 
-    <footer class="py-5 text-center text-secondary font-monospace small">
-        &copy;2026 (by Alessandro Bogdan & Luca Montefusco) Tutti i diritti riservati.
+
+    <footer class="bg-black text-white border-top border-secondary mt-auto py-2">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <h5 class="font-monospace text-uppercase">RetroShop</h5>
+                    <p class="small text-secondary mb-0">&copy;2026 (by Alessandro Bogdan &amp; Luca Montefusco) Tutti i diritti riservati.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end mt-3 mt-md-0">
+                    <a href="https://youtu.be/QDia3e12czc?si=flfCdFpj-f2wJr3u" class="text-secondary me-3"><i class="bi bi-youtube fs-5"></i></a>
+                    <a href="#" class="text-secondary me-3"><i class="bi bi-instagram fs-5"></i></a>
+                    <a href="#" class="text-secondary"><i class="bi bi-envelope-fill fs-5"></i></a>
+                </div>
+            </div>
+        </div>
     </footer>
 
     <script src="bootstrap.bundle.min.js"></script>
-    <script src="profilo.js"></script>
+
+    <script>
+
+    const BASE_URL = "http://127.0.0.1:8000";
+
+    /** fetch con cookie di sessione sempre inclusi */
+    function fetchAuth(url, options = {}) {
+        options.credentials = "include";
+        return fetch(url, options);
+    }
+
+    function formattaData(isoString) {
+        if (!isoString) return "—";
+        return new Date(isoString).toLocaleDateString("it-IT", {
+            day: "2-digit", month: "long", year: "numeric"
+        });
+    }
+
+    function formattaDataBreve(isoString) {
+        if (!isoString) return "—";
+        return new Date(isoString).toLocaleDateString("it-IT", {
+            day: "2-digit", month: "short", year: "numeric"
+        });
+    }
+
+
+    function popolaProfilo(utente) {
+        // Nome e cognome nell'header
+        document.getElementById("nome_utente_profilo").textContent =
+            `${utente.nome} ${utente.cognome}`;
+
+        document.getElementById("nickname_utente_profilo").textContent =
+            utente.nickname;
+
+        // Città (con provincia se presente)
+        const cittaEl = document.getElementById("citta_utente_profilo");
+        if (utente.citta) {
+            cittaEl.textContent = utente.provincia
+                ? `${utente.citta} (${utente.provincia})`
+                : utente.citta;
+        } else {
+            cittaEl.textContent = "—";
+        }
+
+        // Foto profilo
+        const imgEl = document.getElementById("foto_profilo_utente");
+        if (utente.foto_profilo) {
+            imgEl.src = `${BASE_URL}${utente.foto_profilo}`;
+        } else {
+            const iniziali = encodeURIComponent(
+                (utente.nome?.[0] ?? "?") + (utente.cognome?.[0] ?? "")
+            );
+            imgEl.src =
+                `https://dummyimage.com/150x150/1a1a1a/dc3545.png&text=${iniziali}`;
+        }
+
+        // Pre-compila i campi del form impostazioni
+        const set = (id, val) => {
+            const el = document.getElementById(id);
+            if (el) el.value = val ?? "";
+        };
+        set("input-nome",    utente.nome);
+        set("input-cognome", utente.cognome);
+        set("input-mail",    utente.mail);
+        set("input-citta",   utente.citta);
+    }
+
+
+    function creaCardAnnuncio(annuncio, mostraElimina = false) {
+        const immagineUrl = annuncio.immagini?.length > 0
+            ? `${BASE_URL}${annuncio.immagini[0].url_immagine}`
+            : "https://placehold.co/600x400/1a1a1a/FFF?text=No+Foto";
+
+        const dataPub = formattaDataBreve(annuncio.data_pubblicazione);
+        const id      = annuncio.idAnnuncio;
+        const nome    = annuncio.nome.replace(/'/g, "\\'");
+
+        // Bottone azione in alto a destra
+        const btnAzione = mostraElimina
+            ? `<button class="btn btn-elimina-card position-absolute top-0 end-0 m-2 rounded-circle border-secondary d-flex align-items-center justify-content-center p-0"
+                        style="width:40px;height:40px;z-index:10;"
+                        onclick="event.preventDefault(); confermaElimina(this, ${id}, '${nome}')">
+                   <i class="bi bi-trash text-danger fs-5"></i>
+               </button>`
+            : `<button class="btn btn-salva position-absolute top-0 end-0 m-2 rounded-circle border-secondary d-flex align-items-center justify-content-center p-0"
+                        style="width:40px;height:40px;z-index:10;"
+                        onclick="toggleSalva(this)">
+                   <i class="bi bi-floppy text-danger fs-5 icona-vuota"></i>
+                   <i class="bi bi-floppy-fill text-danger fs-5 icona-piena d-none"></i>
+               </button>`;
+
+        const col = document.createElement("div");
+        col.className = "col-12 col-md-6 col-xl-4";
+        col.innerHTML = `
+            <div class="card card-annuncio bg-black border-secondary h-100 text-white shadow overflow-hidden">
+
+                <div class="position-relative">
+                    <a href="pagina_annuncio.html?id=${id}">
+                        <img src="${immagineUrl}"
+                             class="card-img-top img-annuncio"
+                             alt="${annuncio.nome}">
+                    </a>
+                    ${btnAzione}
+                </div>
+
+                <div class="card-body d-flex flex-column p-3">
+                    <a href="pagina_annuncio.html?id=${id}" class="text-decoration-none">
+                        <h5 class="card-title font-monospace text-uppercase mb-1 fs-6 fw-bold text-white">
+                            ${annuncio.nome}
+                        </h5>
+                    </a>
+                    <p class="text-secondary small font-monospace mb-2">
+                        Condizioni: ${annuncio.condizione.replace(/_/g, " ")}
+                    </p>
+                    <h4 class="text-danger fw-bold font-monospace mb-3 mt-auto">
+                        € ${annuncio.prezzo.toFixed(2)}
+                    </h4>
+                    <div class="d-flex justify-content-between align-items-center font-monospace small text-secondary">
+                        <span><i class="bi bi-geo-alt"></i> ${annuncio.posizione}</span>
+                        <span>${dataPub}</span>
+                    </div>
+                </div>
+
+            </div>`;
+
+        return col;
+    }
+
+    /* ================================================================
+       CARICAMENTO ANNUNCI UTENTE
+       (Il backend non ha ancora un filtro per utente nell'endpoint
+        /annunci/ricerca/, quindi filtriamo lato client)
+    ================================================================ */
+    async function caricaMieiAnnunci(nickname) {
+        const contenitore = document.getElementById("contenitore-miei-annunci");
+        const spinner     = document.getElementById("spinner-miei-annunci");
+        const contatore   = document.getElementById("contatore-miei-annunci");
+
+        try {
+            const risposta = await fetchAuth(`${BASE_URL}/annunci/ricerca/`);
+            if (!risposta.ok) throw new Error("Errore API annunci");
+
+            const tuttiAnnunci = await risposta.json();
+            const mieiAnnunci  = tuttiAnnunci.filter(a => a.utente === nickname);
+
+            if (spinner) spinner.remove();
+            if (contatore) contatore.textContent = `(${mieiAnnunci.length})`;
+
+            if (mieiAnnunci.length === 0) {
+                contenitore.innerHTML = `
+                    <div class="col-12">
+                        <div class="stato-vuoto">
+                            <div class="d-flex flex-column justify-content-center align-items-center py-5 text-secondary">
+                                <i class="bi bi-tags fs-1 mb-3 opacity-50 text-danger"></i>
+                                <p class="small text-uppercase mb-3">Non hai ancora pubblicato nessun annuncio</p>
+                                <a href="crea_annuncio.html" class="btn bottone_login rounded-1 text-uppercase fw-bold px-4">
+                                    <i class="bi bi-plus-lg me-1"></i> Crea il tuo primo annuncio
+                                </a>
+                            </div>
+                        </div>
+                    </div>`;
+                return;
+            }
+
+            mieiAnnunci.forEach(annuncio => {
+                contenitore.appendChild(creaCardAnnuncio(annuncio, true));
+            });
+
+        } catch (err) {
+            if (spinner) spinner.remove();
+            contenitore.innerHTML = `
+                <div class="col-12">
+                    <p class="text-danger text-center font-monospace small">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        Errore di connessione al server.
+                    </p>
+                </div>`;
+            console.error("Errore caricamento annunci:", err);
+        }
+    }
+
+    /* ================================================================
+       ELIMINA ANNUNCIO (con animazione)
+    ================================================================ */
+    function confermaElimina(btn, idAnnuncio, nomeAnnuncio) {
+        if (!confirm(`Sei sicuro di voler eliminare "${nomeAnnuncio}"?`)) return;
+
+        // TODO: aggiungere endpoint DELETE /annunci/{id} al backend
+        // fetchAuth(`${BASE_URL}/annunci/${idAnnuncio}`, { method: "DELETE" });
+
+        const col = btn.closest("[class^='col']");
+        col.style.transition = "opacity 0.4s ease, transform 0.4s ease";
+        col.style.opacity    = "0";
+        col.style.transform  = "scale(0.9)";
+
+        setTimeout(() => {
+            col.remove();
+            const rimaste   = document.querySelectorAll("#contenitore-miei-annunci .card-annuncio").length;
+            const cntEl     = document.getElementById("contatore-miei-annunci");
+            if (cntEl) cntEl.textContent = `(${rimaste})`;
+        }, 400);
+    }
+
+    /* ================================================================
+       TOGGLE SALVA (floppy) — come in mostra_annunci
+    ================================================================ */
+    function toggleSalva(button) {
+        const vuota  = button.querySelector(".icona-vuota");
+        const piena  = button.querySelector(".icona-piena");
+        if (vuota && piena) {
+            vuota.classList.toggle("d-none");
+            piena.classList.toggle("d-none");
+        }
+    }
+
+    /* ================================================================
+       INIT — verifica sessione, poi carica tutto
+    ================================================================ */
+    document.addEventListener("DOMContentLoaded", async function () {
+
+        // ── 1. Controlla sessione ────────────────────────────────────
+        try {
+            const rispSessione = await fetchAuth(`${BASE_URL}/utente/me`);
+
+            if (!rispSessione.ok) {
+                // Non loggato → rimanda alla home
+                window.location.href = "home.html";
+                return;
+            }
+
+            const sessione = await rispSessione.json();
+            const nickname = sessione.nickname;
+
+            // ── 2. Carica dati profilo ───────────────────────────────
+            try {
+                const rispUtente = await fetchAuth(`${BASE_URL}/utenti/${nickname}`);
+                if (rispUtente.ok) {
+                    const utente = await rispUtente.json();
+                    popolaProfilo(utente);
+                } else {
+                    throw new Error("Utente non trovato");
+                }
+            } catch (e) {
+                // Fallback: mostra almeno il nickname
+                document.getElementById("nome_utente_profilo").textContent = nickname;
+                document.getElementById("nickname_utente_profilo").textContent = nickname;
+                console.error("Errore caricamento profilo:", e);
+            }
+
+            // ── 3. Carica gli annunci dell'utente ────────────────────
+            await caricaMieiAnnunci(nickname);
+
+        } catch (err) {
+            // Server non raggiungibile
+            document.getElementById("nome_utente_profilo").textContent =
+                "Server non raggiungibile";
+            const spinner = document.getElementById("spinner-miei-annunci");
+            if (spinner) spinner.innerHTML = `
+                <p class="text-danger font-monospace small">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    Impossibile contattare il server.
+                </p>`;
+            console.error("Errore di rete:", err);
+        }
+
+        // ── CAMBIO TEMA ──────────────────────────────────────────────
+        const radioScuro  = document.getElementById("temaScuro");
+        const radioChiaro = document.getElementById("temaChiaro");
+
+        function applicaTema(tema) {
+            if (tema === "light") {
+                document.body.classList.add("tema-chiaro");
+                localStorage.setItem("temaSelezionato", "light");
+            } else {
+                document.body.classList.remove("tema-chiaro");
+                localStorage.setItem("temaSelezionato", "dark");
+            }
+        }
+
+        if (radioScuro && radioChiaro) {
+            radioScuro.addEventListener("change",  () => applicaTema("dark"));
+            radioChiaro.addEventListener("change", () => applicaTema("light"));
+            if (localStorage.getItem("temaSelezionato") === "light") {
+                radioChiaro.checked = true;
+            }
+        }
+
+        // ── SUBMIT FORM ──────────────────────────────────────────────
+        document.getElementById("formInfoPersonali")?.addEventListener("submit", e => {
+            e.preventDefault();
+            // TODO: fetch PUT /utenti/{nickname} per aggiornare i dati
+            console.log("Info personali aggiornate");
+        });
+
+        document.getElementById("formPassword")?.addEventListener("submit", e => {
+            e.preventDefault();
+            // TODO: fetch PUT /utenti/{nickname}/password
+            console.log("Password aggiornata");
+        });
+
+    });
+    </script>
+
 </body>
 </html>
