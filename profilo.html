@@ -1,162 +1,183 @@
 <!DOCTYPE html>
 <html lang="it">
-<body>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="bootstrap.css">
     <link rel="stylesheet" href="barra_superiore.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">    <link rel="stylesheet" href="oggetti_home.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="oggetti_home.css">
+    <title>Area Personale - RetroShop</title>
 
-    <title>RetroShop</title>
 </head>
 
-<div class="container mt-5 pt-4 font-monospace text-white">
-    <div class="row g-4">
-        
-        <div class="col-lg-3">
-            <div class="list-group sidebar-profilo shadow-sm">
+<body data-bs-spy="scroll" data-bs-target="#scroll-spy-nav" data-bs-offset="120" class="bg-black text-white">
 
-                <a href="#" id="btnMenuProfilo" class="list-group-item list-group-item-action active py-3">
-                    <i class="bi bi-person-badge fs-5 me-2 align-middle"></i> Il mio profilo
-                </a>
+    <script>
+        if (localStorage.getItem('temaSelezionato') === 'light') {
+            document.body.classList.add('tema-chiaro');
+        }
+    </script>
 
-                <a href="#" id="btnMenuImpostazioni" class="list-group-item list-group-item-action py-3">
-                    <i class="bi bi-gear fs-5 me-2 align-middle"></i> Impostazioni
-                </a>
-                
-                <a href="#" class="list-group-item list-group-item-action py-3">
-                    <i class="bi bi-box-seam fs-5 me-2 align-middle"></i> Vecchi ordini
-                </a>
-                
-                <a href="#" class="list-group-item list-group-item-action py-3">
-                    <i class="bi bi-floppy fs-5 me-2 align-middle"></i> Preferiti
-                </a>
-                
+    <header>
+        <nav id="scroll-spy-nav" class="navbar sticky-top bg-black border-bottom border-secondary px-4 py-2 shadow">
+            <div class="container d-flex justify-content-between align-items-center">
+                <a class="navbar-brand font-monospace text-danger fw-bold text-uppercase d-none d-md-block" href="home.html">
+                    RetroShop
             </div>
-        </div>
+        </nav>
+    </header>
 
-        <div class="col-lg-9">
-            <div class="col-lg-9 position-relative">
+    <main class="container mt-5 font-monospace">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
 
-            <div id="sezioneProfilo">
-                </div>
+                <section id="sezioneProfilo" class="py-5 mb-5 border-bottom border-secondary">
+                    <div class="d-flex align-items-center gap-4 mb-5 p-4 bg-black border border-secondary rounded-2 shadow-sm">
+                        <div class="position-relative">
+                            <img src="https://dummyimage.com/150x150/1a1a1a/dc3545.png&text=User" 
+                                 alt="Foto Profilo" 
+                                 id="foto_profilo_utente" 
+                                 class="rounded-circle border border-3 border-danger img-profilo-cerchio">
+                        </div>
+                        
+                        <div>
+                            <h2 class="fw-bold mb-1 text-uppercase" id="nome_utente_profilo">Alessandro Bogdan</h2>
+                            <p class="text-secondary mb-0 small font-monospace">
+                                Iscritto dal: <span class="text-white">12 Aprile 2024</span>
+                            </p>
+                        </div>
+                    </div>
 
-                <div id="sezioneImpostazioni" class="d-none">
                     <div class="border-bottom border-secondary pb-2 mb-4">
-                        <h3 class="fw-bold m-0 text-uppercase"><i class="bi bi-gear"></i> Impostazioni</h3>
+                        <h4 class="fw-bold m-0">I MIEI ANNUNCI <span class="text-danger">(2)</span></h4>
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col-md-6 col-xl-4">
+                            <div class="card bg-black border-secondary h-100 text-white">
+                                <div class="bg-secondary" style="height: 160px; opacity: 0.3;"></div>
+                                <div class="card-body py-2">
+                                    <h6 class="card-title fw-bold text-truncate mb-1">Nintendo 64 + Mario</h6>
+                                    <p class="card-text text-danger fw-bold m-0 small">€ 120,00</p>
+                                </div>
+                                <div class="card-footer border-secondary bg-transparent d-flex justify-content-between p-2">
+                                    <button class="btn btn-sm btn-outline-light py-0 px-2"><i class="bi bi-pencil small"></i></button>
+                                    <button class="btn btn-sm btn-outline-danger py-0 px-2"><i class="bi bi-trash small"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="sezionePreferiti" class="py-5 mb-5 border-bottom border-secondary">
+                    <h4 class="fw-bold mb-4 text-uppercase">
+                        <i class="bi bi-floppy-fill text-danger me-2"></i> Annunci Salvati
+                    </h4>
+                    
+                    <div class="row g-4">
+                        <div class="col-12">
+                            <div class="card bg-black border-secondary border-dashed">
+                                <div class="card-body d-flex flex-column justify-content-center align-items-center py-5 text-secondary">
+                                    <i class="bi bi-floppy fs-1 mb-3 opacity-25"></i>
+                                    <p class="small text-uppercase tracking-widest">Nessun annuncio salvato nei preferiti</p>
+                                    <a href="home.html" class="btn btn-sm btn-outline-danger mt-2">Esplora Negozio</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="sezioneImpostazioni" class="py-5">
+                    <h4 class="fw-bold mb-4 text-uppercase">
+                        <i class="bi bi-gear-fill text-danger me-2"></i> Impostazioni Account
+                    </h4>
+
+                    <div class="bg-black border border-secondary rounded-2 p-4 mb-4 shadow-sm">
+                        <h6 class="text-secondary fw-bold mb-3 small">TEMA DELL'INTERFACCIA</h6>
+                        <div class="btn-group w-100" role="group" aria-label="Cambio Tema">
+                            <input type="radio" class="btn-check" name="sceltaTema" id="temaScuro" value="dark" checked>
+                            <label class="btn btn-outline-danger text-uppercase fw-bold py-2" for="temaScuro">Retro Dark</label>
+                            
+                            <input type="radio" class="btn-check" name="sceltaTema" id="temaChiaro" value="light">
+                            <label class="btn btn-outline-danger text-uppercase fw-bold py-2" for="temaChiaro">Modern Blue</label>
+                        </div>
                     </div>
 
                     <div class="bg-black border border-secondary rounded-2 p-4 mb-4">
-                        <h6 class="text-secondary fw-bold mb-3">TEMA DELL'INTERFACCIA</h6>
-                        <div class="d-flex gap-4">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="sceltaTema" id="temaScuro" value="dark" checked>
-                                <label class="form-check-label" for="temaScuro">Tema Scuro (Predefinito)</label>
+                        <h6 class="text-secondary fw-bold mb-3 small">PREFERENZE ACCOUNT</h6>
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="notifEmail" checked>
+                                    <label class="form-check-label small text-secondary" for="notifEmail">Email per nuovi messaggi</label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="notifPrezzi">
+                                    <label class="form-check-label small text-secondary" for="notifPrezzi">Notifiche calo prezzi preferiti</label>
+                                </div>
                             </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="sceltaTema" id="temaChiaro" value="light">
-                                <label class="form-check-label" for="temaChiaro">Tema Chiaro (Azzurro)</label>
+                            <div class="col-md-6">
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" id="mostraCitta">
+                                    <label class="form-check-label small text-secondary" for="mostraCitta">Mostra la mia città negli annunci</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="profiloPubblico" checked>
+                                    <label class="form-check-label small text-secondary" for="profiloPubblico">Profilo visibile ai non iscritti</label>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="bg-black border border-secondary rounded-2 p-4 mb-4">
-                        <h6 class="text-secondary fw-bold mb-3">INFORMAZIONI PERSONALI</h6>
+                        <h6 class="text-secondary fw-bold mb-3 small text-uppercase">Informazioni Personali</h6>
                         <form id="formInfoPersonali">
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label class="form-label small mb-1">Nome</label>
-                                    <input type="text" class="form-control bg-transparent text-white border-secondary" placeholder="Tuo Nome">
+                                    <input type="text" class="form-control bg-transparent text-white border-secondary small" placeholder="Nome">
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label small mb-1">Cognome</label>
-                                    <input type="text" class="form-control bg-transparent text-white border-secondary" placeholder="Tuo Cognome">
+                                    <input type="text" class="form-control bg-transparent text-white border-secondary small" placeholder="Cognome">
                                 </div>
-                                <div class="col-12">
-                                    <label class="form-label small mb-1">Email</label>
-                                    <input type="email" class="form-control bg-transparent text-white border-secondary" placeholder="nome@email.com">
-                                </div>
-                                <div class="col-12 mt-4 text-end">
-                                    <button type="submit" class="btn btn-outline-light btn-sm px-4">Aggiorna Info</button>
+                                <div class="col-12 mt-3 text-end">
+                                    <button type="submit" class="btn btn-outline-light btn-sm text-uppercase fw-bold px-4">Salva modifiche</button>
                                 </div>
                             </div>
                         </form>
                     </div>
 
                     <div class="bg-black border border-secondary rounded-2 p-4">
-                        <h6 class="text-secondary fw-bold mb-3">CAMBIA PASSWORD</h6>
+                        <h6 class="text-secondary fw-bold mb-3 small text-uppercase">Sicurezza</h6>
                         <form id="formPassword">
                             <div class="row g-3">
-                                <div class="col-md-4">
-                                    <input type="password" class="form-control bg-transparent text-white border-secondary" placeholder="Vecchia Password">
+                                <div class="col-md-6">
+                                    <input type="password" class="form-control bg-transparent text-white border-secondary small" placeholder="Nuova Password">
                                 </div>
-                                <div class="col-md-4">
-                                    <input type="password" class="form-control bg-transparent text-white border-secondary" placeholder="Nuova Password">
-                                </div>
-                                <div class="col-md-4">
-                                    <input type="password" class="form-control bg-transparent text-white border-secondary" placeholder="Conferma Nuova">
+                                <div class="col-md-6">
+                                    <input type="password" class="form-control bg-transparent text-white border-secondary small" placeholder="Conferma Password">
                                 </div>
                                 <div class="col-12 mt-3 text-end">
-                                    <button type="submit" class="btn btn-outline-danger btn-sm px-4">Cambia Password</button>
+                                    <button type="submit" class="btn btn-outline-danger btn-sm text-uppercase fw-bold px-4">Aggiorna Password</button>
                                 </div>
                             </div>
                         </form>
                     </div>
 
-                </div> </div>
-            <div class="d-flex align-items-center gap-4 mb-5 p-4 bg-black border border-secondary rounded-2 shadow-sm">
-                <div class="position-relative">
-                    <img src="https://dummyimage.com/150x150/1a1a1a/dc3545.png&text=User" alt="Foto Profilo" id="foto_profilo_utente" class="rounded-circle border border-3 border-danger" style="width: 120px; height: 120px; object-fit: cover; aspect-ratio: 1/1;">
-                </div>
-                
-                <div>
-                    <h2 class="fw-bold mb-1 text-uppercase">Nome Utente</h2>
-                    <p class="text-secondary mb-0 small">Iscritto dal: <span class="text-white">12 Aprile 2024</span></p>
-                </div>
-            </div>
-
-            <div class="border-bottom border-secondary pb-2 mb-4">
-                <h4 class="fw-bold m-0">I MIEI ANNUNCI <span class="text-danger">(2)</span></h4>
-            </div>
-
-            <div class="row g-4">
-                
-                <div class="col-md-6 col-xl-4">
-                    <div class="card bg-black border-secondary h-100 text-white">
-                        <div class="bg-secondary" style="height: 180px;"></div>
-                        <div class="card-body">
-                            <h6 class="card-title fw-bold text-truncate">PlayStation 5 Usata</h6>
-                            <p class="card-text text-danger fw-bold m-0">€ 450,00</p>
-                        </div>
-                        <div class="card-footer border-secondary bg-transparent d-flex justify-content-between">
-                            <button class="btn btn-sm btn-outline-light"><i class="bi bi-pencil"></i> Modifica</button>
-                            <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
-                        </div>
+                    <div class="mt-5 pt-4 border-top border-secondary opacity-50">
+                        <button class="btn btn-sm btn-dark border-secondary text-secondary text-uppercase small">Disabilita Account</button>
                     </div>
-                </div>
 
-                <div class="col-md-6 col-xl-4">
-                    <div class="card bg-black border-secondary h-100 text-white">
-                        <div class="bg-secondary" style="height: 180px;"></div>
-                        <div class="card-body">
-                            <h6 class="card-title fw-bold text-truncate">Zelda: Breath of the Wild</h6>
-                            <p class="card-text text-danger fw-bold m-0">€ 40,00</p>
-                        </div>
-                        <div class="card-footer border-secondary bg-transparent d-flex justify-content-between">
-                            <button class="btn btn-sm btn-outline-light"><i class="bi bi-pencil"></i> Modifica</button>
-                            <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
-                        </div>
-                    </div>
-                </div>
+                </section>
+            </div>
+        </div>
+    </main>
 
-            </div> </div>
-    </div>
-</div>
+    <footer class="py-5 text-center text-secondary font-monospace small">
+        &copy;2026 (by Alessandro Bogdan & Luca Montefusco) Tutti i diritti riservati.
+    </footer>
 
-<script src="bootstrap.bundle.min.js"></script>
+    <script src="bootstrap.bundle.min.js"></script>
     <script src="profilo.js"></script>
 </body>
 </html>
