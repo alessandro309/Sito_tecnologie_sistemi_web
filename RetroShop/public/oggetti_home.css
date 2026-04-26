@@ -1,0 +1,432 @@
+.search_bar{
+    background-color: rgba(0, 0, 0, 0.5);   /*nero con trasparenza al 50%*/         
+}
+
+.container.my-4 {
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+ 
+.form-control::placeholder { /*Colore dei placeholder bianchi così dato che gli sfondi sono neri o grigi*/
+    color: white;
+    opacity: 0.5;
+}
+ 
+.colore_menu{
+    background-color:rgba(0, 0, 0, 0.67)
+}
+
+.box_categoria {
+    width: 100%;
+    max-width: 1000px; 
+    height: 230px;   
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* permette l'animazione */
+}
+
+/*Ingrandimento del box del menu al passaggio del mouse*/
+.box_categoria:hover {
+    transform: scale(1.02);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8) !important;
+}
+ 
+        /*Box per le console fisse*/
+#box_fisse {
+    background-image: linear-gradient(to right, rgba(20, 20, 20, 0.95) 10%, rgba(255, 17, 0, 0.3) 30%, rgba(0, 0, 0, 0) 60%), url('Home_console.png');            
+    background-position: right center; 
+    background-size: contain; 
+    background-repeat: no-repeat;
+    background-color: #000;
+    border: 1px solid rgba(255, 17, 0, 0.2); /* Bordo leggero rosso per riprendere il tema */
+}
+
+.titolo_box {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 1), 0 0 20px rgba(255, 17, 0, 0.6); /*Effetto aura sul testo*/
+    letter-spacing: 2px;
+}
+
+/* Animazione per la freccia quando si passa sopra il box con il mouse */
+.box_categoria .scopri_di_piu i {
+    transition: transform 0.3s ease; /*fai l'animazione in 0.3 sec*/
+}
+
+.box_categoria:hover .scopri_di_piu i {
+    transform: translateX(8px); /* La freccia si sposta a destra di 8px quando passi col mouse */
+}
+
+        /*box per la console portatili, l'immagine è a sinistra)*/
+#box_portatili{
+            
+    background-image: linear-gradient(to left, rgba(20, 20, 20, 0.95) 10%, rgba(255, 17, 0, 0.3) 30%, rgba(0, 0, 0, 0) 60%), url('Portatili.png'); /*Specchiato rispetto al box fisse*/        
+    background-position: left center; /*immagine a sinistra e spostata sennò troppo appiccicata*/
+            
+    background-size: contain; 
+    background-repeat: no-repeat;
+    background-color: #000; 
+    border: 1px solid rgba(255, 17, 0, 0.2); 
+} 
+        
+        /*box per cgli accessori (identico alle fisse)*/
+#box_accessori {
+    background-image: linear-gradient(to right, rgba(20, 20, 20, 0.95) 10%, rgba(255, 17, 0, 0.3) 40%, rgba(0, 0, 0, 0) 70%), url('controller.png');            
+    background-position: right center; 
+    background-size: contain; 
+    background-repeat: no-repeat;
+    background-color: #000;
+    border: 1px solid rgba(255, 17, 0, 0.2); /* Bordo leggero rosso per riprendere il tema */
+}
+
+        /*box per i giochi*/
+#box_giochi{
+            
+    background-image: linear-gradient(to left, rgba(20, 20, 20, 0.95) 10%, rgba(255, 17, 0, 0.3) 30%, rgba(0, 0, 0, 0) 60%), url('giochi_totali.png'); /*Specchiato rispetto al box fisse*/        
+    background-position: left center; /*immagine a sinistra e spostata sennò troppo appiccicata*/
+            
+    background-size: contain; 
+    background-repeat: no-repeat;
+    background-color: #000; 
+    border: 1px solid rgba(255, 17, 0, 0.2); 
+    background-size: 100% 100%, 50%;
+} 
+
+#formRegistrazione .form-control, 
+#formRegistrazione .form-select {
+    background-color: transparent !important;
+    border: 1px solid #6c757d;
+    color: white !important;
+    box-shadow: none !important;
+}
+
+/* Effetto rosso al click SOLO nella registrazione */
+#formRegistrazione .form-control:focus, 
+#formRegistrazione .form-select:focus {
+    border-color: #dc3545;
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Colore scuro per il menu a tendina SOLO nella registrazione */
+#formRegistrazione option {
+    background-color: #000;
+    color: white;
+}
+
+/* Cambia il colore della checkbox in rosso quando viene spuntata */
+#formRegistrazione .form-check-input:checked {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+/* Cambia l'alone luminoso (focus) da blu a rosso quando ci clicchi sopra */
+#formRegistrazione .form-check-input:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+}
+
+/* Pop-up filtri home */
+/* Rende gli input trasparenti e coerenti col tema scuro solo nel pop-up filtri */
+#modalFiltri .form-control,
+#modalFiltri .form-select {
+    background-color: transparent !important;
+    border: 1px solid #6c757d; /* Grigio secondario */
+    color: white !important;
+    box-shadow: none !important;
+    border-radius: 4px; /* Un po' più squadrati retro */
+}
+
+/* Effetto rosso al focus */
+#modalFiltri .form-control:focus,
+#modalFiltri .form-select:focus {
+    border-color: #dc3545; /* Rosso preferiti */
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Colore scuro per le opzioni dei menu a tendina */
+#modalFiltri option {
+    background-color: #000;
+    color: white;
+}
+
+/* Cambia il colore della checkbox e dei radio in rosso quando vengono spuntati */
+#modalFiltri .form-check-input:checked {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+/* Cambia l'alone luminoso (focus) da blu a rosso quando ci clicchi sopra */
+#modalFiltri .form-check-input:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+}
+
+/* Prezzo stile Booking */
+.range-slider-container {
+    height: 6px;
+    background-color: #3b3b3b; /* Sfondo della barra */
+    border-radius: 5px;
+    position: relative;
+    width: 100%;
+}
+
+.slider-track {
+    height: 100%;
+    background-color: #dc3545; /* La linea rossa tra i due pallini */
+    position: absolute;
+    border-radius: 5px;
+    top: 0;
+    z-index: 1;
+}
+
+.double-slider {
+    position: absolute;
+    width: 100%;
+    height: 6px;
+    top: -2px; 
+    background: none;
+    pointer-events: none; /* Rende trasparenti i click sulla barra finta */
+    -webkit-appearance: none;
+    appearance: none;
+    z-index: 2;
+}
+
+/* Design del pallino (Thumb) per Chrome/Safari */
+.double-slider::-webkit-slider-thumb {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background-color: #000;
+    border: 3px solid #dc3545; /* Bordo rosso */
+    pointer-events: auto; /* Riattiva i click solo sul pallino */
+    -webkit-appearance: none;
+    cursor: pointer;
+}
+
+/* Design del pallino per Firefox */
+.double-slider::-moz-range-thumb {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background-color: #000;
+    border: 3px solid #dc3545;
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+/* Contatore filtri */
+#badgeFiltri {
+    background-color: #000 !important;      /* Interno nero */
+    color: #dc3545 !important;              /* Numero rosso */
+    border: 2px solid #dc3545 !important;   /* Contorno rosso di 2 pixel */
+    font-size: 0.9rem !important;           /* Più grande rispetto al default */
+    padding: 0.35em 0.65em !important;      /* Spazio interno per farlo tondo */
+    transform: translateY(2px);             /* Lo spinge in basso di 2 pixel per allinearlo */
+    font-weight: bold;
+}
+
+
+/* Mappa e mirino */
+#mappaContainer {
+    z-index: 1; /* Sta sotto il cerchio */
+}
+
+.mappa-mirino {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+    border: 2px dashed #dc3545; /* Bordo rosso tratteggiato */
+    background-color: rgba(220, 53, 69, 0.15); /* Rosso semi-trasparente */
+    border-radius: 50%;
+    z-index: 2; /* Sta sopra la mappa */
+    pointer-events: none; /* FONDAMENTALE: permette di cliccare attraverso il cerchio */
+}
+
+/* STILI SIDEBAR PROFILO UTENTE */
+.sidebar-profilo {
+    border: 1px solid #6c757d;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.sidebar-profilo .list-group-item {
+    background-color: #000;
+    color: #fff;
+    border: none;
+    border-bottom: 1px solid #333;
+    transition: all 0.2s ease-in-out;
+}
+
+.sidebar-profilo .list-group-item:last-child {
+    border-bottom: none;
+}
+
+/* Effetto al passaggio del mouse */
+.sidebar-profilo .list-group-item:hover {
+    background-color: rgba(220, 53, 69, 0.1); /* Rosso leggerissimo */
+    color: #dc3545;
+}
+
+/* Stato attivo (La pagina in cui mi trovo) */
+.sidebar-profilo .list-group-item.active {
+    background-color: #dc3545 !important;
+    color: #fff !important;
+    border-color: #dc3545 !important;
+}
+
+/* Tema della Wii */
+/* Sfondi Base e Testo */
+body.tema-chiaro {
+    background-color: #D9D9D9 !important; /* Ex #141414 */
+    color: #000000 !important;
+}
+
+body.tema-chiaro .bg-black {
+    background-color: #F8F8F8 !important; /* Ex #000000 */
+}
+
+/* Bordi generali */
+body.tema-chiaro .border-secondary {
+    border-color: #7A7A7A !important; /* Ex #6C757D */
+}
+
+/* Colori Testo */
+body.tema-chiaro .text-white, 
+body.tema-chiaro h2, body.tema-chiaro h3, body.tema-chiaro h4, body.tema-chiaro h5, body.tema-chiaro h6 {
+    color: #000000 !important; /* Invertiamo il bianco in nero */
+}
+
+body.tema-chiaro .text-secondary {
+    color: #7A7A7A !important; /* Ex #6C757D */
+}
+
+/* --- SOSTITUZIONE ACCENTI ROSSI IN AZZURRO --- */
+body.tema-chiaro .text-danger { color: #0096D6 !important; }      /* Ex #DC3545 */
+body.tema-chiaro .bg-danger { background-color: #0096D6 !important; }
+body.tema-chiaro .border-danger { border-color: #0096D6 !important; }
+body.tema-chiaro .btn-danger, body.tema-chiaro .btn-outline-danger {
+    background-color: #0096D6 !important;
+    border-color: #0096D6 !important;
+    color: #F8F8F8 !important;
+}
+body.tema-chiaro .btn-outline-danger:hover { background-color: #84C9F0 !important; }
+
+/* Controlli Form, Checkbox e Input (Trasparenze) */
+body.tema-chiaro .form-control:focus, 
+body.tema-chiaro .form-select:focus,
+body.tema-chiaro .form-check-input:focus {
+    border-color: #84C9F0 !important; /* Ex #FF1100 */
+    box-shadow: 0 0 0 0.25rem rgba(132, 201, 240, 0.25) !important; /* Ex rgba(220,53,69...) */
+}
+
+body.tema-chiaro .form-check-input:checked {
+    background-color: #0096D6 !important;
+    border-color: #0096D6 !important;
+}
+
+/* Elementi Specifici (Mappa e Sidebar) */
+body.tema-chiaro .mappa-mirino {
+    border-color: #0096D6 !important;
+    background-color: rgba(0, 150, 214, 0.15) !important; 
+}
+
+body.tema-chiaro .sidebar-profilo .list-group-item {
+    background-color: #F8F8F8 !important;
+    color: #000000 !important;
+    border-bottom-color: #BFBFBF !important; /* Ex #3B3B3B */
+}
+
+body.tema-chiaro .sidebar-profilo .list-group-item:hover {
+    background-color: rgba(0, 150, 214, 0.1) !important;
+    color: #0096D6 !important;
+}
+
+body.tema-chiaro .sidebar-profilo .list-group-item.active {
+    background-color: #0096D6 !important;
+    color: #F8F8F8 !important;
+    border-color: #0096D6 !important;
+}
+
+body.tema-chiaro .form-control::placeholder {
+    color: #7A7A7A !important;
+    opacity: 0.8 !important;
+}
+
+/* Colore di sfondo e bordo quando lo switch o il radio è attivo */
+.form-check-input:checked {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+}
+
+/* Alone luminoso rosso quando si clicca sul controllo */
+.form-check-input:focus {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important;
+}
+
+/* Colore del pallino interno dei bottoni radio e della levetta switch */
+/* Usiamo un'immagine SVG bianca per contrastare bene sul rosso */
+.form-check-input:checked[type="checkbox"],
+.form-check-input:checked[type="radio"],
+.form-switch .form-check-input:checked {
+    --bs-form-check-bg-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e") !important;
+}
+
+/* ============================================================
+   CARD ANNUNCIO — usata in MostraAnnunci e Profilo
+============================================================ */
+.card-annuncio {
+    background-color: rgb(35, 33, 33) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 20px !important;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+.card-annuncio:hover {
+    transform: translateY(-5px) scale(1.03);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8) !important;
+    border-color: #dc3545 !important;
+    z-index: 10;
+}
+.img-annuncio {
+    height: 220px;
+    object-fit: cover;
+    width: 100%;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    transition: transform 0.5s ease;
+}
+.card-annuncio:hover .img-annuncio { transform: scale(1.05); }
+.card-annuncio .card-body { padding: 1.5rem !important; }
+.card-annuncio .card-title { color: #ffffff !important; font-weight: bold; }
+.card-annuncio .text-secondary,
+.card-annuncio p { color: #e9ecef !important; }
+.card-annuncio .text-danger { color: #ff4d4d !important; }
+
+.btn-salva {
+    border-radius: 50%;
+    background-color: rgba(67, 64, 64, 0.8);
+    backdrop-filter: blur(5px);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
+}
+.btn-salva:hover { background-color: #dc3545; transform: scale(1.1); }
+
+.btn-elimina-card {
+    border-radius: 50%;
+    background-color: rgba(67, 64, 64, 0.8);
+    backdrop-filter: blur(5px);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
+}
+.btn-elimina-card:hover { background-color: #dc3545; transform: scale(1.1); }
