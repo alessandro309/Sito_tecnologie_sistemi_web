@@ -1,0 +1,120 @@
+/* ============================================================
+   TEMA CHIARO (Wii) — Override del tema scuro predefinito
+   Attivato aggiungendo la classe .tema-chiaro al <body>
+   (vedi index.html: lo script inline lo applica prima del render
+   per evitare il "flash" di tema scuro al caricamento).
+
+   Ogni regola usa !important perché deve vincere sugli stili
+   degli altri file che usano anch'essi classi Bootstrap specifiche.
+
+   Palette del tema chiaro:
+     Sfondi:  #D9D9D9 (pagina), #F8F8F8 (card/elementi)
+     Testo:   #000000 (principale), #7A7A7A (secondario)
+     Accento: #0096D6 (azzurro Wii, sostituisce il rosso #dc3545)
+============================================================ */
+
+
+/* --- SFONDI E COLORI BASE -------------------------------- */
+
+body.tema-chiaro {
+    background-color: #D9D9D9 !important;
+    color: #000000 !important;
+}
+
+/* Le card e i componenti con .bg-black diventano quasi-bianchi */
+body.tema-chiaro .bg-black {
+    background-color: #F8F8F8 !important;
+}
+
+/* I bordi grigi scuri diventano grigi medio */
+body.tema-chiaro .border-secondary {
+    border-color: #7A7A7A !important;
+}
+
+
+/* --- TESTO ----------------------------------------------- */
+
+/* Inverte il bianco in nero (tutti i testi pensati per tema scuro) */
+body.tema-chiaro .text-white,
+body.tema-chiaro h2,
+body.tema-chiaro h3,
+body.tema-chiaro h4,
+body.tema-chiaro h5,
+body.tema-chiaro h6 {
+    color: #000000 !important;
+}
+
+body.tema-chiaro .text-secondary {
+    color: #7A7A7A !important;
+}
+
+/* I placeholder degli input (normalmente bianchi semi-trasparenti)
+   diventano grigi leggibili su sfondo chiaro */
+body.tema-chiaro .form-control::placeholder {
+    color: #7A7A7A !important;
+    opacity: 0.8 !important;
+}
+
+
+/* --- SOSTITUZIONE ACCENTI: rosso → azzurro Wii ----------- */
+/* Tutte le classi Bootstrap che usano il rosso (danger)
+   vengono reindirizzate sull'azzurro #0096D6 */
+
+body.tema-chiaro .text-danger   { color: #0096D6 !important; }
+body.tema-chiaro .bg-danger     { background-color: #0096D6 !important; }
+body.tema-chiaro .border-danger { border-color: #0096D6 !important; }
+
+body.tema-chiaro .btn-danger,
+body.tema-chiaro .btn-outline-danger {
+    background-color: #0096D6 !important;
+    border-color: #0096D6 !important;
+    color: #F8F8F8 !important;
+}
+
+/* Hover più chiaro dell'azzurro base per dare feedback visivo */
+body.tema-chiaro .btn-outline-danger:hover {
+    background-color: #84C9F0 !important;
+}
+
+
+/* --- FORM ----------------------------------------------- */
+
+/* Alone azzurro al focus al posto del rosso del tema scuro */
+body.tema-chiaro .form-control:focus,
+body.tema-chiaro .form-select:focus,
+body.tema-chiaro .form-check-input:focus {
+    border-color: #84C9F0 !important;
+    box-shadow: 0 0 0 0.25rem rgba(132, 201, 240, 0.25) !important;
+}
+
+body.tema-chiaro .form-check-input:checked {
+    background-color: #0096D6 !important;
+    border-color: #0096D6 !important;
+}
+
+
+/* --- COMPONENTI SPECIFICI -------------------------------- */
+
+/* Mirino della mappa: da rosso ad azzurro */
+body.tema-chiaro .mappa-mirino {
+    border-color: #0096D6 !important;
+    background-color: rgba(0, 150, 214, 0.15) !important;
+}
+
+/* Sidebar profilo: sfondo chiaro, accenti azzurri */
+body.tema-chiaro .sidebar-profilo .list-group-item {
+    background-color: #F8F8F8 !important;
+    color: #000000 !important;
+    border-bottom-color: #BFBFBF !important;
+}
+
+body.tema-chiaro .sidebar-profilo .list-group-item:hover {
+    background-color: rgba(0, 150, 214, 0.1) !important;
+    color: #0096D6 !important;
+}
+
+body.tema-chiaro .sidebar-profilo .list-group-item.active {
+    background-color: #0096D6 !important;
+    color: #F8F8F8 !important;
+    border-color: #0096D6 !important;
+}

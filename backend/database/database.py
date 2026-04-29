@@ -5,6 +5,7 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 import uuid
 
 SQLALCHEMY_DATABASE_URL = "postgresql://postgres:biar@localhost:5432/retroshop_db"
+# al posto di "biar" inserire la password del server sql sul vostro pc 
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL

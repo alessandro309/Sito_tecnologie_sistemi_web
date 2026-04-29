@@ -1,0 +1,67 @@
+/* ============================================================
+   BASE — Variabili, reset globali e utilità condivise
+   Questo file va incluso PER PRIMO dopo Bootstrap.
+   Contiene le "regole della lingua": se cambi un colore qui,
+   cambia in tutta l'app.
+============================================================ */
+
+/* Variabili CSS (custom properties): unico posto dove vivono i colori
+   del tema. Usarle con var(--nome) evita valori rgb/hex sparsi nel codice.
+   Attualmente usate solo in questo file; in futuro si possono adottare
+   ovunque per rendere i futuri cambi di tema ancora più rapidi. */
+:root {
+    --colore-accento:    rgb(255, 17, 0);  /* Rosso RetroShop */
+    --colore-sfondo:     rgb(67, 64, 64);  /* Grigio scuro della pagina */
+    --colore-nero:       #000000;
+    --colore-secondario: #6c757d;          /* Grigio Bootstrap secondary */
+}
+
+/* Sfondo generale dell'intera applicazione */
+body {
+    background-color: var(--colore-sfondo);
+}
+
+/* Placeholder bianco semi-trasparente: gli input hanno sfondo scuro,
+   quindi il placeholder grigio di default di Bootstrap sarebbe quasi invisibile */
+.form-control::placeholder {
+    color: white;
+    opacity: 0.5;
+}
+
+/* Testo evidenziato col colore accento del tema.
+   Usato ad esempio nei prezzi in PaginaAnnuncio. */
+.scritte_arancioni {
+    color: var(--colore-accento);
+}
+
+/* Bottone outline-accento: bordo + testo rossi, sfondo trasparente al riposo.
+   Al hover si "riempie" di rosso. Usato ovunque (Navbar, Login, CreaAnnuncio ecc.) */
+.bottone_login {
+    border: 2px solid var(--colore-accento);
+    background-color: transparent;
+    color: var(--colore-accento);
+}
+.bottone_login:hover {
+    background-color: var(--colore-accento);
+    color: white;
+}
+
+/* Override globale dei checkbox / radio / switch in rosso.
+   Bootstrap li mostra azzurri di default; rosso mantiene coerenza col tema. */
+.form-check-input:checked {
+    background-color: #dc3545 !important;
+    border-color:     #dc3545 !important;
+}
+.form-check-input:focus {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important;
+}
+
+/* SVG inline bianco per il segno di spunta e il pallino dei radio/switch.
+   Necessario perché Bootstrap usa un SVG colorato che su sfondo rosso
+   non si vedrebbe bene. */
+.form-check-input:checked[type="checkbox"],
+.form-check-input:checked[type="radio"],
+.form-switch .form-check-input:checked {
+    --bs-form-check-bg-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e") !important;
+}

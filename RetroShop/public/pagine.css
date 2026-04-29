@@ -1,0 +1,307 @@
+/* ============================================================
+   PAGINE — Stili specifici per singole pagine
+   Home, Registrazione, Filtri (modale).
+   Questi stili non sono riutilizzabili fuori dal loro contesto:
+   usano ID (#) come scope per non "inquinare" altri componenti.
+============================================================ */
+
+
+/* --- HOME: MENU NAVIGAZIONE CATEGORIE ------------------- */
+
+/* Sfondo semi-trasparente per il menu orizzontale di categorie */
+.colore_menu {
+    background-color: rgba(0, 0, 0, 0.67);
+}
+
+
+/* --- HOME: BOX CATEGORIE --------------------------------- */
+
+.box_categoria {
+    width: 100%;
+    max-width: 1000px;
+    height: 230px;
+    position: relative; /* Serve come punto di ancoraggio per gli elementi assoluti interni */
+    overflow: hidden;   /* Nasconde le parti dell'immagine di sfondo che escono */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Leggero ingrandimento al hover per effetto "vivo" */
+.box_categoria:hover {
+    transform: scale(1.02);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Doppia ombra sul testo: nera per leggibilità sull'immagine,
+   rossa per rispecchiare il tema accento */
+.titolo_box {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 1), 0 0 20px rgba(255, 17, 0, 0.6);
+    letter-spacing: 2px;
+}
+
+/* La freccia "Scopri di più" scivola a destra all'hover del box padre.
+   La transizione è sul figlio, il trigger è sull'hover del padre. */
+.box_categoria .scopri_di_piu i {
+    transition: transform 0.3s ease;
+}
+.box_categoria:hover .scopri_di_piu i {
+    transform: translateX(8px);
+}
+
+/* Ogni box ha immagine e gradiente diversi.
+   Logica del gradiente: scurisce il lato dove sta il testo per garantire
+   leggibilità, lascia l'immagine visibile sul lato opposto.
+   - Console fisse e accessori: testo a sinistra → gradiente da sinistra, immagine a destra
+   - Portatili e giochi: testo a destra → gradiente da destra, immagine a sinistra */
+
+#box_fisse {
+    background-image:
+        linear-gradient(to right, rgba(20,20,20,0.95) 10%, rgba(255,17,0,0.3) 30%, rgba(0,0,0,0) 60%),
+        url('Home_console.png');
+    background-position: right center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-color: #000;
+    border: 1px solid rgba(255, 17, 0, 0.2);
+}
+
+/* Specchiato rispetto a #box_fisse: gradiente e immagine invertiti */
+#box_portatili {
+    background-image:
+        linear-gradient(to left, rgba(20,20,20,0.95) 10%, rgba(255,17,0,0.3) 30%, rgba(0,0,0,0) 60%),
+        url('Portatili.png');
+    background-position: left center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-color: #000;
+    border: 1px solid rgba(255, 17, 0, 0.2);
+}
+
+#box_accessori {
+    background-image:
+        linear-gradient(to right, rgba(20,20,20,0.95) 10%, rgba(255,17,0,0.3) 40%, rgba(0,0,0,0) 70%),
+        url('controller.png');
+    background-position: right center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-color: #000;
+    border: 1px solid rgba(255, 17, 0, 0.2);
+}
+
+/* background-size doppio: "100% 100%" per il gradiente (coprire tutto),
+   "50%" per l'immagine (più piccola perché i giochi sono verticali) */
+#box_giochi {
+    background-image:
+        linear-gradient(to left, rgba(20,20,20,0.95) 10%, rgba(255,17,0,0.3) 30%, rgba(0,0,0,0) 60%),
+        url('giochi_totali.png');
+    background-position: left center;
+    background-size: 100% 100%, 50%;
+    background-repeat: no-repeat;
+    background-color: #000;
+    border: 1px solid rgba(255, 17, 0, 0.2);
+}
+
+
+/* --- FORM REGISTRAZIONE ---------------------------------- */
+/* L'ID #formRegistrazione fa da scope: questi stili si applicano
+   SOLO agli input dentro il form di registrazione, senza toccare
+   altri form nell'app (login, filtri, ecc.) */
+
+#formRegistrazione .form-control,
+#formRegistrazione .form-select {
+    background-color: transparent !important;
+    border: 1px solid #6c757d;
+    color: white !important;
+    box-shadow: none !important;
+}
+
+/* Bordo rosso al focus al posto del blu Bootstrap */
+#formRegistrazione .form-control:focus,
+#formRegistrazione .form-select:focus {
+    border-color: #dc3545;
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Le <option> dei select ereditano lo sfondo dal browser di default (bianco),
+   quindi va forzato il nero manualmente */
+#formRegistrazione option {
+    background-color: #000;
+    color: white;
+}
+
+#formRegistrazione .form-check-input:checked {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+#formRegistrazione .form-check-input:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+}
+
+
+/* --- FORM CREA ANNUNCIO ---------------------------------- */
+/* Pannello semitrasparente che contiene i dettagli e la descrizione */
+.box_citta_descrizione {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    color: white !important;
+}
+
+/* Mantiene lo sfondo scuro anche al focus (Bootstrap lo rischiarirebbe) */
+.box_citta_descrizione.form-control:focus {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    color: white !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.1) !important;
+}
+
+/* I select del form hanno sfondo scuro esplicito per evitare il bianco del browser */
+#formPubblicazione .form-select {
+    background-color: rgba(0, 0, 0, 0.6) !important;
+    color: white !important;
+}
+
+#formPubblicazione option {
+    background-color: #111;
+    color: white;
+}
+
+/* Focus rosso per coerenza col tema */
+#formPubblicazione .form-control:focus,
+#formPubblicazione .form-select:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.15) !important;
+}
+
+
+/* --- MODALE FILTRI --------------------------------------- */
+/* Stesso approccio di #formRegistrazione: ID come scope */
+
+#modalFiltri .form-control,
+#modalFiltri .form-select {
+    background-color: transparent !important;
+    border: 1px solid #6c757d;
+    color: white !important;
+    box-shadow: none !important;
+    border-radius: 4px; /* Angoli più squadrati rispetto al default Bootstrap — estetica retro */
+}
+
+#modalFiltri .form-control:focus,
+#modalFiltri .form-select:focus {
+    border-color: #dc3545;
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+#modalFiltri option {
+    background-color: #000;
+    color: white;
+}
+
+#modalFiltri .form-check-input:checked {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+#modalFiltri .form-check-input:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+}
+
+/* Badge contatore filtri attivi — stile "retro chip":
+   sfondo nero, numero e bordo rossi */
+#badgeFiltri {
+    background-color: #000 !important;
+    color: #dc3545 !important;
+    border: 2px solid #dc3545 !important;
+    font-size: 0.9rem !important;
+    padding: 0.35em 0.65em !important;
+    transform: translateY(2px); /* Aggiustamento visivo per allinearlo col testo del bottone */
+    font-weight: bold;
+}
+
+
+/* --- RANGE SLIDER DOPPIO (filtro prezzo) ----------------- */
+/* Slider stile Booking: due thumb su una barra rossa.
+   Tecnica: due input[range] sovrapposti con la barra trasparente.
+   Solo i thumb sono cliccabili (pointer-events gestito selettivamente). */
+
+.range-slider-container {
+    height: 6px;
+    background-color: #3b3b3b; /* Binario grigio scuro */
+    border-radius: 5px;
+    position: relative;
+    width: 100%;
+}
+
+/* Striscia rossa tra i due thumb, posizionata dinamicamente via JS
+   impostando left e width in base ai valori dei due slider */
+.slider-track {
+    height: 100%;
+    background-color: #dc3545;
+    position: absolute;
+    border-radius: 5px;
+    top: 0;
+    z-index: 1;
+}
+
+/* La barra degli input[range] è invisibile (background: none).
+   pointer-events: none sul contenitore intero, poi riattivato
+   solo sul thumb — così si può cliccare sulla mappa sotto. */
+.double-slider {
+    position: absolute;
+    width: 100%;
+    height: 6px;
+    top: -2px;
+    background: none;
+    pointer-events: none;
+    -webkit-appearance: none;
+    appearance: none;
+    z-index: 2;
+}
+
+/* Thumb Chrome / Safari */
+.double-slider::-webkit-slider-thumb {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background-color: #000;
+    border: 3px solid #dc3545;
+    pointer-events: auto; /* Riattiva i click solo sul thumb */
+    -webkit-appearance: none;
+    cursor: pointer;
+}
+
+/* Thumb Firefox (usa pseudo-elemento diverso) */
+.double-slider::-moz-range-thumb {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background-color: #000;
+    border: 3px solid #dc3545;
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+
+/* --- MAPPA CON MIRINO ------------------------------------ */
+
+/* La mappa Leaflet ha z-index 1; il mirino sta sopra con z-index 2 */
+#mappaContainer {
+    z-index: 1;
+}
+
+/* Cerchio tratteggiato centrato sulla mappa che indica il raggio di ricerca.
+   pointer-events: none è FONDAMENTALE: senza, il cerchio intercetterebbe
+   tutti i click impedendo di trascinare la mappa. */
+.mappa-mirino {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Centra rispetto al punto centrale, non al bordo */
+    width: 200px;
+    height: 200px;
+    border: 2px dashed #dc3545;
+    background-color: rgba(220, 53, 69, 0.15);
+    border-radius: 50%;
+    z-index: 2;
+    pointer-events: none;
+}

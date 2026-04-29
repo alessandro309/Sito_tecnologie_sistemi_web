@@ -95,7 +95,14 @@ export default function ModalLogin() {
             <div className="text-center mt-3">
               <p className="font-monospace text-secondary small">
                 Non sei registrato? <br />
-                <Link to="/registrazione" className="text-danger text-decoration-none fw-bold" data-bs-dismiss="modal">
+                <Link
+                  to="/registrazione"
+                  className="text-danger text-decoration-none fw-bold"
+                  onClick={() => {
+                    const el = document.getElementById('modalLogin');
+                    window.bootstrap?.Modal.getInstance(el)?.hide();
+                  }}
+                >
                   REGISTRATI ORA!
                 </Link>
               </p>

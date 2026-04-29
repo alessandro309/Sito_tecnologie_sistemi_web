@@ -42,6 +42,7 @@ export default function BarraRicerca() {
           />
         </div>
 
+        {/*se fisso abbiamo basse verticali, se mobile barre orizzionali*/}
         <div className="vr text-secondary d-none d-lg-block mx-1"></div>
         <hr className="text-secondary d-lg-none w-100 my-0" />
 

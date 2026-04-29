@@ -13,7 +13,7 @@ export default function CardAnnuncio({ annuncio, mostraElimina = false, onElimin
 
   const dataPub = new Date(annuncio.data_pubblicazione).toLocaleDateString('it-IT', {
     day: '2-digit', month: 'short', year: 'numeric',
-  }); //Data di pubblicazione 
+  }); //Data di pubblicazione presa dal database formattata per l'italiano
 
   return (
     <div className="card card-annuncio bg-black border-secondary h-100 text-white shadow overflow-hidden">

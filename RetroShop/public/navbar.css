@@ -1,0 +1,106 @@
+/* ============================================================
+   NAVBAR — Barra di navigazione superiore
+   Gestisce: dropdown custom, sottomenu "Retro", animazione
+   cuore nei preferiti, e i fix per mobile/tablet.
+============================================================ */
+
+
+/* --- ICONA PREFERITI ------------------------------------- */
+/* Al passaggio del mouse sul link, scambia l'icona cuore
+   da outline (vuota) a riempita. Le due icone coesistono nel DOM
+   e si alternano tramite display. */
+
+.link-preferiti:hover .icona-vuota { display: none !important; }
+.link-preferiti:hover .icona-piena { display: inline-block !important; }
+
+
+/* --- DROPDOWN MENU --------------------------------------- */
+/* Sostituisce lo sfondo bianco di Bootstrap con uno semi-trasparente scuro */
+
+.dropdown-menu-dark {
+    background-color: rgba(0, 0, 0, 0.67);
+    border: 1px solid #555 !important;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dropdown-menu-dark .dropdown-item:hover,
+.dropdown-menu-dark .dropdown-item:focus {
+    background-color: rgb(255, 17, 0);
+    color: white;
+}
+
+
+/* --- SOTTOMENU "RETRO" ----------------------------------- */
+/* Si apre a fianco della voce padre su desktop (position: absolute
+   con left: 100%). Il padre ha position: relative come punto di ancoraggio. */
+
+.dropdown-submenu {
+    position: relative;
+}
+
+.dropdown-submenu .submenu-retro {
+    display: none;
+    position: absolute;
+    left: 100%; /* si apre a destra della voce padre */
+    top: 0;
+}
+
+/* Su desktop il sottomenu appare al passaggio del mouse */
+@media (min-width: 992px) {
+    .dropdown-submenu:hover > .submenu-retro {
+        display: block;
+    }
+}
+
+
+/* ---- FIX MOBILE E TABLET (< 992px) ----------------------
+   Su mobile il navbar è verticale (flex-column). I dropdown
+   e i sottomenu diventano statici (non assoluti) così non
+   escono fuori dallo schermo o si sovrappongono ad altro.
+------------------------------------------------------------ */
+@media (max-width: 991px) {
+
+    /* Rimuove il posizionamento assoluto Bootstrap che farebbe
+       galleggiare il menu fuori dal flusso verticale */
+    .miei-menu-mobile .dropdown-menu {
+        position: static !important;
+        transform: none !important; /* Evita glitch visivo di Bootstrap */
+        float: none;
+        width: 100%;
+        text-align: center;
+        background-color: transparent;
+        border: none !important;
+        padding-bottom: 15px;
+    }
+
+    /* Il sottomenu mobile diventa statico e si espande sotto la voce padre */
+    .dropdown-submenu .submenu-retro {
+        position: static !important;
+        transform: none !important;
+        left: 0;
+        top: 0;
+        width: 100%;
+        border: none !important;
+        padding-left: 0;
+        box-shadow: none !important;
+        background-color: rgba(0, 0, 0, 0.4);
+        display: none;
+        margin-top: 5px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+
+    /* Classe .show aggiunta via JavaScript per aprire il sottomenu al tap su mobile */
+    .dropdown-submenu .submenu-retro.show {
+        display: block;
+    }
+
+    /* Spazio extra tra le voci del menu per facilità di tap su touch */
+    .nav-item {
+        margin-bottom: 15px;
+    }
+
+    .nav.flex-column {
+        padding-top: 20px !important;
+    }
+}
