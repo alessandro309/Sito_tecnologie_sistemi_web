@@ -5,7 +5,7 @@ Web Technologies and Systems Course Project
 
 
 ## Front-End
-Utilizzati ```HTLM```, ```CSS``` e ```JavaScrip```. Aggiunta di **bootstrap** per semplificare la creazione di elementi visivi
+Pagine web ```HTLM``` popolate dinamicamente attraverso ```React``` (iniezione del codice HTML) e ```JavaScrip``` (comunicazione con server). Per l'aspetto grafico utilizzo di ```CSS``` e **bootstrap** per semplificare
 
 
 ## Back-End
