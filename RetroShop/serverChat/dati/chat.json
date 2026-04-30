@@ -44,6 +44,22 @@
       "testo": "No",
       "ora": "2026-04-30T16:03:34.804Z",
       "letto": true
+    },
+    {
+      "id": "2e2035fc-f607-4b38-a557-a5751453424e",
+      "conversazioneId": "810a8626-91c2-4f3b-8b45-e2e2a5994a27",
+      "mittente": "Shreck",
+      "testo": "Dai, fammi uno sconticino",
+      "ora": "2026-04-30T20:50:00.222Z",
+      "letto": false
+    },
+    {
+      "id": "4e8132ce-18fa-47dd-b46e-f93508b5d0dc",
+      "conversazioneId": "810a8626-91c2-4f3b-8b45-e2e2a5994a27",
+      "mittente": "Rick_Roll",
+      "testo": "Assolutamente no",
+      "ora": "2026-04-30T20:50:06.946Z",
+      "letto": true
     }
   ]
 }

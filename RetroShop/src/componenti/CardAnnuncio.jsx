@@ -4,8 +4,9 @@ import { BASE } from '../api';
 
 //mostraElimina permette di distinguere se la scheda venga mostrata come risultato di una ricerca o "annuncio pubblicato" nella pagina principale
 //nel secondo caso viene implementata la possibilità di eliminare l'annuncio
-export default function CardAnnuncio({ annuncio, mostraElimina = false, onElimina }) {
+export default function CardAnnuncio({ annuncio, mostraElimina = false, onElimina, preferito = false, onTogglePreferito }) {
   const [salvato, setSalvato] = useState(false);
+  const isSalvato = onTogglePreferito ? preferito : salvato;
 
   const immagineUrl = annuncio.immagini?.length > 0 //Se è presente l'immagine dell'annuncio mostrala, sennò placeholder
     ? `${BASE}${annuncio.immagini[0].url_immagine}`
@@ -35,9 +36,9 @@ export default function CardAnnuncio({ annuncio, mostraElimina = false, onElimin
           <button
             className="btn btn-salva position-absolute top-0 end-0 m-2 rounded-circle border-secondary d-flex align-items-center justify-content-center p-0"
             style={{ width: 40, height: 40, zIndex: 10 }}
-            onClick={() => setSalvato(!salvato)}
+            onClick={() => onTogglePreferito ? onTogglePreferito(annuncio, !preferito) : setSalvato(!salvato)}
           >
-            <i className={`bi ${salvato ? 'bi-floppy-fill' : 'bi-floppy'} text-danger fs-5`}></i>
+            <i className={`bi ${isSalvato ? 'bi-floppy-fill' : 'bi-floppy'} text-danger fs-5`}></i>
           </button>
         )}
       </div>

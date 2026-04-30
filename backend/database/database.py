@@ -24,9 +24,8 @@ class UtenteDB(Base):
     provincia = Column(String, nullable=True)
     mail = Column(String, unique=True, index=True, nullable=False)
     password = Column(String, nullable=False) 
-    foto_profilo = Column(String, nullable=True) # Nuova colonna
+    foto_profilo = Column(String, nullable=True) 
 
-    # Relazione: Un utente può avere più annunci
     annunci = relationship("AnnuncioDB", back_populates="proprietario")
 
 class AnnuncioDB(Base):
@@ -67,10 +66,16 @@ class ImmagineAnnuncioDB(Base):
 class SessioneDB(Base):
     __tablename__ = "sessioni"
 
-    # Genera automaticamente un ID univoco casuale (es. "f47ac10b-58cc-4372-a567-0e02b2c3d479")
+    # Genera automaticamente un ID univoco casuale 
     id_sessione = Column(String, primary_key=True, index=True, default=lambda: str(uuid.uuid4()))
     nickname_utente = Column(String, ForeignKey("utenti.nickname", ondelete="CASCADE"), nullable=False)
     data_scadenza = Column(DateTime, nullable=False)
 
     # Relazione con l'utente
     utente = relationship("UtenteDB")
+
+class PreferitiDB(Base):
+    __tablename__ = "preferiti"
+
+    nickname_utente = Column(String, ForeignKey("utenti.nickname", ondelete="CASCADE"), primary_key=True)
+    idAnnuncio = Column(Integer, ForeignKey("annunci.idAnnuncio", ondelete="CASCADE"), primary_key=True)

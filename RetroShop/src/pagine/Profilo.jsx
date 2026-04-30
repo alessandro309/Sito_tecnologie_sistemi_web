@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { api, BASE } from '../api';
 import CardAnnuncio from '../componenti/CardAnnuncio';
@@ -8,16 +8,30 @@ import Footer from '../componenti/Footer';
 export default function Profilo() {
   const { utente, loading } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [datiProfilo, setDatiProfilo] = useState(null);
   const [annunci, setAnnunci] = useState([]);
   const [caricamentoAnnunci, setCaricamentoAnnunci] = useState(true);
+  const [preferiti, setPreferiti] = useState([]);
+  const [caricamentoPreferiti, setCaricamentoPreferiti] = useState(true);
   const [tema, setTema] = useState(localStorage.getItem('temaSelezionato') || 'dark');
+  const [annuncioInElimina, setAnnuncioInElimina] = useState(null);
+  const [eliminazioneInCorso, setEliminazioneInCorso] = useState(false);
+  const [erroreElimina, setErroreElimina] = useState(null);
 
   // Reindirizza se non loggato
   useEffect(() => {
     if (!loading && !utente) navigate('/');
   }, [utente, loading, navigate]);
+
+  // Scrolla all'ancora hash (es. #sezionePreferiti) dopo il render
+  useEffect(() => {
+    if (!location.hash || loading) return;
+    const id = location.hash.slice(1);
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [location.hash, loading]);
 
   // Attiva Bootstrap ScrollSpy sul body
   useEffect(() => {
@@ -48,6 +62,11 @@ export default function Profilo() {
         setCaricamentoAnnunci(false);
       })
       .catch(() => setCaricamentoAnnunci(false));
+
+    api.getPreferiti()
+      .then((r) => r.ok ? r.json() : [])
+      .then((dati) => { setPreferiti(dati); setCaricamentoPreferiti(false); })
+      .catch(() => setCaricamentoPreferiti(false));
   }, [utente]);
 
   // Applica tema al body
@@ -62,8 +81,50 @@ export default function Profilo() {
   }, [tema]);
 
   function handleElimina(annuncio) {
-    if (!confirm(`Sei sicuro di voler eliminare "${annuncio.nome}"?`)) return;
-    setAnnunci((prev) => prev.filter((a) => a.idAnnuncio !== annuncio.idAnnuncio));
+    setErroreElimina(null);
+    setAnnuncioInElimina(annuncio);
+  }
+
+  async function handleTogglePreferito(annuncio, nuovoStato) {
+    // Aggiornamento ottimistico
+    if (nuovoStato) {
+      setPreferiti((prev) => [...prev, annuncio]);
+    } else {
+      setPreferiti((prev) => prev.filter((a) => a.idAnnuncio !== annuncio.idAnnuncio));
+    }
+
+    try {
+      const res = nuovoStato
+        ? await api.aggiungiPreferito(annuncio.idAnnuncio)
+        : await api.rimuoviPreferito(annuncio.idAnnuncio);
+      if (!res.ok && res.status !== 204 && res.status !== 201) throw new Error();
+    } catch {
+      // Ripristina in caso di errore
+      if (nuovoStato) {
+        setPreferiti((prev) => prev.filter((a) => a.idAnnuncio !== annuncio.idAnnuncio));
+      } else {
+        setPreferiti((prev) => [...prev, annuncio]);
+      }
+    }
+  }
+
+  async function handleConfermaElimina() {
+    if (!annuncioInElimina) return;
+    setEliminazioneInCorso(true);
+    setErroreElimina(null);
+    try {
+      const res = await api.eliminaAnnuncio(annuncioInElimina.idAnnuncio);
+      if (!res.ok && res.status !== 204) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || 'Errore durante l\'eliminazione');
+      }
+      setAnnunci((prev) => prev.filter((a) => a.idAnnuncio !== annuncioInElimina.idAnnuncio));
+      setAnnuncioInElimina(null);
+    } catch (e) {
+      setErroreElimina(e.message);
+    } finally {
+      setEliminazioneInCorso(false);
+    }
   }
 
   if (loading || !utente) return null;
@@ -195,18 +256,40 @@ export default function Profilo() {
 
             {/* ── Preferiti ── */}
             <section id="sezionePreferiti" className="py-5 mb-5 border-bottom border-secondary">
-              <div className="sezione-titolo">
+              <div className="sezione-titolo d-flex justify-content-between align-items-center">
                 <h4 className="fw-bold text-uppercase">
-                  <i className="bi bi-floppy-fill text-danger me-2"></i>Annunci Salvati
+                  <i className="bi bi-floppy-fill text-danger me-2"></i>
+                  Annunci Salvati
+                  <span className="text-danger ms-1">({preferiti.length})</span>
                 </h4>
               </div>
-              <div className="stato-vuoto">
-                <div className="d-flex flex-column justify-content-center align-items-center py-5 text-secondary">
-                  <i className="bi bi-floppy fs-1 mb-3 opacity-50 text-danger"></i>
-                  <p className="small text-uppercase mb-3">Nessun annuncio salvato nei preferiti</p>
-                  <Link to="/" className="btn bottone_login rounded-1 text-uppercase fw-bold px-4">Esplora Negozio</Link>
+
+              {caricamentoPreferiti ? (
+                <div className="text-center py-4">
+                  <div className="spinner-border text-danger" role="status"></div>
+                  <p className="mt-2 small text-secondary">Caricamento preferiti...</p>
                 </div>
-              </div>
+              ) : preferiti.length === 0 ? (
+                <div className="stato-vuoto">
+                  <div className="d-flex flex-column justify-content-center align-items-center py-5 text-secondary">
+                    <i className="bi bi-floppy fs-1 mb-3 opacity-50 text-danger"></i>
+                    <p className="small text-uppercase mb-3">Nessun annuncio salvato nei preferiti</p>
+                    <Link to="/" className="btn bottone_login rounded-1 text-uppercase fw-bold px-4">Esplora Negozio</Link>
+                  </div>
+                </div>
+              ) : (
+                <div className="row g-4">
+                  {preferiti.map((a) => (
+                    <div key={a.idAnnuncio} className="col-12 col-md-6 col-xl-4">
+                      <CardAnnuncio
+                        annuncio={a}
+                        preferito={true}
+                        onTogglePreferito={handleTogglePreferito}
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
             </section>
 
             {/* ── Impostazioni ── */}
@@ -293,6 +376,59 @@ export default function Profilo() {
       </main>
 
       <Footer />
+
+      {annuncioInElimina && (
+        <div
+          className="modal d-block"
+          style={{ backgroundColor: 'rgba(0,0,0,0.75)' }}
+          onClick={(e) => { if (e.target === e.currentTarget && !eliminazioneInCorso) setAnnuncioInElimina(null); }}
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content bg-black border border-secondary text-white font-monospace">
+              <div className="modal-header border-secondary">
+                <h5 className="modal-title text-uppercase fs-6 fw-bold">
+                  <i className="bi bi-trash text-danger me-2"></i>Elimina annuncio
+                </h5>
+                <button
+                  className="btn-close btn-close-white"
+                  onClick={() => setAnnuncioInElimina(null)}
+                  disabled={eliminazioneInCorso}
+                />
+              </div>
+              <div className="modal-body">
+                <p className="small mb-1">
+                  Sei sicuro di voler eliminare <strong>"{annuncioInElimina.nome}"</strong>?
+                </p>
+                <p className="small text-secondary mb-0">Questa azione è irreversibile.</p>
+                {erroreElimina && (
+                  <p className="small text-danger mt-2 mb-0">
+                    <i className="bi bi-exclamation-triangle me-1"></i>{erroreElimina}
+                  </p>
+                )}
+              </div>
+              <div className="modal-footer border-secondary">
+                <button
+                  className="btn btn-outline-secondary rounded-1 text-uppercase fw-bold px-3 small"
+                  onClick={() => setAnnuncioInElimina(null)}
+                  disabled={eliminazioneInCorso}
+                >
+                  Annulla
+                </button>
+                <button
+                  className="btn btn-danger rounded-1 text-uppercase fw-bold px-3 small"
+                  onClick={handleConfermaElimina}
+                  disabled={eliminazioneInCorso}
+                >
+                  {eliminazioneInCorso
+                    ? <span className="spinner-border spinner-border-sm" role="status" />
+                    : <><i className="bi bi-trash me-1"></i>Elimina</>
+                  }
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Stili specifici della pagina profilo */}
       <style>{`

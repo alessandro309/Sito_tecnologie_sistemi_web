@@ -26,6 +26,7 @@ export default function CreaAnnuncio() {
   const [caricamento, setCaricamento] = useState(false);
   const [errore, setErrore] = useState('');
   const [piattaforma, setPiattaforma] = useState('');
+  const [spedizione, setSpedizione] = useState(false);
 
   useEffect(() => {
     if (!loading && !utente) navigate('/');
@@ -65,7 +66,7 @@ export default function CreaAnnuncio() {
       tipologia:        fd.get('tipologia'),
       utente:           utente.nickname,
       spedizione:       fd.get('spedizione') === 'on',
-      prezzo_spedizione: 0,
+      prezzo_spedizione: fd.get('spedizione') === 'on' ? parseFloat(fd.get('prezzo_spedizione') || 0) : 0,
       presenza:         true,
       posizione:        fd.get('posizione'),
       descrizione:      fd.get('descrizione'),
@@ -105,8 +106,8 @@ export default function CreaAnnuncio() {
           <input
             type="text"
             name="nome"
-            className="form-control form-control-lg bg-transparent border-0 border-bottom border-secondary rounded-0 px-0 fw-bold text-uppercase"
-            placeholder="TITOLO DELL'ANNUNCIO..."
+            className="form-control form-control-lg bg-transparent border-0 border-bottom border-secondary rounded-0 px-0 fw-bold"
+            placeholder="Titolo dell'annuncio..."
             style={{ fontSize: '2rem' }}
             required
           />
@@ -218,9 +219,31 @@ export default function CreaAnnuncio() {
               <div className="mb-4">
                 <label className="small text-secondary text-uppercase mb-2">Luogo e Spedizione</label>
                 <input type="text" name="posizione" className="form-control bg-transparent border-secondary text-white shadow-none mb-3" placeholder="Località (es. Milano)" required />
-                <div className="form-check form-switch p-0 d-flex align-items-center justify-content-between">
+                <div className="form-check form-switch p-0 d-flex align-items-center justify-content-between mb-3">
                   <label className="form-check-label text-white" htmlFor="spedizioneSwitch">Disponibile a spedire</label>
-                  <input className="form-check-input ms-0 mt-0" type="checkbox" role="switch" id="spedizioneSwitch" name="spedizione" />
+                  <input
+                    className="form-check-input ms-0 mt-0"
+                    type="checkbox"
+                    role="switch"
+                    id="spedizioneSwitch"
+                    name="spedizione"
+                    checked={spedizione}
+                    onChange={(e) => setSpedizione(e.target.checked)}
+                  />
+                </div>
+                <div className="input-group">
+                  <span className={`input-group-text border-secondary ${spedizione ? 'text-white bg-transparent' : 'text-secondary'}`} style={{ transition: 'color 0.2s' }}>€</span>
+                  <input
+                    type="number"
+                    name="prezzo_spedizione"
+                    className="form-control bg-transparent border-secondary shadow-none"
+                    style={{ color: spedizione ? '#fff' : '#6c757d', transition: 'color 0.2s' }}
+                    placeholder="Costo spedizione"
+                    step="0.01"
+                    min="0"
+                    disabled={!spedizione}
+                    defaultValue=""
+                  />
                 </div>
               </div>
 

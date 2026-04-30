@@ -7,12 +7,52 @@ import ModalLogin from '../componenti/Login';
 import ModalFiltri from '../componenti/Filtri';
 import Footer from '../componenti/Footer';
 import { api } from '../api';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function MostraAnnunci() {
   const [searchParams] = useSearchParams();
+  const { utente } = useAuth();
   const [annunci, setAnnunci] = useState([]);
   const [caricamento, setCaricamento] = useState(true);
   const [errore, setErrore] = useState(false);
+  const [preferitiIds, setPreferitiIds] = useState(new Set());
+
+  useEffect(() => {
+    if (!utente) { setPreferitiIds(new Set()); return; }
+    api.getPreferiti()
+      .then((r) => r.ok ? r.json() : [])
+      .then((dati) => setPreferitiIds(new Set(dati.map((a) => a.idAnnuncio))))
+      .catch(() => {});
+  }, [utente]);
+
+  async function handleTogglePreferito(annuncio, nuovoStato) {
+    if (!utente) {
+      const el = document.getElementById('modalLogin');
+      window.bootstrap?.Modal.getOrCreateInstance(el)?.show();
+      return;
+    }
+
+    // Aggiornamento ottimistico: cambia l'icona subito
+    if (nuovoStato) {
+      setPreferitiIds((prev) => new Set([...prev, annuncio.idAnnuncio]));
+    } else {
+      setPreferitiIds((prev) => { const n = new Set(prev); n.delete(annuncio.idAnnuncio); return n; });
+    }
+
+    try {
+      const res = nuovoStato
+        ? await api.aggiungiPreferito(annuncio.idAnnuncio)
+        : await api.rimuoviPreferito(annuncio.idAnnuncio);
+      if (!res.ok && res.status !== 204 && res.status !== 201) throw new Error();
+    } catch {
+      // Ripristina lo stato precedente se la chiamata fallisce
+      if (nuovoStato) {
+        setPreferitiIds((prev) => { const n = new Set(prev); n.delete(annuncio.idAnnuncio); return n; });
+      } else {
+        setPreferitiIds((prev) => new Set([...prev, annuncio.idAnnuncio]));
+      }
+    }
+  }
 
   useEffect(() => {
     setCaricamento(true);
@@ -54,7 +94,11 @@ export default function MostraAnnunci() {
     }
     return annunci.map((a) => (
       <div key={a.idAnnuncio} className="col-12 col-md-6 col-lg-4 col-xl-3">
-        <CardAnnuncio annuncio={a} />
+        <CardAnnuncio
+          annuncio={a}
+          preferito={preferitiIds.has(a.idAnnuncio)}
+          onTogglePreferito={handleTogglePreferito}
+        />
       </div>
     ));
   }

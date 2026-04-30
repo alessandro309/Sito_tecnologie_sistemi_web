@@ -224,6 +224,70 @@ def ottieni_utente_loggato(request: Request, db: Session = Depends(get_db)):
         
     return sessione.nickname_utente
 
+# --- ENDPOINT: ELIMINAZIONE ANNUNCIO ---
+@app.delete("/annunci/{idAnnuncio}", status_code=204)
+def elimina_annuncio(
+    idAnnuncio: int,
+    utente_corrente: str = Depends(ottieni_utente_loggato),
+    db: Session = Depends(get_db)
+):
+    annuncio = db.query(database.AnnuncioDB).filter(database.AnnuncioDB.idAnnuncio == idAnnuncio).first()
+    if not annuncio:
+        raise HTTPException(status_code=404, detail="Annuncio non trovato")
+    if annuncio.utente != utente_corrente:
+        raise HTTPException(status_code=403, detail="Non sei autorizzato a eliminare questo annuncio")
+
+    cartella_annuncio = os.path.join(BASE_DIR_IMMAGINI, str(idAnnuncio))
+    if os.path.exists(cartella_annuncio):
+        shutil.rmtree(cartella_annuncio)
+
+    db.delete(annuncio)
+    db.commit()
+
+# --- ENDPOINT: PREFERITI ---
+@app.get("/preferiti", response_model=List[schemi.AnnuncioResponse])
+def get_preferiti(
+    utente_corrente: str = Depends(ottieni_utente_loggato),
+    db: Session = Depends(get_db)
+):
+    preferiti = db.query(database.PreferitiDB).filter(database.PreferitiDB.nickname_utente == utente_corrente).all()
+    if not preferiti:
+        return []
+    ids = [p.idAnnuncio for p in preferiti]
+    return db.query(database.AnnuncioDB).filter(database.AnnuncioDB.idAnnuncio.in_(ids)).all()
+
+@app.post("/preferiti/{idAnnuncio}", status_code=201)
+def aggiungi_preferito(
+    idAnnuncio: int,
+    utente_corrente: str = Depends(ottieni_utente_loggato),
+    db: Session = Depends(get_db)
+):
+    if not db.query(database.AnnuncioDB).filter(database.AnnuncioDB.idAnnuncio == idAnnuncio).first():
+        raise HTTPException(status_code=404, detail="Annuncio non trovato")
+    esistente = db.query(database.PreferitiDB).filter(
+        database.PreferitiDB.nickname_utente == utente_corrente,
+        database.PreferitiDB.idAnnuncio == idAnnuncio
+    ).first()
+    if not esistente:
+        db.add(database.PreferitiDB(nickname_utente=utente_corrente, idAnnuncio=idAnnuncio))
+        db.commit()
+    return {"message": "ok"}
+
+@app.delete("/preferiti/{idAnnuncio}", status_code=204)
+def rimuovi_preferito(
+    idAnnuncio: int,
+    utente_corrente: str = Depends(ottieni_utente_loggato),
+    db: Session = Depends(get_db)
+):
+    preferito = db.query(database.PreferitiDB).filter(
+        database.PreferitiDB.nickname_utente == utente_corrente,
+        database.PreferitiDB.idAnnuncio == idAnnuncio
+    ).first()
+    if not preferito:
+        raise HTTPException(status_code=404, detail="Preferito non trovato")
+    db.delete(preferito)
+    db.commit()
+
 @app.post("/logout")
 def logout(request: Request, response: Response, db: Session = Depends(get_db)):
     sessione_id = request.cookies.get("sessione_retroshop")

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 // Struttura dati dei menu console — evita 400 righe di JSX ripetuto
@@ -138,6 +138,32 @@ function ConsoleMenu({ menu, isMobile }) {
   );
 }
 
+function LinkPreferiti() {
+  const { utente } = useAuth();
+  const navigate = useNavigate();
+
+  function handleClick(e) {
+    e.preventDefault();
+    if (!utente) {
+      const el = document.getElementById('modalLogin');
+      window.bootstrap?.Modal.getOrCreateInstance(el)?.show();
+      return;
+    }
+    navigate('/profilo#sezionePreferiti');
+  }
+
+  return (
+    <a
+      href="#"
+      className="nav-link font-monospace d-flex text-white align-items-center link-preferiti"
+      onClick={handleClick}
+    >
+      <i className="bi bi-floppy text-danger me-2 fs-5"></i>
+      Preferiti
+    </a>
+  );
+}
+
 // Parte destra della navbar (Accedi oppure utente loggato)
 function NavbarDestra() {
   const { utente, logout } = useAuth();
@@ -237,11 +263,7 @@ export default function Navbar({ children }) {
 
           <div className="collapse navbar-collapse miei-menu-mobile">
             <div className="navbar-nav ms-auto align-items-center gap-3 mt-4 mt-lg-0 pb-3 pb-lg-0">
-              <a className="nav-link font-monospace d-flex text-white align-items-center link-preferiti" href="#">
-                <i className="bi bi-floppy text-danger me-2 fs-5 icona-vuota"></i>
-                <i className="bi bi-floppy-fill text-danger me-2 fs-5 icona-piena d-none"></i>
-                Preferiti
-              </a>
+              <LinkPreferiti />
               <NavbarDestra />
             </div>
           </div>

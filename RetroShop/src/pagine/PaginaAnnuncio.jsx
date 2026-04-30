@@ -18,6 +18,15 @@ export default function PaginaAnnuncio() {
   const [indiceImmagine, setIndiceImmagine] = useState(0);
   const [salvato, setSalvato] = useState(false);
 
+  // Controlla se l'annuncio è già nei preferiti dell'utente loggato
+  useEffect(() => {
+    if (!utente) { setSalvato(false); return; }
+    api.getPreferiti()
+      .then((r) => r.ok ? r.json() : [])
+      .then((dati) => setSalvato(dati.some((a) => a.idAnnuncio === parseInt(id))))
+      .catch(() => {});
+  }, [utente, id]);
+
   useEffect(() => {
     api.annuncio(id)
       .then((r) => r.json())
@@ -89,6 +98,24 @@ export default function PaginaAnnuncio() {
 
   const isProprietario = utente?.nickname === annuncio.utente;
 
+  async function handleSalva() {
+    if (!utente) {
+      const el = document.getElementById('modalLogin');
+      window.bootstrap?.Modal.getOrCreateInstance(el)?.show();
+      return;
+    }
+    // Aggiornamento ottimistico
+    setSalvato(!salvato);
+    try {
+      const res = salvato
+        ? await api.rimuoviPreferito(parseInt(id))
+        : await api.aggiungiPreferito(parseInt(id));
+      if (!res.ok && res.status !== 204 && res.status !== 201) throw new Error();
+    } catch {
+      setSalvato(salvato); // ripristina in caso di errore
+    }
+  }
+
   return (
     <>
       <Navbar><BarraRicerca /></Navbar>
@@ -136,7 +163,7 @@ export default function PaginaAnnuncio() {
                     <h2 className="scritte_arancioni font-monospace fw-bold mb-0">€ {annuncio.prezzo}</h2>
                     <button
                       className={`btn ${salvato ? 'btn-danger' : 'btn-outline-danger'} font-monospace d-flex align-items-center gap-2 rounded-1`}
-                      onClick={() => setSalvato(!salvato)}
+                      onClick={handleSalva}
                     >
                       <i className={`bi bi-floppy${salvato ? '-fill' : ''} fs-5`}></i>
                       <span className="d-none d-sm-inline">Salva</span>

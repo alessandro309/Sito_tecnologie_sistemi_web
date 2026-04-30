@@ -50,6 +50,7 @@ export default function Chat() {
   const [connesso, setConnesso] = useState(false);
   const [caricandoConv, setCaricandoConv] = useState(false);
   const [caricandoMsg, setCaricandoMsg] = useState(false);
+  const [mostraSidebar, setMostraSidebar] = useState(true);
 
   const wsRef = useRef(null);
   const selezionataRef = useRef(null);
@@ -155,6 +156,7 @@ export default function Chat() {
 
   function apriChat(conv) {
     setSelezionata(conv);
+    setMostraSidebar(false);
     setMessaggi([]);
     setCaricandoMsg(true);
     setConversazioni((prev) =>
@@ -237,7 +239,7 @@ export default function Chat() {
         <div className="chat-wrapper">
 
           {/* ── Sidebar ── */}
-          <aside className="chat-sidebar">
+          <aside className={`chat-sidebar${!mostraSidebar ? ' chat-nascosta-mobile' : ''}`}>
 
             {/* Header sidebar */}
             <div className="chat-sidebar-header border-bottom border-dark">
@@ -344,7 +346,7 @@ export default function Chat() {
           </aside>
 
           {/* ── Pannello chat ── */}
-          <main className="chat-main">
+          <main className={`chat-main${mostraSidebar ? ' chat-nascosta-mobile' : ''}`}>
             {!selezionata ? (
               <div className="d-flex flex-column align-items-center justify-content-center h-100 gap-3">
                 <i className="bi bi-chat-square-dots" style={{ fontSize: 52, color: "#2a2a2a" }} />
@@ -357,6 +359,13 @@ export default function Chat() {
 
                 {/* Header conversazione */}
                 <div className="chat-panel-header border-bottom border-dark">
+                  <button
+                    className="btn btn-link text-white d-md-none p-0 me-1 flex-shrink-0"
+                    onClick={() => setMostraSidebar(true)}
+                    aria-label="Torna alle conversazioni"
+                  >
+                    <i className="bi bi-arrow-left fs-5" />
+                  </button>
                   <Avatar nickname={selezionata.altroUtente} size={42} />
                   <div style={{ minWidth: 0 }}>
                     <div className="font-monospace fw-bold text-white" style={{ fontSize: 14 }}>
@@ -619,6 +628,31 @@ export default function Chat() {
           flex-shrink: 0;
           transition: background 0.2s, color 0.2s, border-color 0.2s;
           font-size: 15px;
+        }
+
+        /* ── Mobile ── */
+        @media (max-width: 767px) {
+          .chat-sidebar {
+            width: 100%;
+            min-width: 100%;
+            max-width: 100%;
+            border-right: none;
+          }
+          .chat-main {
+            width: 100%;
+          }
+          .chat-nascosta-mobile {
+            display: none !important;
+          }
+          .chat-messages {
+            padding: 14px 12px;
+          }
+          .chat-input-bar {
+            padding: 10px 12px;
+          }
+          .chat-panel-header {
+            padding: 10px 12px;
+          }
         }
       `}</style>
     </>

@@ -55,6 +55,18 @@ const api = {
     files.forEach((f) => fd.append('immagini', f));
     return apiFetch(`${BASE}/annunci/${idAnnuncio}/immagini`, { method: 'POST', body: fd });
   },
+
+  eliminaAnnuncio: (idAnnuncio) =>
+    apiFetch(`${BASE}/annunci/${idAnnuncio}`, { method: 'DELETE' }),
+
+  getPreferiti: () =>
+    apiFetch(`${BASE}/preferiti`),
+
+  aggiungiPreferito: (idAnnuncio) =>
+    apiFetch(`${BASE}/preferiti/${idAnnuncio}`, { method: 'POST' }),
+
+  rimuoviPreferito: (idAnnuncio) =>
+    apiFetch(`${BASE}/preferiti/${idAnnuncio}`, { method: 'DELETE' }),
 };
 
 export { api, BASE };
