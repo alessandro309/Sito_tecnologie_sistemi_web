@@ -7,6 +7,7 @@ import MostraAnnunci from './pagine/MostraAnnunci';
 import PaginaAnnuncio from './pagine/PaginaAnnuncio';
 import CreaAnnuncio from './pagine/CreaAnnuncio';
 import Profilo from './pagine/Profilo';
+import Chat from './pagine/Chat';
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
           <Route path="/annunci/:id"     element={<PaginaAnnuncio />} />
           <Route path="/crea-annuncio"   element={<CreaAnnuncio />} />
           <Route path="/profilo"         element={<Profilo />} />
+           <Route path="/chat"           element={<Chat />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

@@ -583,7 +583,8 @@
     </div>
     
     <div class="modal fade" id="modalFiltri" tabindex="-1" aria-labelledby="modalFiltriLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-xl"> <div class="modal-content bg-black border border-secondary rounded-1 shadow-lg font-monospace text-white">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-black border border-secondary rounded-1 shadow-lg font-monospace text-white">
                 
                 <div class="modal-header border-bottom border-secondary mb-4">
                     <h5 class="modal-title text-uppercase fw-bold ps-2" id="modalFiltriLabel">Filtri di Ricerca</h5>
@@ -591,78 +592,127 @@
                 </div>
 
                 <div class="modal-body px-4 px-md-5 pb-5 pt-0">
-                    <div class="row g-5">
+                    <form id="formFiltri" class="d-flex flex-column h-100">
                         
-                        <div class="col-lg-5">
-                            <form id="formFiltri" class="d-flex flex-column h-100">
-                                
-                                <div class="mb-4">
-                                    <label for="console" class="form-label small text-secondary mb-1">CONSOLE</label>
-                                    <select class="form-select" id="console">
-                                        <option value="" selected disabled>Seleziona console...</option>
-                                        <option value="playstation">PlayStation</option>
-                                        <option value="xbox">Xbox</option>
-                                        <option value="nintendo">Nintendo</option>
-                                    </select>
-                                </div>
-
-                                <div class="mb-4">
-                                    <label class="form-label small text-secondary mb-1 d-block">CONDIZIONI</label>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" id="condizNuovo" value="nuovo">
-                                        <label class="form-check-label small" for="condizNuovo">Nuovo</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" id="condizComeNuovo" value="come_nuovo">
-                                        <label class="form-check-label small" for="condizComeNuovo">Come Nuovo</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" id="condizBuono" value="buone">
-                                        <label class="form-check-label small" for="condizBuono">Buone</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" name="condizione" id="condizDiscrete" value="discrete">
-                                        <label class="form-check-label small" for="condizDiscrete">Discrete</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" id="condizPezziRicambio" value="pezzi_di_ricambio">
-                                        <label class="form-check-label small" for="condizPezziRicambio">Pezzi di ricambio</label>
-                                    </div>
-                                </div>
-
-                                <div class="mb-4">
-                                    <label class="form-label small text-secondary mb-2 d-block">PREZZO</label>
-                                    <div class="d-flex justify-content-between text-white mb-2 font-monospace fw-bold">
-                                        <span id="prezzoMinLabel">€ 0</span>
-                                        <span id="prezzoMaxLabel">€ 1000</span>
-                                    </div>
-                                    <div class="range-slider-container position-relative">
-                                        <div class="slider-track" id="sliderTrack"></div>
-                                        <input type="range" min="0" max="1000" value="0" id="rangeMin" class="double-slider">
-                                        <input type="range" min="0" max="1000" value="1000" id="rangeMax" class="double-slider">
-                                    </div>
-                                </div>
-
-                                <div class="mb-4">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="spedizione">
-                                        <label class="form-check-label small text-secondary" for="spedizione">
-                                            Necessaria spedizione
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <div class="mt-auto d-flex gap-2 pt-3">
-                                    <button type="button" id="btnAzzera" class="btn btn-outline-secondary w-50 text-uppercase fw-bold py-2">
-                                        Azzera filtri
-                                    </button>
-                                    <button type="submit" class="btn bottone_login w-50 text-uppercase fw-bold py-2">
-                                        Applica filtri
-                                    </button>
-                                </div>
-
-                            </form>
+                        
+                        <div class="mb-4">
+                            <label for="filtroTipologia" class="form-label small text-secondary mb-1">TIPOLOGIA</label>
+                            <select class="form-select bg-black text-white border-secondary shadow-none" id="filtroTipologia">
+                                <option value="" selected>Tutte le categorie</option>
+                                <option value="console_fisse">Console Fisse</option>
+                                <option value="console_portatili">Console Portatili</option>
+                                <option value="giochi">Giochi</option>
+                                <option value="accessori">Accessori</option>
+                            </select>
                         </div>
+
+                        
+                        <div class="mb-4">
+                            <label for="filtroMarca" class="form-label small text-secondary mb-1">MARCA</label>
+                            <select class="form-select bg-black text-white border-secondary shadow-none" id="filtroMarca">
+                                <option value="" selected>Qualsiasi marca</option>
+                                <option value="playstation">PlayStation</option>
+                                <option value="xbox">Xbox</option>
+                                <option value="nintendo">Nintendo</option>
+                                <option value="sega">Sega</option>
+                                <option value="commodore">Commodore</option>
+                                <option value="atari">Atari</option>
+                            </select>
+                        </div>
+
+                        
+                        
+                        <div class="mb-4">
+                            <label for="filtroZonaSeleziona" class="form-label small text-secondary mb-1">ZONA</label>
+                            <select class="form-select bg-black text-white border-secondary shadow-none mb-2" id="filtroZonaSeleziona">
+                                <option value="italia" selected>Tutta Italia</option>
+                                <option value="regione">Regione</option>
+                                <option value="citta">Città</option>
+                            </select>
+                            
+                            
+                            <div id="boxInputRegione" class="d-none position-relative">
+                                <input type="text" class="form-control bg-transparent text-white border-secondary shadow-none" id="inputRegione" placeholder="Es. Lazio, Lombardia..." autocomplete="off">
+                                
+                                <ul class="list-group position-absolute w-100 mt-1 d-none shadow-lg" id="suggerimentiRegione" style="z-index: 1050; max-height: 150px; overflow-y: auto;"></ul>
+                            </div>
+
+                            
+                            <div id="boxInputCitta" class="d-none position-relative">
+                                <input type="text" class="form-control bg-transparent text-white border-secondary shadow-none" id="inputCitta" placeholder="Es. Roma, Milano..." autocomplete="off">
+                                
+                                <ul class="list-group position-absolute w-100 mt-1 d-none shadow-lg" id="suggerimentiCitta" style="z-index: 1050; max-height: 150px; overflow-y: auto;"></ul>
+                            </div>
+                        </div>
+
+                        
+                        <div class="mb-4">
+                            <label class="form-label small text-secondary mb-1 d-block">CONDIZIONI</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="condizNuovo" value="nuovo">
+                                <label class="form-check-label small" for="condizNuovo">Nuovo</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="condizComeNuovo" value="come_nuovo">
+                                <label class="form-check-label small" for="condizComeNuovo">Come Nuovo</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="condizBuono" value="buone">
+                                <label class="form-check-label small" for="condizBuono">Buone</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="condizDiscrete" value="discrete">
+                                <label class="form-check-label small" for="condizDiscrete">Discrete</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="condizPezziRicambio" value="pezzi_di_ricambio">
+                                <label class="form-check-label small" for="condizPezziRicambio">Pezzi di ricambio</label>
+                            </div>
+                        </div>
+
+                        
+                        <div class="mb-4">
+                            <label class="form-label small text-secondary mb-2 d-block">PREZZO (€)</label>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <input type="number" class="form-control bg-transparent text-white border-secondary shadow-none" id="prezzoMin" placeholder="Da" min="0">
+                                </div>
+                                <div class="col-6">
+                                    <input type="number" class="form-control bg-transparent text-white border-secondary shadow-none" id="prezzoMax" placeholder="A" min="0">
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div class="mb-4">
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" id="spedizione">
+                                <label class="form-check-label small text-secondary" for="spedizione">
+                                    Spedizione disponibile
+                                </label>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="scambioMano">
+                                <label class="form-check-label small text-secondary" for="scambioMano">
+                                    Scambio a mano
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mt-auto d-flex gap-2 pt-3 border-top border-secondary">
+                            <button type="button" id="btnAzzera" class="btn btn-outline-secondary w-50 text-uppercase fw-bold py-2">
+                                Azzera
+                            </button>
+                            <button type="submit" class="btn bottone_login w-50 text-uppercase fw-bold py-2">
+                                Applica
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
                         <div class="col-lg-7 d-flex flex-column border-start border-secondary ps-lg-5">
                             <label class="form-label small text-secondary mb-2 d-block">ZONA DI RICERCA (Trascina per spostare)</label>

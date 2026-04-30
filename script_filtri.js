@@ -79,27 +79,106 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // --- MAPPA ---
-    let map;
-    function inizializzaMappa() {
-        if (map || !document.getElementById('mappaContainer')) return;
-        map = L.map('mappaContainer').setView([41.9032, 12.5113], 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
-        }).addTo(map);
-        const leafletContainer = document.querySelector('.leaflet-container');
-        if (leafletContainer) {
-            leafletContainer.style.filter = "brightness(0.8) contrast(1.2) invert(100%) hue-rotate(180deg) saturate(0.5)";
-        }
-    }
+    document.addEventListener("DOMContentLoaded", function() {
+    
+        const selectZona = document.getElementById('filtroZonaSeleziona');
+        const boxRegione = document.getElementById('boxInputRegione');
+        const boxCitta = document.getElementById('boxInputCitta');
+        const inputRegione = document.getElementById('inputRegione');
+        const inputCitta = document.getElementById('inputCitta');
 
-    const modalFiltriEl = document.getElementById('modalFiltri');
-    if (modalFiltriEl) {
-        modalFiltriEl.addEventListener('shown.bs.modal', function () {
-            if (!map) inizializzaMappa();
-            else map.invalidateSize();
-        });
-    }
+        if (selectZona) {
+            selectZona.addEventListener('change', function() {
+                // Nascondiamo tutto e svuotiamo i campi testuali
+                boxRegione.classList.add('d-none');
+                boxCitta.classList.add('d-none');
+                inputRegione.value = '';
+                inputCitta.value = '';
+
+                // Mostriamo solo quello selezionato
+                if (this.value === 'regione') {
+                    boxRegione.classList.remove('d-none');
+                    inputRegione.focus(); // Mette subito il cursore per farti scrivere
+                } else if (this.value === 'citta') {
+                    boxCitta.classList.remove('d-none');
+                    inputCitta.focus();
+                }
+            });
+        }
+
+        const arrayRegioni = [
+            "Abruzzo", "Basilicata", "Calabria", "Campania", "Emilia-Romagna", 
+            "Friuli-Venezia Giulia", "Lazio", "Liguria", "Lombardia", "Marche", 
+            "Molise", "Piemonte", "Puglia", "Sardegna", "Sicilia", "Toscana", 
+            "Trentino-Alto Adige", "Umbria", "Valle d'Aosta", "Veneto"
+        ];
+
+        const arrayCitta = [
+            "Roma", "Milano", "Napoli", "Torino", "Palermo", "Genova", "Bologna", 
+            "Firenze", "Bari", "Catania", "Venezia", "Verona", "Messina", "Padova", 
+            "Trieste", "Brescia", "Parma", "Taranto", "Prato", "Modena", "Rovigo", 
+            "Rimini", "Reggio Emilia", "Perugia", "Livorno", "Ravenna", "Cagliari"
+        ]; // Puoi aggiungerne quante ne vuoi!
+
+        function attivaAutocompletamento(inputId, listaId, database) {
+            const campoInput = document.getElementById(inputId);
+            const contenitoreLista = document.getElementById(listaId);
+
+            if(!campoInput || !contenitoreLista) return;
+
+            // Cosa succede ogni volta che digiti una lettera
+            campoInput.addEventListener('input', function() {
+                const testoScritto = this.value.toLowerCase();
+                contenitoreLista.innerHTML = ''; // Pulisce i vecchi suggerimenti
+                
+                // Se la casella è vuota, nascondi la tendina
+                if (!testoScritto) {
+                    contenitoreLista.classList.add('d-none');
+                    return;
+                }
+
+                // Filtra l'array: trova tutte le parole che iniziano con le lettere digitate
+                const risultatiTrovati = database.filter(elemento => 
+                    elemento.toLowerCase().startsWith(testoScritto)
+                );
+
+                // Se c'è almeno un risultato, creiamo i bottoncini
+                if (risultatiTrovati.length > 0) {
+                    contenitoreLista.classList.remove('d-none');
+                    
+                    risultatiTrovati.forEach(risultato => {
+                        const riga = document.createElement('li');
+                        // Applichiamo le classi di Bootstrap per farle stile Retro Dark
+                        riga.className = 'list-group-item list-group-item-action bg-black text-white border-secondary';
+                        riga.style.cursor = 'pointer'; // Cambia la freccina nel dito che clicca
+                        riga.textContent = risultato;
+                        
+                        // Cosa succede se clicco su un suggerimento?
+                        riga.addEventListener('click', function() {
+                            campoInput.value = risultato; // Scrive la città nell'input
+                            contenitoreLista.classList.add('d-none'); // Nasconde la tendina
+                        });
+                        
+                        contenitoreLista.appendChild(riga);
+                    });
+                } else {
+                    contenitoreLista.classList.add('d-none');
+                }
+            });
+
+            // Sicurezza extra: nascondi la tendina se clicchi fuori
+            document.addEventListener('click', function(e) {
+                if (e.target !== campoInput && e.target !== contenitoreLista) {
+                    contenitoreLista.classList.add('d-none');
+                }
+            });
+        }
+
+        // Accendiamo i motori passando gli ID HTML e gli array di dati
+        attivaAutocompletamento('inputRegione', 'suggerimentiRegione', arrayRegioni);
+        attivaAutocompletamento('inputCitta', 'suggerimentiCitta', arrayCitta);
+
+    });
 
     // --- LOGICA CORE: CARICAMENTO, SINCRONIZZAZIONE E RICERCA ---
 

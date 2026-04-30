@@ -166,6 +166,14 @@ function NavbarDestra() {
         <i className="bi bi-plus-circle me-2 fs-5"></i> Crea Annuncio
       </Link>
 
+      {/* ── PULSANTE CHAT (visibile solo se loggato) ── */}
+      <Link
+        to="/chat"
+        className="btn bottone_login font-monospace text-uppercase rounded-1 d-flex align-items-center justify-content-center w-100 w-lg-auto px-4 py-2 text-nowrap"
+      >
+        <i className="bi bi-chat-dots-fill me-2 fs-5"></i> Chat
+      </Link>
+
       <div className="nav-item dropdown w-100 w-lg-auto">
         <a
           href="#"

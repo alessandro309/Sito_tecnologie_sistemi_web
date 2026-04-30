@@ -1,14 +1,18 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from '../componenti/Navbar';
 import BarraRicerca from '../componenti/BarraRicerca';
 import ModalLogin from '../componenti/Login';
 import ModalFiltri from '../componenti/Filtri';
 import Footer from '../componenti/Footer';
 import { api, BASE } from '../api';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function PaginaAnnuncio() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { utente } = useAuth();
+
   const [annuncio, setAnnuncio] = useState(null);
   const [fotoProfilo, setFotoProfilo] = useState(null);
   const [indiceImmagine, setIndiceImmagine] = useState(0);
@@ -19,7 +23,6 @@ export default function PaginaAnnuncio() {
       .then((r) => r.json())
       .then(async (dati) => {
         setAnnuncio(dati);
-        // Carica anche la foto profilo del venditore
         try {
           const utenteResp = await api.utente(dati.utente);
           if (utenteResp.ok) {
@@ -56,6 +59,35 @@ export default function PaginaAnnuncio() {
   function successiva() {
     setIndiceImmagine((i) => (i === immagini.length - 1 ? 0 : i + 1));
   }
+
+  // Naviga alla chat. Se l'utente non è loggato, apre il modal di login.
+  // Quando il backend gestirà le conversazioni, qui si potrà passare anche
+  // l'id annuncio e il venditore come query param o state, ad esempio:
+  // navigate('/chat', { state: { venditore: annuncio.utente, idAnnuncio: id } })
+  function apriChat() {
+    if (!utente) {
+      // Apre il modal login tramite Bootstrap
+      const modal = document.getElementById('modalLogin');
+      if (modal) {
+        const bsModal = window.bootstrap?.Modal.getOrCreateInstance(modal);
+        bsModal?.show();
+      }
+      return;
+    }
+    // L'utente è il proprietario dell'annuncio: non può contattare se stesso
+    if (utente.nickname === annuncio.utente) return;
+
+    navigate('/chat', {
+      state: {
+        venditore: annuncio.utente,
+        idAnnuncio: id,
+        titoloAnnuncio: annuncio.nome,
+        prezzoAnnuncio: annuncio.prezzo,
+      },
+    });
+  }
+
+  const isProprietario = utente?.nickname === annuncio.utente;
 
   return (
     <>
@@ -115,9 +147,22 @@ export default function PaginaAnnuncio() {
                     <button className="btn pulsante_verde font-monospace px-4 py-2 rounded-2 shadow-sm d-flex align-items-center justify-content-center flex-grow-1">
                       <i className="bi bi-cart-fill me-2"></i>Acquista
                     </button>
-                    <button className="btn pulsante_arancione font-monospace px-4 py-2 rounded-2 shadow-sm d-flex align-items-center justify-content-center flex-grow-1">
-                      <i className="bi bi-chat-dots-fill me-2"></i>Contatta
-                    </button>
+
+                    {/* ── PULSANTE CONTATTA ── */}
+                    {isProprietario ? (
+                      // Se è il proprietario mostra un badge informativo al posto del pulsante
+                      <span className="btn pulsante_arancione font-monospace px-4 py-2 rounded-2 shadow-sm d-flex align-items-center justify-content-center flex-grow-1 opacity-50" style={{ cursor: 'default' }}>
+                        <i className="bi bi-person-check-fill me-2"></i>Tuo annuncio
+                      </span>
+                    ) : (
+                      <button
+                        className="btn pulsante_arancione font-monospace px-4 py-2 rounded-2 shadow-sm d-flex align-items-center justify-content-center flex-grow-1"
+                        onClick={apriChat}
+                        title={!utente ? 'Accedi per contattare il venditore' : `Contatta ${annuncio.utente}`}
+                      >
+                        <i className="bi bi-chat-dots-fill me-2"></i>Contatta
+                      </button>
+                    )}
                   </div>
                 </div>
 
@@ -178,7 +223,6 @@ export default function PaginaAnnuncio() {
       <ModalLogin />
       <ModalFiltri />
 
-      {/* Stili inline della pagina annuncio (come nel file originale) */}
       <style>{`
         .container-immagine-principale {
           height: 450px; width: 100%; display: flex; align-items: center;
