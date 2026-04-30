@@ -1,555 +1,626 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useLocation } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import Navbar from "../componenti/Navbar";
+import ModalLogin from "../componenti/Login";
+import ModalFiltri from "../componenti/Filtri";
 
-// ── Dati mock ──────────────────────────────────────────────────────────────────
-const MOCK_CONVERSAZIONI = [
-  {
-    id: 1,
-    utente: { nome: "Mario Rossi", avatar: "MR" },
-    annuncio: { titolo: "PlayStation 2 Fat – ottimo stato", prezzo: "€ 85,00" },
-    ultimoMessaggio: "Va bene, possiamo vederci domani in centro!",
-    ora: "14:32",
-    nonLetti: 2,
-    attiva: true,
-    messaggi: [
-      { id: 1, testo: "Ciao! È ancora disponibile la PS2?", mio: false, ora: "14:10" },
-      { id: 2, testo: "Sì, perfettamente funzionante, ho anche tutti i cavi originali.", mio: true, ora: "14:15" },
-      { id: 3, testo: "Perfetto! Accetti 75€? Sono disposto a venirti a prendere.", mio: false, ora: "14:20" },
-      { id: 4, testo: "Il prezzo è fisso a 85€, ma posso lasciarti un paio di giochi inclusi.", mio: true, ora: "14:25" },
-      { id: 5, testo: "Affare fatto! Quali giochi hai?", mio: false, ora: "14:28" },
-      { id: 6, testo: "Va bene, possiamo vederci domani in centro!", mio: false, ora: "14:32" },
-    ],
-  },
-  {
-    id: 2,
-    utente: { nome: "Giulia Verdi", avatar: "GV" },
-    annuncio: { titolo: "Game Boy Color – funzionante", prezzo: "€ 45,00" },
-    ultimoMessaggio: "Ok, capisco. Grazie mille comunque!",
-    ora: "Ieri",
-    nonLetti: 0,
-    attiva: false,
-    messaggi: [
-      { id: 1, testo: "Ciao, il Game Boy ha ancora le viti originali?", mio: false, ora: "Ieri 10:05" },
-      { id: 2, testo: "Purtroppo no, una è stata sostituita, ma funziona perfettamente.", mio: true, ora: "Ieri 10:30" },
-      { id: 3, testo: "Ok, capisco. Grazie mille comunque!", mio: false, ora: "Ieri 10:45" },
-    ],
-  },
-  {
-    id: 3,
-    utente: { nome: "Luca Bianchi", avatar: "LB" },
-    annuncio: { titolo: "Nintendo 64 + 3 giochi", prezzo: "€ 120,00" },
-    ultimoMessaggio: "Ottimo! Ti mando la foto della console.",
-    ora: "Lun",
-    nonLetti: 0,
-    attiva: false,
-    messaggi: [
-      { id: 1, testo: "È possibile spedire in Sicilia?", mio: false, ora: "Lun 09:00" },
-      { id: 2, testo: "Certo, spedisco con corriere tracciato. Costi circa 8€.", mio: true, ora: "Lun 09:20" },
-      { id: 3, testo: "Ottimo! Ti mando la foto della console.", mio: false, ora: "Lun 09:25" },
-    ],
-  },
-  {
-    id: 4,
-    utente: { nome: "Sara Neri", avatar: "SN" },
-    annuncio: { titolo: "Controller PS1 originale – nuovo", prezzo: "€ 22,00" },
-    ultimoMessaggio: "Hai già venduto? Non vedo più l'annuncio.",
-    ora: "Dom",
-    nonLetti: 1,
-    attiva: false,
-    messaggi: [
-      { id: 1, testo: "Hai già venduto? Non vedo più l'annuncio.", mio: false, ora: "Dom 20:15" },
-    ],
-  },
-];
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-function Iniziali({ testo, size = 38 }) {
-  return (
-    <div
-      style={{
-        width: size,
-        height: size,
-        minWidth: size,
-        borderRadius: "50%",
-        background: "#1a1a1a",
-        border: "1.5px solid #dc3545",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontFamily: "monospace",
-        fontSize: size * 0.34,
-        fontWeight: "bold",
-        color: "#dc3545",
-        letterSpacing: 1,
-      }}
-    >
-      {testo}
-    </div>
-  );
+function formattaOra(iso) {
+  if (!iso) return "";
+  const d = new Date(iso);
+  const oggi = new Date();
+  const ieri = new Date(oggi);
+  ieri.setDate(oggi.getDate() - 1);
+  if (d.toDateString() === oggi.toDateString())
+    return d.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
+  if (d.toDateString() === ieri.toDateString())
+    return "Ieri " + d.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
+  return d.toLocaleDateString("it-IT", { day: "2-digit", month: "2-digit" });
 }
 
-// Ricava le iniziali da un nome completo o da un nickname
 function inizialiDa(nome = "") {
   const parti = nome.trim().split(" ");
   if (parti.length >= 2) return (parti[0][0] + parti[1][0]).toUpperCase();
   return nome.slice(0, 2).toUpperCase();
 }
 
-// ── Componente principale ─────────────────────────────────────────────────────
+function Avatar({ nickname, size = 38 }) {
+  return (
+    <div
+      className="chat-avatar flex-shrink-0"
+      style={{ width: size, height: size, minWidth: size, fontSize: size * 0.34 }}
+    >
+      {inizialiDa(nickname)}
+    </div>
+  );
+}
+
+
 export default function Chat() {
   const location = useLocation();
-
-  // Se arriviamo da PaginaAnnuncio, location.state contiene il contesto
+  const { utente, loading: authLoading } = useAuth();
   const nuovaChat = location.state ?? null;
 
-  const [conversazioni, setConversazioni] = useState(() => {
-    // Se c'è un contesto di navigazione, aggiungi in cima una nuova conversazione
-    // (solo se non esiste già una con lo stesso venditore e annuncio)
-    if (!nuovaChat) return MOCK_CONVERSAZIONI;
-
-    const esiste = MOCK_CONVERSAZIONI.some(
-      (c) =>
-        c.utente.nome === nuovaChat.venditore &&
-        c.annuncio.titolo === nuovaChat.titoloAnnuncio
-    );
-    if (esiste) return MOCK_CONVERSAZIONI;
-
-    const nuova = {
-      id: Date.now(),
-      utente: { nome: nuovaChat.venditore, avatar: inizialiDa(nuovaChat.venditore) },
-      annuncio: {
-        titolo: nuovaChat.titoloAnnuncio,
-        prezzo: `€ ${nuovaChat.prezzoAnnuncio}`,
-      },
-      ultimoMessaggio: "Nuova conversazione",
-      ora: "Adesso",
-      nonLetti: 0,
-      attiva: false,
-      messaggi: [],
-    };
-    return [nuova, ...MOCK_CONVERSAZIONI];
-  });
-
-  const [selezionata, setSelezionata] = useState(() => {
-    // Apre automaticamente la nuova conversazione se arriviamo dall'annuncio
-    if (!nuovaChat) return null;
-    return conversazioni[0].utente.nome === nuovaChat.venditore
-      ? conversazioni[0]
-      : null;
-  });
-
+  const [conversazioni, setConversazioni] = useState([]);
+  const [selezionata, setSelezionata] = useState(null);
+  const [messaggi, setMessaggi] = useState([]);
   const [testo, setTesto] = useState("");
   const [ricerca, setRicerca] = useState("");
+  const [connesso, setConnesso] = useState(false);
+  const [caricandoConv, setCaricandoConv] = useState(false);
+  const [caricandoMsg, setCaricandoMsg] = useState(false);
+
+  const wsRef = useRef(null);
+  const selezionataRef = useRef(null);
   const endRef = useRef(null);
+  const nuovaChatProcessata = useRef(false);
+
+  useEffect(() => { selezionataRef.current = selezionata; }, [selezionata]);
+  useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messaggi]);
+
+
+  const fetchConversazioni = useCallback(async () => {
+    if (!utente) return [];
+    setCaricandoConv(true);
+    try {
+      const r = await fetch(`/api/chat/conversazioni?nickname=${utente.nickname}`);
+      const data = await r.json();
+      setConversazioni(data);
+      return data;
+    } catch {
+      return [];
+    } finally {
+      setCaricandoConv(false);
+    }
+  }, [utente?.nickname]);
+
+  useEffect(() => { if (utente) fetchConversazioni(); }, [fetchConversazioni]);
+
+  // WebSocket
 
   useEffect(() => {
-    if (endRef.current) endRef.current.scrollIntoView({ behavior: "smooth" });
-  }, [selezionata?.messaggi]);
+    if (!utente) return;
+    const ws = new WebSocket(`ws://${window.location.host}/ws`);
+    wsRef.current = ws;
+
+    ws.onopen = () => {
+      ws.send(JSON.stringify({ tipo: "autentica", nickname: utente.nickname }));
+      setConnesso(true);
+    };
+
+    ws.onmessage = (event) => {
+      let msg;
+      try { msg = JSON.parse(event.data); } catch { return; }
+      if (msg.tipo !== "messaggio") return;
+
+      const nuovoMsg = msg.messaggio;
+      const convAttiva = selezionataRef.current;
+
+      if (convAttiva?.id === nuovoMsg.conversazioneId) {
+        setMessaggi((prev) => [...prev, nuovoMsg]);
+      }
+
+      setConversazioni((prev) =>
+        prev.map((c) => {
+          if (c.id !== nuovoMsg.conversazioneId) return c;
+          const nonLetti =
+            nuovoMsg.mittente !== utente.nickname &&
+            convAttiva?.id !== nuovoMsg.conversazioneId
+              ? (c.nonLetti || 0) + 1
+              : c.nonLetti;
+          return { ...c, ultimoMessaggio: nuovoMsg.testo, oraUltimo: nuovoMsg.ora, nonLetti };
+        })
+      );
+    };
+
+    ws.onclose = () => setConnesso(false);
+    ws.onerror = () => setConnesso(false);
+    return () => ws.close();
+  }, [utente?.nickname]);
+
+  // Gestione navigazione da PaginaAnnuncio 
+
+  useEffect(() => {
+    if (!nuovaChat || !utente || nuovaChatProcessata.current) return;
+    nuovaChatProcessata.current = true;
+
+    fetch("/api/chat/conversazioni", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        mittente: utente.nickname,
+        destinatario: nuovaChat.venditore,
+        idAnnuncio: nuovaChat.idAnnuncio,
+        titoloAnnuncio: nuovaChat.titoloAnnuncio,
+        prezzoAnnuncio: nuovaChat.prezzoAnnuncio,
+      }),
+    })
+      .then((r) => r.json())
+      .then(async (conv) => {
+        const convs = await fetchConversazioni();
+        const trovata = convs.find((c) => c.id === conv.id) ?? {
+          ...conv,
+          altroUtente: nuovaChat.venditore,
+          ultimoMessaggio: null,
+          oraUltimo: conv.creatoIl,
+          nonLetti: 0,
+        };
+        apriChat(trovata);
+      })
+      .catch(console.error);
+  }, [utente?.nickname]);
+
+  // ── Azioni ────────────────────────────────────────────────────────────────
 
   function apriChat(conv) {
+    setSelezionata(conv);
+    setMessaggi([]);
+    setCaricandoMsg(true);
     setConversazioni((prev) =>
       prev.map((c) => (c.id === conv.id ? { ...c, nonLetti: 0 } : c))
     );
-    setSelezionata({ ...conv, nonLetti: 0 });
+    fetch(`/api/chat/messaggi?conversazioneId=${conv.id}&nickname=${utente.nickname}`)
+      .then((r) => r.json())
+      .then(setMessaggi)
+      .catch(console.error)
+      .finally(() => setCaricandoMsg(false));
   }
 
   function invia() {
-    if (!testo.trim() || !selezionata) return;
-    const nuovo = {
-      id: Date.now(),
-      testo: testo.trim(),
-      mio: true,
-      ora: new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" }),
-    };
-    const aggiornata = {
-      ...selezionata,
-      messaggi: [...selezionata.messaggi, nuovo],
-      ultimoMessaggio: nuovo.testo,
-      ora: "Adesso",
-    };
-    setSelezionata(aggiornata);
-    setConversazioni((prev) =>
-      prev.map((c) => (c.id === aggiornata.id ? aggiornata : c))
+    if (!testo.trim() || !selezionata || !wsRef.current || wsRef.current.readyState !== WebSocket.OPEN)
+      return;
+    wsRef.current.send(
+      JSON.stringify({ tipo: "messaggio", conversazioneId: selezionata.id, testo: testo.trim() })
     );
     setTesto("");
   }
 
   const filtrate = conversazioni.filter(
     (c) =>
-      c.utente.nome.toLowerCase().includes(ricerca.toLowerCase()) ||
-      c.annuncio.titolo.toLowerCase().includes(ricerca.toLowerCase())
+      c.altroUtente?.toLowerCase().includes(ricerca.toLowerCase()) ||
+      c.titoloAnnuncio?.toLowerCase().includes(ricerca.toLowerCase())
   );
 
-  const totNonLetti = conversazioni.reduce((s, c) => s + c.nonLetti, 0);
+  const totNonLetti = conversazioni.reduce((s, c) => s + (c.nonLetti || 0), 0);
+
+  // ── Stato: caricamento auth ───────────────────────────────────────────────
+
+  if (authLoading) {
+    return (
+      <>
+        <Navbar />
+        <div className="d-flex align-items-center justify-content-center" style={{ minHeight: "50vh" }}>
+          <div className="spinner-border text-danger" role="status" />
+        </div>
+      </>
+    );
+  }
+
+  // ── Stato: non loggato ────────────────────────────────────────────────────
+
+  if (!utente) {
+    return (
+      <>
+        <Navbar />
+        <ModalLogin />
+        <ModalFiltri />
+        <div className="d-flex flex-column align-items-center justify-content-center gap-3 font-monospace text-center" style={{ minHeight: "55vh" }}>
+          <i className="bi bi-chat-lock-fill text-danger" style={{ fontSize: 52 }} />
+          <h5 className="text-white mb-0 text-uppercase" style={{ letterSpacing: 2 }}>
+            Retro<span className="text-danger">Chat</span>
+          </h5>
+          <p className="text-secondary small mb-0">Accedi per usare la chat.</p>
+          <button
+            className="btn bottone_login font-monospace text-uppercase px-4"
+            data-bs-toggle="modal"
+            data-bs-target="#modalLogin"
+          >
+            <i className="bi bi-person-fill me-2" />Accedi
+          </button>
+        </div>
+      </>
+    );
+  }
+
+  // ── Layout principale ─────────────────────────────────────────────────────
 
   return (
-    <div
-      style={{
-        background: "#141414",
-        minHeight: "100vh",
-        fontFamily: "monospace",
-        color: "#fff",
-      }}
-    >
-      {/* ── Navbar ── */}
-      <nav
-        style={{
-          background: "#000",
-          borderBottom: "1px solid #333",
-          padding: "0 1.5rem",
-          height: 56,
-          display: "flex",
-          alignItems: "center",
-          gap: 16,
-        }}
-      >
-        <a href="/" style={{ textDecoration: "none" }}>
-          <span style={{ fontWeight: "bold", fontSize: 18, letterSpacing: 2, color: "#fff" }}>
-            RETRO<span style={{ color: "#dc3545" }}>SHOP</span>
-          </span>
-        </a>
-        <span
-          style={{
-            background: "#141414",
-            border: "1px solid #333",
-            borderRadius: 4,
-            padding: "2px 10px",
-            fontSize: 13,
-            color: "#aaa",
-          }}
-        >
-          Messaggi
-        </span>
-        {totNonLetti > 0 && (
-          <span
-            style={{
-              background: "#000",
-              border: "2px solid #dc3545",
-              color: "#dc3545",
-              borderRadius: "50%",
-              width: 22,
-              height: 22,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 12,
-              fontWeight: "bold",
-            }}
-          >
-            {totNonLetti}
-          </span>
-        )}
-      </nav>
+    <>
+      {/* Il wrapper esterno occupa 100dvh come colonna flex.
+          La Navbar prende la sua altezza naturale; il resto va alla chat. */}
+      <div style={{ height: "100dvh", display: "flex", flexDirection: "column" }}>
+        <div style={{ flexShrink: 0 }}>
+          <Navbar />
+        </div>
 
-      {/* ── Layout principale ── */}
-      <div style={{ display: "flex", height: "calc(100vh - 56px)" }}>
+        <div className="chat-wrapper">
 
-        {/* ── Sidebar lista conversazioni ── */}
-        <aside
-          style={{
-            width: 320,
-            minWidth: 260,
-            maxWidth: 340,
-            borderRight: "1px solid #222",
-            background: "#0a0a0a",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          {/* Ricerca */}
-          <div style={{ padding: "14px 16px 10px", borderBottom: "1px solid #1f1f1f" }}>
-            <div style={{ position: "relative" }}>
-              <i
-                className="bi bi-search"
-                style={{
-                  position: "absolute",
-                  left: 10,
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  color: "#555",
-                  fontSize: 14,
-                }}
-              />
-              <input
-                value={ricerca}
-                onChange={(e) => setRicerca(e.target.value)}
-                placeholder="Cerca conversazione..."
-                style={{
-                  background: "#141414",
-                  border: "1px solid #333",
-                  borderRadius: 4,
-                  color: "#fff",
-                  padding: "7px 10px 7px 32px",
-                  width: "100%",
-                  fontFamily: "monospace",
-                  fontSize: 13,
-                  outline: "none",
-                }}
-              />
-            </div>
-          </div>
+          {/* ── Sidebar ── */}
+          <aside className="chat-sidebar">
 
-          {/* Lista */}
-          <div style={{ overflowY: "auto", flex: 1 }}>
-            {filtrate.length === 0 && (
-              <div style={{ padding: 24, color: "#555", fontSize: 13, textAlign: "center" }}>
-                Nessuna conversazione trovata
-              </div>
-            )}
-            {filtrate.map((conv) => {
-              const attiva = selezionata?.id === conv.id;
-              return (
-                <div
-                  key={conv.id}
-                  onClick={() => apriChat(conv)}
-                  style={{
-                    display: "flex",
-                    alignItems: "flex-start",
-                    gap: 12,
-                    padding: "14px 16px",
-                    cursor: "pointer",
-                    borderBottom: "1px solid #1a1a1a",
-                    background: attiva ? "#1a0a0a" : "transparent",
-                    borderLeft: attiva ? "3px solid #dc3545" : "3px solid transparent",
-                    transition: "background 0.15s",
-                  }}
+            {/* Header sidebar */}
+            <div className="chat-sidebar-header border-bottom border-dark">
+              <div className="d-flex align-items-center justify-content-between mb-2">
+                <span className="font-monospace fw-bold text-white text-uppercase" style={{ letterSpacing: 1 }}>
+                  <i className="bi bi-chat-dots-fill text-danger me-2" />
+                  Messaggi
+                  {totNonLetti > 0 && (
+                    <span
+                      className="ms-2 badge"
+                      style={{ background: "#000", border: "2px solid #dc3545", color: "#dc3545", fontSize: 11 }}
+                    >
+                      {totNonLetti}
+                    </span>
+                  )}
+                </span>
+                <span
+                  className="font-monospace d-flex align-items-center gap-1"
+                  style={{ fontSize: 11, color: connesso ? "#2ecc71" : "#6c757d" }}
                 >
-                  <Iniziali testo={conv.utente.avatar} />
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <span style={{ fontWeight: "bold", fontSize: 13, color: "#fff" }}>
-                        {conv.utente.nome}
-                      </span>
-                      <span style={{ fontSize: 11, color: "#555" }}>{conv.ora}</span>
+                  <span
+                    style={{
+                      width: 6, height: 6, borderRadius: "50%",
+                      background: connesso ? "#2ecc71" : "#6c757d",
+                      display: "inline-block",
+                    }}
+                  />
+                  {connesso ? "live" : "off"}
+                </span>
+              </div>
+
+              {/* Ricerca */}
+              <div className="position-relative">
+                <i
+                  className="bi bi-search position-absolute text-secondary"
+                  style={{ left: 10, top: "50%", transform: "translateY(-50%)", fontSize: 13 }}
+                />
+                <input
+                  value={ricerca}
+                  onChange={(e) => setRicerca(e.target.value)}
+                  placeholder="Cerca..."
+                  className="form-control form-control-sm font-monospace chat-search"
+                  style={{ paddingLeft: 30 }}
+                />
+              </div>
+            </div>
+
+            {/* Lista conversazioni */}
+            <div className="chat-conv-list">
+              {caricandoConv ? (
+                <div className="text-center py-4">
+                  <div className="spinner-border spinner-border-sm text-danger" role="status" />
+                </div>
+              ) : filtrate.length === 0 ? (
+                <p className="text-secondary font-monospace small text-center py-4 mb-0">
+                  {ricerca ? "Nessun risultato" : "Nessuna conversazione"}
+                </p>
+              ) : (
+                filtrate.map((conv) => {
+                  const attiva = selezionata?.id === conv.id;
+                  return (
+                    <div
+                      key={conv.id}
+                      onClick={() => apriChat(conv)}
+                      className={`chat-conv-item ${attiva ? "attiva" : ""}`}
+                    >
+                      <Avatar nickname={conv.altroUtente} />
+                      <div className="flex-grow-1" style={{ minWidth: 0 }}>
+                        <div className="d-flex justify-content-between align-items-center">
+                          <span className="font-monospace fw-bold text-white" style={{ fontSize: 13 }}>
+                            {conv.altroUtente}
+                          </span>
+                          <span className="font-monospace text-secondary" style={{ fontSize: 11 }}>
+                            {formattaOra(conv.oraUltimo)}
+                          </span>
+                        </div>
+                        <div className="text-danger font-monospace text-truncate" style={{ fontSize: 11 }}>
+                          {conv.titoloAnnuncio}
+                        </div>
+                        <div className="d-flex justify-content-between align-items-center mt-1">
+                          <span
+                            className="font-monospace text-truncate"
+                            style={{
+                              fontSize: 12,
+                              color: conv.nonLetti > 0 ? "#ddd" : "#666",
+                              fontWeight: conv.nonLetti > 0 ? "bold" : "normal",
+                              maxWidth: "85%",
+                            }}
+                          >
+                            {conv.ultimoMessaggio ?? "Inizia la conversazione"}
+                          </span>
+                          {conv.nonLetti > 0 && (
+                            <span className="badge rounded-pill bg-danger" style={{ fontSize: 10, minWidth: 18 }}>
+                              {conv.nonLetti}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </aside>
+
+          {/* ── Pannello chat ── */}
+          <main className="chat-main">
+            {!selezionata ? (
+              <div className="d-flex flex-column align-items-center justify-content-center h-100 gap-3">
+                <i className="bi bi-chat-square-dots" style={{ fontSize: 52, color: "#2a2a2a" }} />
+                <p className="font-monospace text-secondary small text-uppercase mb-0" style={{ letterSpacing: 1 }}>
+                  Seleziona una conversazione
+                </p>
+              </div>
+            ) : (
+              <div className="d-flex flex-column h-100">
+
+                {/* Header conversazione */}
+                <div className="chat-panel-header border-bottom border-dark">
+                  <Avatar nickname={selezionata.altroUtente} size={42} />
+                  <div style={{ minWidth: 0 }}>
+                    <div className="font-monospace fw-bold text-white" style={{ fontSize: 14 }}>
+                      {selezionata.altroUtente}
                     </div>
                     <div
-                      style={{
-                        fontSize: 11,
-                        color: "#dc3545",
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        marginTop: 1,
-                      }}
+                      className="font-monospace text-truncate"
+                      style={{ fontSize: 11, color: "var(--colore-accento)", maxWidth: 300 }}
                     >
-                      {conv.annuncio.titolo}
-                    </div>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 3 }}>
-                      <span
-                        style={{
-                          fontSize: 12,
-                          color: conv.nonLetti > 0 ? "#ddd" : "#666",
-                          fontWeight: conv.nonLetti > 0 ? "bold" : "normal",
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          maxWidth: "85%",
-                        }}
-                      >
-                        {conv.ultimoMessaggio}
-                      </span>
-                      {conv.nonLetti > 0 && (
-                        <span
-                          style={{
-                            background: "#dc3545",
-                            color: "#fff",
-                            borderRadius: "50%",
-                            width: 18,
-                            height: 18,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            fontSize: 10,
-                            fontWeight: "bold",
-                            minWidth: 18,
-                          }}
-                        >
-                          {conv.nonLetti}
-                        </span>
+                      <i className="bi bi-tag me-1" />
+                      {selezionata.titoloAnnuncio}
+                      {selezionata.prezzoAnnuncio && (
+                        <span className="text-secondary ms-2">· € {selezionata.prezzoAnnuncio}</span>
                       )}
                     </div>
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        </aside>
 
-        {/* ── Pannello chat ── */}
-        <main style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
-          {!selezionata ? (
-            <div
-              style={{
-                flex: 1,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#333",
-                gap: 12,
-              }}
-            >
-              <i className="bi bi-chat-dots" style={{ fontSize: 52, color: "#222" }} />
-              <p style={{ fontFamily: "monospace", fontSize: 13, color: "#444", letterSpacing: 1 }}>
-                Seleziona una conversazione per iniziare
-              </p>
-            </div>
-          ) : (
-            <>
-              {/* Header chat */}
-              <div
-                style={{
-                  padding: "12px 20px",
-                  borderBottom: "1px solid #222",
-                  background: "#000",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 12,
-                }}
-              >
-                <Iniziali testo={selezionata.utente.avatar} />
-                <div>
-                  <div style={{ fontWeight: "bold", fontSize: 14 }}>
-                    {selezionata.utente.nome}
-                  </div>
-                  <div style={{ fontSize: 11, color: "#dc3545" }}>
-                    <i className="bi bi-tag me-1" />
-                    {selezionata.annuncio.titolo}
-                    <span style={{ color: "#555", marginLeft: 6 }}>·</span>
-                    <span style={{ color: "#888", marginLeft: 6 }}>{selezionata.annuncio.prezzo}</span>
-                  </div>
-                </div>
-                <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 8 }}>
-                  {selezionata.attiva ? (
-                    <span style={{ fontSize: 11, color: "#2ecc71", display: "flex", alignItems: "center", gap: 4 }}>
-                      <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#2ecc71", display: "inline-block" }} />
-                      Online
-                    </span>
+                {/* Area messaggi */}
+                <div className="chat-messages">
+                  {caricandoMsg ? (
+                    <div className="text-center py-5">
+                      <div className="spinner-border spinner-border-sm text-danger" role="status" />
+                    </div>
+                  ) : messaggi.length === 0 ? (
+                    <p className="font-monospace text-secondary small text-center py-5 mb-0">
+                      Inizia la conversazione con{" "}
+                      <span className="text-danger">{selezionata.altroUtente}</span>
+                    </p>
                   ) : (
-                    <span style={{ fontSize: 11, color: "#555" }}>Offline</span>
+                    messaggi.map((msg) => {
+                      const mio = msg.mittente === utente.nickname;
+                      return (
+                        <div
+                          key={msg.id}
+                          className={`d-flex mb-2 ${mio ? "justify-content-end" : "justify-content-start"}`}
+                        >
+                          <div style={{ maxWidth: "68%" }}>
+                            <div className={`chat-bubble ${mio ? "mia" : "altrui"} font-monospace`}>
+                              {msg.testo}
+                            </div>
+                            <div
+                              className="font-monospace text-secondary"
+                              style={{ fontSize: 10, marginTop: 3, textAlign: mio ? "right" : "left" }}
+                            >
+                              {formattaOra(msg.ora)}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })
                   )}
+                  <div ref={endRef} />
                 </div>
-              </div>
 
-              {/* Messaggi */}
-              <div
-                style={{
-                  flex: 1,
-                  overflowY: "auto",
-                  padding: "20px 24px",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 10,
-                }}
-              >
-                {selezionata.messaggi.length === 0 && (
-                  <div style={{ textAlign: "center", color: "#444", fontSize: 13, marginTop: 40 }}>
-                    Inizia la conversazione con <strong style={{ color: "#dc3545" }}>{selezionata.utente.nome}</strong>
-                  </div>
-                )}
-                {selezionata.messaggi.map((msg) => (
-                  <div
-                    key={msg.id}
+                {/* Barra di input */}
+                <div className="chat-input-bar border-top border-dark">
+                  <textarea
+                    value={testo}
+                    onChange={(e) => setTesto(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); invia(); }
+                    }}
+                    placeholder={connesso ? "Scrivi un messaggio... (Invio per inviare)" : "In attesa di connessione..."}
+                    disabled={!connesso}
+                    rows={1}
+                    className="chat-textarea font-monospace"
+                  />
+                  <button
+                    onClick={invia}
+                    disabled={!testo.trim() || !connesso}
+                    className="btn chat-send-btn"
                     style={{
-                      display: "flex",
-                      justifyContent: msg.mio ? "flex-end" : "flex-start",
+                      background: testo.trim() && connesso ? "var(--colore-accento)" : "#2a2a2a",
+                      color: testo.trim() && connesso ? "#fff" : "#555",
+                      border: `2px solid ${testo.trim() && connesso ? "var(--colore-accento)" : "#2a2a2a"}`,
                     }}
                   >
-                    <div style={{ maxWidth: "68%" }}>
-                      <div
-                        style={{
-                          padding: "9px 14px",
-                          borderRadius: msg.mio ? "14px 14px 4px 14px" : "14px 14px 14px 4px",
-                          background: msg.mio ? "#dc3545" : "#1a1a1a",
-                          border: msg.mio ? "none" : "1px solid #2a2a2a",
-                          fontSize: 13,
-                          lineHeight: 1.5,
-                          color: "#fff",
-                          wordBreak: "break-word",
-                        }}
-                      >
-                        {msg.testo}
-                      </div>
-                      <div
-                        style={{
-                          fontSize: 10,
-                          color: "#444",
-                          marginTop: 3,
-                          textAlign: msg.mio ? "right" : "left",
-                        }}
-                      >
-                        {msg.ora}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-                <div ref={endRef} />
-              </div>
+                    <i className="bi bi-send-fill" />
+                  </button>
+                </div>
 
-              {/* Input */}
-              <div
-                style={{
-                  borderTop: "1px solid #222",
-                  padding: "12px 16px",
-                  background: "#000",
-                  display: "flex",
-                  gap: 10,
-                  alignItems: "flex-end",
-                }}
-              >
-                <textarea
-                  value={testo}
-                  onChange={(e) => setTesto(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault();
-                      invia();
-                    }
-                  }}
-                  placeholder="Scrivi un messaggio..."
-                  rows={1}
-                  style={{
-                    flex: 1,
-                    background: "#141414",
-                    border: "1px solid #333",
-                    borderRadius: 8,
-                    color: "#fff",
-                    padding: "9px 12px",
-                    fontFamily: "monospace",
-                    fontSize: 13,
-                    resize: "none",
-                    outline: "none",
-                    lineHeight: 1.5,
-                    maxHeight: 120,
-                    overflow: "auto",
-                  }}
-                />
-                <button
-                  onClick={invia}
-                  disabled={!testo.trim()}
-                  style={{
-                    background: testo.trim() ? "#dc3545" : "#2a2a2a",
-                    border: "none",
-                    borderRadius: 8,
-                    color: testo.trim() ? "#fff" : "#555",
-                    width: 40,
-                    height: 40,
-                    cursor: testo.trim() ? "pointer" : "default",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: 16,
-                    transition: "background 0.2s",
-                    flexShrink: 0,
-                  }}
-                >
-                  <i className="bi bi-send-fill" />
-                </button>
               </div>
-            </>
-          )}
-        </main>
+            )}
+          </main>
+
+        </div>
       </div>
-    </div>
+
+      <ModalLogin />
+      <ModalFiltri />
+
+      <style>{`
+        /* ── Layout chat ── */
+        .chat-wrapper {
+          flex: 1;
+          min-height: 0;
+          display: flex;
+          overflow: hidden;
+          background: #0a0a0a;
+        }
+
+        /* ── Sidebar ── */
+        .chat-sidebar {
+          width: 300px;
+          min-width: 260px;
+          max-width: 320px;
+          flex-shrink: 0;
+          display: flex;
+          flex-direction: column;
+          background: #000;
+          border-right: 1px solid #1e1e1e;
+        }
+
+        .chat-sidebar-header {
+          padding: 14px 16px 12px;
+          flex-shrink: 0;
+        }
+
+        /* Input cerca — stesso stile dei form del sito */
+        .chat-search {
+          background: rgba(255,255,255,0.04) !important;
+          border: 1px solid #333 !important;
+          color: #fff !important;
+          border-radius: 4px !important;
+          transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .chat-search:focus {
+          border-color: var(--colore-accento) !important;
+          box-shadow: 0 0 0 0.15rem rgba(255,17,0,0.2) !important;
+          background: rgba(255,255,255,0.06) !important;
+        }
+        .chat-search::placeholder { color: rgba(255,255,255,0.25) !important; }
+
+        /* Lista conversazioni */
+        .chat-conv-list {
+          flex: 1;
+          overflow-y: auto;
+          min-height: 0;
+        }
+        .chat-conv-list::-webkit-scrollbar { width: 3px; }
+        .chat-conv-list::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+
+        /* Singola voce conversazione — modellata su .sidebar-profilo .list-group-item */
+        .chat-conv-item {
+          display: flex;
+          align-items: flex-start;
+          gap: 12px;
+          padding: 13px 16px;
+          cursor: pointer;
+          border-bottom: 1px solid #111;
+          border-left: 3px solid transparent;
+          transition: background 0.15s, border-color 0.15s;
+        }
+        .chat-conv-item:hover {
+          background: rgba(255,17,0,0.05);
+        }
+        .chat-conv-item.attiva {
+          background: rgba(255,17,0,0.08);
+          border-left-color: var(--colore-accento);
+        }
+
+        /* Avatar — cerchio iniziali stile sito */
+        .chat-avatar {
+          border-radius: 50%;
+          background: #1a1a1a;
+          border: 1.5px solid var(--colore-accento);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-family: monospace;
+          font-weight: bold;
+          color: var(--colore-accento);
+          letter-spacing: 1px;
+        }
+
+        /* ── Pannello principale ── */
+        .chat-main {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          min-width: 0;
+          background: #0d0d0d;
+        }
+
+        .chat-panel-header {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 12px 20px;
+          background: #000;
+          flex-shrink: 0;
+        }
+
+        /* Area messaggi */
+        .chat-messages {
+          flex: 1;
+          overflow-y: auto;
+          padding: 20px 24px;
+          display: flex;
+          flex-direction: column;
+          min-height: 0;
+        }
+        .chat-messages::-webkit-scrollbar { width: 3px; }
+        .chat-messages::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 4px; }
+
+        /* Bolle messaggi */
+        .chat-bubble {
+          padding: 9px 14px;
+          font-size: 13px;
+          line-height: 1.5;
+          color: #fff;
+          word-break: break-word;
+        }
+        .chat-bubble.mia {
+          background: var(--colore-accento);
+          border-radius: 14px 14px 4px 14px;
+        }
+        .chat-bubble.altrui {
+          background: rgba(255,255,255,0.04);
+          border: 1px solid #2a2a2a;
+          border-radius: 14px 14px 14px 4px;
+        }
+
+        /* Barra di input */
+        .chat-input-bar {
+          display: flex;
+          gap: 10px;
+          align-items: flex-end;
+          padding: 12px 16px;
+          background: #000;
+          flex-shrink: 0;
+        }
+        .chat-textarea {
+          flex: 1;
+          background: rgba(255,255,255,0.04);
+          border: 1px solid #333;
+          border-radius: 8px;
+          color: #fff;
+          padding: 9px 12px;
+          font-size: 13px;
+          resize: none;
+          outline: none;
+          line-height: 1.5;
+          max-height: 120px;
+          overflow: auto;
+          transition: border-color 0.2s;
+        }
+        .chat-textarea:focus { border-color: var(--colore-accento); }
+        .chat-textarea::placeholder { color: rgba(255,255,255,0.25); }
+        .chat-textarea:disabled { opacity: 0.35; }
+
+        .chat-send-btn {
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 8px !important;
+          flex-shrink: 0;
+          transition: background 0.2s, color 0.2s, border-color 0.2s;
+          font-size: 15px;
+        }
+      `}</style>
+    </>
   );
 }

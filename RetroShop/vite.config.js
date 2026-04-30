@@ -6,12 +6,18 @@ export default defineConfig({
   server: {
     port: 5500,
     proxy: {
-      '/utente':  'http://127.0.0.1:8000',
-      '/utenti':  'http://127.0.0.1:8000',
-      '/login':   'http://127.0.0.1:8000',
-      '/logout':  'http://127.0.0.1:8000',
-      '/annunci': 'http://127.0.0.1:8000',
-      '/static':  'http://127.0.0.1:8000',
+      '/utente':   'http://127.0.0.1:8000',
+      '/utenti':   'http://127.0.0.1:8000',
+      '/login':    'http://127.0.0.1:8000',
+      '/logout':   'http://127.0.0.1:8000',
+      '/annunci':  'http://127.0.0.1:8000',
+      '/static':   'http://127.0.0.1:8000',
+      '/api/chat': 'http://127.0.0.1:3001',
+      '/ws': {
+        target: 'ws://127.0.0.1:3001',
+        ws: true,
+        rewriteWsOrigin: true,
+      },
     },
   },
 });

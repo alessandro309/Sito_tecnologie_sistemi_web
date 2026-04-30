@@ -1,0 +1,49 @@
+{
+  "conversazioni": [
+    {
+      "id": "810a8626-91c2-4f3b-8b45-e2e2a5994a27",
+      "partecipanti": [
+        "Shreck",
+        "Rick_Roll"
+      ],
+      "idAnnuncio": "1",
+      "titoloAnnuncio": "GameBoy Advance SP",
+      "prezzoAnnuncio": 79.99,
+      "creatoIl": "2026-04-30T15:51:40.893Z"
+    }
+  ],
+  "messaggi": [
+    {
+      "id": "6c9e5744-c877-4f35-94b0-9a08c14f937c",
+      "conversazioneId": "810a8626-91c2-4f3b-8b45-e2e2a5994a27",
+      "mittente": "Shreck",
+      "testo": "Ciao è ancora disponibile?",
+      "ora": "2026-04-30T15:51:48.728Z",
+      "letto": true
+    },
+    {
+      "id": "ff7ef95b-8d45-4b2e-8b71-51ec7293d623",
+      "conversazioneId": "810a8626-91c2-4f3b-8b45-e2e2a5994a27",
+      "mittente": "Rick_Roll",
+      "testo": "Si",
+      "ora": "2026-04-30T16:02:58.662Z",
+      "letto": true
+    },
+    {
+      "id": "093ec590-c6e6-47ac-86ae-1c01442e792e",
+      "conversazioneId": "810a8626-91c2-4f3b-8b45-e2e2a5994a27",
+      "mittente": "Shreck",
+      "testo": "Il prezzo è trattabile?",
+      "ora": "2026-04-30T16:03:11.729Z",
+      "letto": true
+    },
+    {
+      "id": "484607a2-a1af-4e30-b58a-bce75c91ca70",
+      "conversazioneId": "810a8626-91c2-4f3b-8b45-e2e2a5994a27",
+      "mittente": "Rick_Roll",
+      "testo": "No",
+      "ora": "2026-04-30T16:03:34.804Z",
+      "letto": true
+    }
+  ]
+}
