@@ -76,6 +76,22 @@ body.tema-chiaro .btn-outline-danger:hover {
     background-color: #84C9F0 !important;
 }
 
+/* Il bottone principale (bottone_login) usa il rosso come accento:
+   nel tema chiaro diventa azzurro */
+body.tema-chiaro .bottone_login {
+    border-color: #0096D6 !important;
+    color: #0096D6 !important;
+}
+body.tema-chiaro .bottone_login:hover {
+    background-color: #0096D6 !important;
+    color: #F8F8F8 !important;
+}
+
+/* Il testo .scritte_arancioni (prezzi, accenti) passa da rosso ad azzurro */
+body.tema-chiaro .scritte_arancioni {
+    color: #0096D6 !important;
+}
+
 
 /* --- FORM ----------------------------------------------- */
 
@@ -92,6 +108,202 @@ body.tema-chiaro .form-check-input:checked {
     border-color: #0096D6 !important;
 }
 
+/* Gli input trasparenti su sfondo scuro (text-white) devono
+   avere testo nero nel tema chiaro */
+body.tema-chiaro .form-control,
+body.tema-chiaro .form-select {
+    color: #000000 !important;
+}
+
+/* I select dei form con sfondo nero hardcoded (CreaAnnuncio, Registrazione) */
+body.tema-chiaro #formPubblicazione .form-select,
+body.tema-chiaro #formRegistrazione .form-select,
+body.tema-chiaro #formRegistrazione .form-control {
+    background-color: #F8F8F8 !important;
+    color: #000000 !important;
+    border-color: #7A7A7A !important;
+}
+
+body.tema-chiaro #formPubblicazione option,
+body.tema-chiaro #formRegistrazione option,
+body.tema-chiaro #modalFiltri option {
+    background-color: #F8F8F8 !important;
+    color: #000000 !important;
+}
+
+/* Focus accento azzurro per i form specifici */
+body.tema-chiaro #formRegistrazione .form-control:focus,
+body.tema-chiaro #formRegistrazione .form-select:focus,
+body.tema-chiaro #formPubblicazione .form-control:focus,
+body.tema-chiaro #formPubblicazione .form-select:focus {
+    border-color: #0096D6 !important;
+    box-shadow: 0 0 0 0.25rem rgba(0, 150, 214, 0.25) !important;
+    background-color: rgba(0, 150, 214, 0.03) !important;
+}
+
+/* Checkbox e radio nel form registrazione */
+body.tema-chiaro #formRegistrazione .form-check-input:checked {
+    background-color: #0096D6 !important;
+    border-color: #0096D6 !important;
+}
+
+/* Modal filtri: input e select */
+body.tema-chiaro #modalFiltri .form-control,
+body.tema-chiaro #modalFiltri .form-select {
+    background-color: #F8F8F8 !important;
+    color: #000000 !important;
+    border-color: #7A7A7A !important;
+}
+
+body.tema-chiaro #modalFiltri .form-control:focus,
+body.tema-chiaro #modalFiltri .form-select:focus {
+    border-color: #0096D6 !important;
+    background-color: rgba(0, 150, 214, 0.03) !important;
+}
+
+body.tema-chiaro #modalFiltri .form-check-input:checked {
+    background-color: #0096D6 !important;
+    border-color: #0096D6 !important;
+}
+
+body.tema-chiaro #modalFiltri .form-check-input:focus {
+    border-color: #84C9F0 !important;
+    box-shadow: 0 0 0 0.25rem rgba(132, 201, 240, 0.25) !important;
+}
+
+/* Badge contatore filtri: da nero/rosso ad azzurro */
+body.tema-chiaro #badgeFiltri {
+    background-color: #F8F8F8 !important;
+    color: #0096D6 !important;
+    border-color: #0096D6 !important;
+}
+
+
+/* --- CARD ANNUNCIO --------------------------------------- */
+/* .card-annuncio ha background-color hardcoded rgb(35,33,33):
+   nel tema chiaro diventa quasi-bianco */
+
+body.tema-chiaro .card-annuncio {
+    background-color: #F8F8F8 !important;
+    border-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+body.tema-chiaro .card-annuncio:hover {
+    border-color: #0096D6 !important;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Testi interni della card: da bianchi a neri */
+body.tema-chiaro .card-annuncio .card-title {
+    color: #000000 !important;
+}
+
+body.tema-chiaro .card-annuncio .text-secondary,
+body.tema-chiaro .card-annuncio p {
+    color: #7A7A7A !important;
+}
+
+/* Il prezzo (text-danger) diventa azzurro tramite la regola .text-danger sopra */
+
+
+/* --- BOTTONI SOVRAPPOSTI ALLE CARD ----------------------- */
+/* .btn-salva e .btn-elimina-card hanno sfondo rgba(67,64,64,0.8):
+   nel tema chiaro diventano chiari con bordo visibile */
+
+body.tema-chiaro .btn-salva,
+body.tema-chiaro .btn-elimina-card {
+    background-color: rgba(255, 255, 255, 0.85) !important;
+    border-color: rgba(0, 0, 0, 0.2) !important;
+    color: #000000 !important;
+}
+
+body.tema-chiaro .btn-salva:hover,
+body.tema-chiaro .btn-elimina-card:hover {
+    background-color: #0096D6 !important;
+    color: #F8F8F8 !important;
+}
+
+
+/* --- BARRA DI RICERCA ------------------------------------ */
+/* .search_bar ha sfondo rgba(0,0,0,0.5): troppo scuro sul grigio chiaro */
+
+body.tema-chiaro .search_bar {
+    background-color: rgba(255, 255, 255, 0.6) !important;
+}
+
+
+/* --- BOX CATEGORIE HOME ---------------------------------- */
+/* I box categoria hanno background-color: #000 hardcoded come fallback.
+   Nel tema chiaro lo sfondo di fallback diventa grigio chiaro.
+   Le immagini e i gradienti rimangono invariati (sono decorativi). */
+
+body.tema-chiaro #box_fisse,
+body.tema-chiaro #box_portatili,
+body.tema-chiaro #box_accessori,
+body.tema-chiaro #box_giochi {
+    background-color: #C0C0C0 !important;
+    border-color: rgba(0, 150, 214, 0.3) !important;
+}
+
+/* Il testo dei titoli nei box ha text-shadow rosso: diventa azzurro */
+body.tema-chiaro .titolo_box {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 150, 214, 0.5) !important;
+}
+
+
+/* --- BOX PAGINA ANNUNCIO / CREA ANNUNCIO ----------------- */
+/* .box_citta_descrizione ha background-color: rgba(0,0,0,0.5) hardcoded */
+
+body.tema-chiaro .box_citta_descrizione {
+    background-color: rgba(255, 255, 255, 0.7) !important;
+    color: #000000 !important;
+}
+
+/* Il testo bianco hardcoded dentro .box_citta_descrizione */
+body.tema-chiaro .box_citta_descrizione .text-white,
+body.tema-chiaro .box_citta_descrizione input,
+body.tema-chiaro .box_citta_descrizione textarea,
+body.tema-chiaro .box_citta_descrizione label {
+    color: #000000 !important;
+}
+
+/* L'€ nell'input-group di CreaAnnuncio */
+body.tema-chiaro .input-group-text {
+    background-color: transparent !important;
+    color: #000000 !important;
+    border-color: #7A7A7A !important;
+}
+
+/* Area di upload foto in CreaAnnuncio */
+body.tema-chiaro .upload-area {
+    background-color: rgba(0, 150, 214, 0.04) !important;
+    border-color: #7A7A7A !important;
+}
+
+
+/* --- DROPDOWN MENU NAVBAR -------------------------------- */
+/* .dropdown-menu-dark ha background rgba(0,0,0,0.67) hardcoded */
+
+body.tema-chiaro .dropdown-menu-dark {
+    background-color: rgba(240, 240, 240, 0.97) !important;
+    border-color: #BFBFBF !important;
+}
+
+body.tema-chiaro .dropdown-menu-dark .dropdown-item {
+    color: #000000 !important;
+}
+
+body.tema-chiaro .dropdown-menu-dark .dropdown-item:hover,
+body.tema-chiaro .dropdown-menu-dark .dropdown-item:focus {
+    background-color: #0096D6 !important;
+    color: #F8F8F8 !important;
+}
+
+/* Sottomenu mobile */
+body.tema-chiaro .dropdown-submenu .submenu-retro {
+    background-color: rgba(200, 200, 200, 0.6) !important;
+}
+
 
 /* --- COMPONENTI SPECIFICI -------------------------------- */
 
@@ -101,7 +313,28 @@ body.tema-chiaro .mappa-mirino {
     background-color: rgba(0, 150, 214, 0.15) !important;
 }
 
-/* Sidebar profilo: sfondo chiaro, accenti azzurri */
+/* Slider range prezzo: binario e thumb */
+body.tema-chiaro .range-slider-container {
+    background-color: #BFBFBF !important;
+}
+
+body.tema-chiaro .slider-track {
+    background-color: #0096D6 !important;
+}
+
+body.tema-chiaro .double-slider::-webkit-slider-thumb {
+    background-color: #F8F8F8 !important;
+    border-color: #0096D6 !important;
+}
+
+body.tema-chiaro .double-slider::-moz-range-thumb {
+    background-color: #F8F8F8 !important;
+    border-color: #0096D6 !important;
+}
+
+
+/* --- SIDEBAR PROFILO (Profilo.jsx) ----------------------- */
+
 body.tema-chiaro .sidebar-profilo .list-group-item {
     background-color: #F8F8F8 !important;
     color: #000000 !important;
@@ -117,4 +350,80 @@ body.tema-chiaro .sidebar-profilo .list-group-item.active {
     background-color: #0096D6 !important;
     color: #F8F8F8 !important;
     border-color: #0096D6 !important;
+}
+
+
+/* --- SEZIONI PROFILO (stili inline in Profilo.jsx) ------- */
+/* Questi stili sono definiti con <style> inline in Profilo.jsx
+   e usano sfondi neri hardcoded: vengono sovrascritti qui */
+
+body.tema-chiaro .profilo-header {
+    background-color: #F8F8F8 !important;
+    border-color: rgba(0, 0, 0, 0.1) !important;
+    color: #000000 !important;
+}
+
+body.tema-chiaro .stato-vuoto {
+    background-color: #EBEBEB !important;
+    border-color: rgba(0, 0, 0, 0.15) !important;
+}
+
+body.tema-chiaro .sezione-titolo {
+    border-bottom-color: #BFBFBF !important;
+}
+
+/* Bordo avatar nel profilo: da rosso ad azzurro */
+body.tema-chiaro .avatar-wrapper img {
+    border-color: #0096D6 !important;
+}
+
+
+/* --- MODAL GENERICO -------------------------------------- */
+/* Il modal ha .modal-content bg-black: già coperto da .bg-black sopra.
+   Ma il bordo e il testo interno vanno sistemati. */
+
+body.tema-chiaro .modal-content {
+    background-color: #F8F8F8 !important;
+    border-color: #7A7A7A !important;
+    color: #000000 !important;
+}
+
+body.tema-chiaro .modal-header {
+    border-bottom-color: #BFBFBF !important;
+}
+
+body.tema-chiaro .modal-header .modal-title {
+    color: #000000 !important;
+}
+
+/* Il btn-close bianco (btn-close-white) deve diventare scuro */
+body.tema-chiaro .btn-close-white {
+    filter: invert(1) !important;
+}
+
+/* Divisori orizzontali */
+body.tema-chiaro .dropdown-divider {
+    border-color: #BFBFBF !important;
+}
+
+body.tema-chiaro hr {
+    border-color: #BFBFBF !important;
+    opacity: 1 !important;
+}
+
+
+/* --- CHAT ------------------------------------------------ */
+/* La pagina Chat usa stili inline in JSX con colori hardcoded.
+   Questi override intervengono sulle classi esplicite dove possibile. */
+
+body.tema-chiaro .list-group-item.bg-black,
+body.tema-chiaro .list-group-item {
+    background-color: #F8F8F8 !important;
+    color: #000000 !important;
+    border-color: #BFBFBF !important;
+}
+
+body.tema-chiaro .list-group-item-action:hover {
+    background-color: rgba(0, 150, 214, 0.1) !important;
+    color: #0096D6 !important;
 }
