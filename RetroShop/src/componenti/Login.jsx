@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { api } from '../api';
 import { useAuth } from '../contexts/AuthContext';
 
+// Modal Bootstrap per il login, mostrato ovunque nell'app tramite data-bs-target="#modalLogin"
 export default function ModalLogin() {
   const { setUtente } = useAuth();
   const [nickname, setNickname] = useState('');
@@ -19,12 +20,12 @@ export default function ModalLogin() {
       const risposta = await api.login({ nickname, password });
 
       if (risposta.ok) {
-        // Legge i dati della sessione appena creata
+        // Login riuscito: recuperiamo i dati della sessione e aggiorniamo il context
         const me = await api.utenteMe();
         const dati = await me.json();
         setUtente(dati.loggato ? dati : null);
 
-        // Chiude il modal Bootstrap
+        // Chiudiamo il modal tramite l'API Bootstrap
         const el = document.getElementById('modalLogin');
         window.bootstrap?.Modal.getInstance(el)?.hide();
       } else {
@@ -79,6 +80,7 @@ export default function ModalLogin() {
                 />
               </div>
 
+              {/* Messaggio di errore (credenziali sbagliate, server down, ecc.) */}
               {errore && (
                 <div className="alert alert-danger py-2 font-monospace small mb-3">
                   <i className="bi bi-exclamation-triangle-fill me-2"></i>{errore}
@@ -99,6 +101,7 @@ export default function ModalLogin() {
                   to="/registrazione"
                   className="text-danger text-decoration-none fw-bold"
                   onClick={() => {
+                    // Chiudiamo il modal prima di navigare alla pagina di registrazione
                     const el = document.getElementById('modalLogin');
                     window.bootstrap?.Modal.getInstance(el)?.hide();
                   }}

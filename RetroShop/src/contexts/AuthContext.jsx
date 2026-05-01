@@ -1,13 +1,17 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { api } from '../api';
 
+// Context globale per l'autenticazione: tutti i componenti possono sapere
+// se c'è un utente loggato senza passare props in giro
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [utente, setUtente] = useState(null);  // null = non loggato | { nickname, ... } = loggato
-  const [loading, setLoading] = useState(true); // true finché non otteniamo risposta dal server
+  // null = non loggato, oggetto con nickname = loggato
+  const [utente, setUtente] = useState(null);
+  // loading = true finché non sappiamo se la sessione è attiva o no
+  const [loading, setLoading] = useState(true);
 
-  // Al mount: controlla se c'è già una sessione attiva
+  // Al primo caricamento dell'app verifichiamo se l'utente ha già una sessione attiva
   useEffect(() => {
     api.utenteMe()
       .then((r) => (r.ok ? r.json() : null))
@@ -16,11 +20,13 @@ export function AuthProvider({ children }) {
         setLoading(false);
       })
       .catch(() => {
+        // In caso di errore di rete assumiamo non loggato
         setUtente(null);
         setLoading(false);
       });
   }, []);
 
+  // Chiama l'API di logout e pulisce lo stato locale
   const logout = async () => {
     await api.logout();
     setUtente(null);
@@ -33,4 +39,5 @@ export function AuthProvider({ children }) {
   );
 }
 
+// Hook comodo per usare il context senza importare useContext ogni volta
 export const useAuth = () => useContext(AuthContext);

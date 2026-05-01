@@ -12,31 +12,39 @@ import { useAuth } from '../contexts/AuthContext';
 export default function MostraAnnunci() {
   const [searchParams] = useSearchParams();
   const { utente } = useAuth();
+
   const [annunci, setAnnunci] = useState([]);
   const [caricamento, setCaricamento] = useState(true);
   const [errore, setErrore] = useState(false);
-  const [preferitiIds, setPreferitiIds] = useState(new Set());
+  // Teniamo la lista degli id dei preferiti per sapere quali card evidenziare
+  const [preferitiIds, setPreferitiIds] = useState([]);
 
+  // Carica i preferiti dell'utente quando si logga (o li svuota al logout)
   useEffect(() => {
-    if (!utente) { setPreferitiIds(new Set()); return; }
+    if (!utente) {
+      setPreferitiIds([]);
+      return;
+    }
     api.getPreferiti()
       .then((r) => r.ok ? r.json() : [])
-      .then((dati) => setPreferitiIds(new Set(dati.map((a) => a.idAnnuncio))))
+      .then((dati) => setPreferitiIds(dati.map((a) => a.idAnnuncio)))
       .catch(() => {});
   }, [utente]);
 
+  // Aggiunge o rimuove un annuncio dai preferiti
   async function handleTogglePreferito(annuncio, nuovoStato) {
+    // Se non loggato apriamo il modal di login
     if (!utente) {
       const el = document.getElementById('modalLogin');
       window.bootstrap?.Modal.getOrCreateInstance(el)?.show();
       return;
     }
 
-    // Aggiornamento ottimistico: cambia l'icona subito
+    // Aggiornamento ottimistico: cambiamo l'icona subito senza aspettare il server
     if (nuovoStato) {
-      setPreferitiIds((prev) => new Set([...prev, annuncio.idAnnuncio]));
+      setPreferitiIds((prev) => [...prev, annuncio.idAnnuncio]);
     } else {
-      setPreferitiIds((prev) => { const n = new Set(prev); n.delete(annuncio.idAnnuncio); return n; });
+      setPreferitiIds((prev) => prev.filter((id) => id !== annuncio.idAnnuncio));
     }
 
     try {
@@ -45,15 +53,16 @@ export default function MostraAnnunci() {
         : await api.rimuoviPreferito(annuncio.idAnnuncio);
       if (!res.ok && res.status !== 204 && res.status !== 201) throw new Error();
     } catch {
-      // Ripristina lo stato precedente se la chiamata fallisce
+      // Se la richiesta fallisce, ripristiniamo lo stato precedente
       if (nuovoStato) {
-        setPreferitiIds((prev) => { const n = new Set(prev); n.delete(annuncio.idAnnuncio); return n; });
+        setPreferitiIds((prev) => prev.filter((id) => id !== annuncio.idAnnuncio));
       } else {
-        setPreferitiIds((prev) => new Set([...prev, annuncio.idAnnuncio]));
+        setPreferitiIds((prev) => [...prev, annuncio.idAnnuncio]);
       }
     }
   }
 
+  // Ri-esegue la ricerca ogni volta che cambiano i parametri nell'URL
   useEffect(() => {
     setCaricamento(true);
     setErrore(false);
@@ -71,8 +80,9 @@ export default function MostraAnnunci() {
         setErrore(true);
         setCaricamento(false);
       });
-  }, [searchParams]); // Ri-esegue ogni volta che i parametri URL cambiano (nuova ricerca o filtri)
+  }, [searchParams]);
 
+  // Gestisce i tre stati possibili: caricamento, errore, risultati
   function renderContenuto() {
     if (caricamento) {
       return (
@@ -96,7 +106,7 @@ export default function MostraAnnunci() {
       <div key={a.idAnnuncio} className="col-12 col-md-6 col-lg-4 col-xl-3">
         <CardAnnuncio
           annuncio={a}
-          preferito={preferitiIds.has(a.idAnnuncio)}
+          preferito={preferitiIds.includes(a.idAnnuncio)}
           onTogglePreferito={handleTogglePreferito}
         />
       </div>
@@ -111,7 +121,7 @@ export default function MostraAnnunci() {
 
       <main className="container mb-5">
         <div className="d-flex justify-content-between align-items-end mb-4 border-bottom border-secondary pb-2">
-          <h2 className="font-monospace text-uppercase fw-bold m-0">Risultati della ricerca</h2>
+          <h2 className="font-monospace text-uppercase text-white fw-bold m-0">Risultati della ricerca</h2>
           <span className="text-secondary font-monospace small">
             {caricamento ? 'Ricerca in corso...' : `Trovati ${annunci.length} annunci`}
           </span>

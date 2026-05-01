@@ -203,7 +203,7 @@ function NavbarDestra() {
       <div className="nav-item dropdown w-100 w-lg-auto">
         <a
           href="#"
-          className="btn bottone_login font-monospace text-uppercase rounded-1 d-flex align-items-center justify-content-center w-100 px-4 py-2 text-nowrap"
+          className="btn bottone_login font-monospace rounded-1 d-flex align-items-center justify-content-center w-100 px-4 py-2 text-nowrap"
           data-bs-toggle="dropdown"
           aria-expanded="false"
         >

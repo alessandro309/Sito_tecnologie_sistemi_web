@@ -2,19 +2,24 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BASE } from '../api';
 
-//mostraElimina permette di distinguere se la scheda venga mostrata come risultato di una ricerca o "annuncio pubblicato" nella pagina principale
-//nel secondo caso viene implementata la possibilità di eliminare l'annuncio
+// Componente riutilizzabile per mostrare un annuncio come card.
+// - mostraElimina: true nella pagina profilo, false ovunque altro
+// - onTogglePreferito: se passato, gestisce i preferiti dall'esterno; altrimenti usiamo uno state locale
 export default function CardAnnuncio({ annuncio, mostraElimina = false, onElimina, preferito = false, onTogglePreferito }) {
   const [salvato, setSalvato] = useState(false);
+
+  // Se c'è un gestore esterno usiamo il suo stato, altrimenti quello locale
   const isSalvato = onTogglePreferito ? preferito : salvato;
 
-  const immagineUrl = annuncio.immagini?.length > 0 //Se è presente l'immagine dell'annuncio mostrala, sennò placeholder
+  // Se l'annuncio ha immagini le mostriamo, altrimenti un placeholder
+  const immagineUrl = annuncio.immagini?.length > 0
     ? `${BASE}${annuncio.immagini[0].url_immagine}`
     : 'https://placehold.co/600x400/1a1a1a/FFF?text=No+Foto';
 
+  // Formattiamo la data in italiano (es. "23 apr 2025")
   const dataPub = new Date(annuncio.data_pubblicazione).toLocaleDateString('it-IT', {
     day: '2-digit', month: 'short', year: 'numeric',
-  }); //Data di pubblicazione presa dal database formattata per l'italiano
+  });
 
   return (
     <div className="card card-annuncio bg-black border-secondary h-100 text-white shadow overflow-hidden">
@@ -24,6 +29,7 @@ export default function CardAnnuncio({ annuncio, mostraElimina = false, onElimin
           <img src={immagineUrl} className="card-img-top img-annuncio" alt={annuncio.nome} />
         </Link>
 
+        {/* Bottone rosso in alto a destra: cestino se siamo nel profilo, cuore se siamo nella ricerca */}
         {mostraElimina ? (
           <button
             className="btn btn-elimina-card position-absolute top-0 end-0 m-2 rounded-circle border-secondary d-flex align-items-center justify-content-center p-0"
@@ -45,7 +51,7 @@ export default function CardAnnuncio({ annuncio, mostraElimina = false, onElimin
 
       <div className="card-body d-flex flex-column p-3">
         <Link to={`/annunci/${annuncio.idAnnuncio}`} className="text-decoration-none">
-          <h5 className="card-title font-monospace text-uppercase mb-1 fs-6 fw-bold text-white">
+          <h5 className="card-title font-monospace mb-1 fs-6 fw-bold text-white">
             {annuncio.nome}
           </h5>
         </Link>

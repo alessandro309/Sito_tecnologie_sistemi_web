@@ -16,16 +16,16 @@ export default function Profilo() {
   const [preferiti, setPreferiti] = useState([]);
   const [caricamentoPreferiti, setCaricamentoPreferiti] = useState(true);
   const [tema, setTema] = useState(localStorage.getItem('temaSelezionato') || 'dark');
-  const [annuncioInElimina, setAnnuncioInElimina] = useState(null);
+  const [annuncioInElimina, setAnnuncioInElimina] = useState(null); // annuncio selezionato per la conferma
   const [eliminazioneInCorso, setEliminazioneInCorso] = useState(false);
   const [erroreElimina, setErroreElimina] = useState(null);
 
-  // Reindirizza se non loggato
+  // Manda via gli utenti non loggati
   useEffect(() => {
     if (!loading && !utente) navigate('/');
   }, [utente, loading, navigate]);
 
-  // Scrolla all'ancora hash (es. #sezionePreferiti) dopo il render
+  // Scrolla alla sezione giusta se l'URL contiene un hash (es. /profilo#sezionePreferiti)
   useEffect(() => {
     if (!location.hash || loading) return;
     const id = location.hash.slice(1);
@@ -33,7 +33,7 @@ export default function Profilo() {
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, [location.hash, loading]);
 
-  // Attiva Bootstrap ScrollSpy sul body
+  // Attiva il Bootstrap ScrollSpy per evidenziare la voce attiva nella sidebar
   useEffect(() => {
     document.body.setAttribute('data-bs-spy', 'scroll');
     document.body.setAttribute('data-bs-target', '#scroll-spy-nav');
@@ -45,16 +45,18 @@ export default function Profilo() {
     };
   }, []);
 
-  // Carica dati profilo e annunci
+  // Carica i dati del profilo, gli annunci pubblicati e i preferiti
   useEffect(() => {
     if (!utente?.nickname) return;
     const nickname = utente.nickname;
 
+    // Dati anagrafici dell'utente
     api.utente(nickname)
       .then((r) => r.ok ? r.json() : null)
       .then((dati) => setDatiProfilo(dati))
       .catch(console.error);
 
+    // Annunci: carichiamo tutti e filtriamo quelli dell'utente loggato
     api.ricercaAnnunci('')
       .then((r) => r.json())
       .then((tutti) => {
@@ -63,13 +65,17 @@ export default function Profilo() {
       })
       .catch(() => setCaricamentoAnnunci(false));
 
+    // Preferiti salvati dall'utente
     api.getPreferiti()
       .then((r) => r.ok ? r.json() : [])
-      .then((dati) => { setPreferiti(dati); setCaricamentoPreferiti(false); })
+      .then((dati) => {
+        setPreferiti(dati);
+        setCaricamentoPreferiti(false);
+      })
       .catch(() => setCaricamentoPreferiti(false));
   }, [utente]);
 
-  // Applica tema al body
+  // Applica il tema scelto al body e lo salva in localStorage
   useEffect(() => {
     if (tema === 'light') {
       document.body.classList.add('tema-chiaro');
@@ -80,13 +86,14 @@ export default function Profilo() {
     }
   }, [tema]);
 
+  // Apre il modal di conferma eliminazione
   function handleElimina(annuncio) {
     setErroreElimina(null);
     setAnnuncioInElimina(annuncio);
   }
 
+  // Aggiunge o rimuove un annuncio dai preferiti con aggiornamento ottimistico
   async function handleTogglePreferito(annuncio, nuovoStato) {
-    // Aggiornamento ottimistico
     if (nuovoStato) {
       setPreferiti((prev) => [...prev, annuncio]);
     } else {
@@ -99,7 +106,7 @@ export default function Profilo() {
         : await api.rimuoviPreferito(annuncio.idAnnuncio);
       if (!res.ok && res.status !== 204 && res.status !== 201) throw new Error();
     } catch {
-      // Ripristina in caso di errore
+      // Se qualcosa va storto ripristiniamo il vecchio stato
       if (nuovoStato) {
         setPreferiti((prev) => prev.filter((a) => a.idAnnuncio !== annuncio.idAnnuncio));
       } else {
@@ -108,6 +115,7 @@ export default function Profilo() {
     }
   }
 
+  // Elimina l'annuncio dopo la conferma nel modal
   async function handleConfermaElimina() {
     if (!annuncioInElimina) return;
     setEliminazioneInCorso(true);
@@ -118,6 +126,7 @@ export default function Profilo() {
         const err = await res.json().catch(() => ({}));
         throw new Error(err.detail || 'Errore durante l\'eliminazione');
       }
+      // Rimuoviamo l'annuncio dalla lista senza ricaricare tutto
       setAnnunci((prev) => prev.filter((a) => a.idAnnuncio !== annuncioInElimina.idAnnuncio));
       setAnnuncioInElimina(null);
     } catch (e) {
@@ -127,8 +136,10 @@ export default function Profilo() {
     }
   }
 
+  // Aspettiamo che il context abbia caricato prima di renderizzare
   if (loading || !utente) return null;
 
+  // Foto profilo: usiamo quella caricata dall'utente oppure un placeholder con le iniziali
   const iniziali = datiProfilo
     ? encodeURIComponent((datiProfilo.nome?.[0] ?? '?') + (datiProfilo.cognome?.[0] ?? ''))
     : '?';
@@ -175,15 +186,15 @@ export default function Profilo() {
       <main className="container mb-5 text-white font-monospace">
         <div className="row g-4">
 
-          {/* Sidebar */}
+          {/* Sidebar di navigazione (visibile solo su desktop) */}
           <div className="col-lg-3 d-none d-lg-block">
             <div className="sidebar-profilo sticky-top bg-black" style={{ top: 100 }}>
               <div className="list-group list-group-flush" id="scroll-spy-nav">
                 {[
-                  { href: '#sezioneProfilo',       icon: 'person-fill',  label: 'Il mio profilo' },
-                  { href: '#sezioneMieiAnnunci',    icon: 'tags-fill',    label: 'I miei annunci' },
-                  { href: '#sezionePreferiti',      icon: 'floppy-fill',  label: 'Annunci salvati' },
-                  { href: '#sezioneImpostazioni',   icon: 'gear-fill',    label: 'Impostazioni' },
+                  { href: '#sezioneProfilo',     icon: 'person-fill',  label: 'Il mio profilo' },
+                  { href: '#sezioneMieiAnnunci', icon: 'tags-fill',    label: 'I miei annunci' },
+                  { href: '#sezionePreferiti',   icon: 'floppy-fill',  label: 'Annunci salvati' },
+                  { href: '#sezioneImpostazioni',icon: 'gear-fill',    label: 'Impostazioni' },
                 ].map((item) => (
                   <a key={item.href} href={item.href} className="list-group-item list-group-item-action fw-bold text-uppercase py-3">
                     <i className={`bi bi-${item.icon} me-2`}></i>{item.label}
@@ -195,7 +206,7 @@ export default function Profilo() {
 
           <div className="col-lg-9">
 
-            {/* ── Sezione Profilo ── */}
+            {/* Sezione: dati profilo */}
             <section id="sezioneProfilo" className="pb-5 mb-5 border-bottom border-secondary">
               <div className="profilo-header p-4 mb-4 shadow">
                 <div className="d-flex align-items-center gap-4 flex-wrap">
@@ -218,7 +229,7 @@ export default function Profilo() {
               </div>
             </section>
 
-            {/* ── I miei annunci ── */}
+            {/* Sezione: annunci pubblicati dall'utente */}
             <section id="sezioneMieiAnnunci" className="pb-5 mb-5 border-bottom border-secondary">
               <div className="sezione-titolo d-flex justify-content-between align-items-center">
                 <h4 className="fw-bold text-uppercase">
@@ -254,7 +265,7 @@ export default function Profilo() {
               )}
             </section>
 
-            {/* ── Preferiti ── */}
+            {/* Sezione: annunci salvati nei preferiti */}
             <section id="sezionePreferiti" className="py-5 mb-5 border-bottom border-secondary">
               <div className="sezione-titolo d-flex justify-content-between align-items-center">
                 <h4 className="fw-bold text-uppercase">
@@ -292,7 +303,7 @@ export default function Profilo() {
               )}
             </section>
 
-            {/* ── Impostazioni ── */}
+            {/* Sezione: impostazioni account */}
             <section id="sezioneImpostazioni" className="py-5">
               <div className="sezione-titolo">
                 <h4 className="fw-bold text-uppercase">
@@ -300,7 +311,7 @@ export default function Profilo() {
                 </h4>
               </div>
 
-              {/* Tema */}
+              {/* Selezione tema chiaro/scuro */}
               <div className="panel-impostazioni">
                 <h6 className="fw-bold text-uppercase">Tema dell'interfaccia</h6>
                 <div className="btn-group w-100 shadow-sm" role="group">
@@ -315,7 +326,7 @@ export default function Profilo() {
                 </div>
               </div>
 
-              {/* Info personali */}
+              {/* Modifica dati personali - TODO: collegare al backend */}
               <div className="panel-impostazioni">
                 <h6 className="fw-bold text-uppercase">Informazioni Personali</h6>
                 <form onSubmit={(e) => e.preventDefault()}>
@@ -343,7 +354,7 @@ export default function Profilo() {
                 </form>
               </div>
 
-              {/* Password */}
+              {/* Cambio password - TODO: collegare al backend */}
               <div className="panel-impostazioni">
                 <h6 className="fw-bold text-uppercase">Sicurezza Password</h6>
                 <form onSubmit={(e) => e.preventDefault()}>
@@ -377,6 +388,7 @@ export default function Profilo() {
 
       <Footer />
 
+      {/* Modal di conferma eliminazione annuncio */}
       {annuncioInElimina && (
         <div
           className="modal d-block"
@@ -430,7 +442,6 @@ export default function Profilo() {
         </div>
       )}
 
-      {/* Stili specifici della pagina profilo */}
       <style>{`
         .profilo-header { background-color: #000; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; }
         .avatar-wrapper img { width: 110px; height: 110px; object-fit: cover; border: 3px solid #dc3545; }
