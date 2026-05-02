@@ -407,11 +407,15 @@ def elimina_account(
 @app.get("/annunci/ricerca/", response_model=List[schemi.AnnuncioResponse])
 def ricerca_annunci(
     ricerca: Optional[str] = None,
-    console: Optional[str] = None,
-    condizioni: Optional[List[str]] = Query(None), # Permette selezioni multiple
+    tipologia: Optional[str] = None,
+    marca: Optional[str] = None,
+    condizioni: Optional[List[str]] = Query(None),
     prezzo_min: Optional[float] = None,
     prezzo_max: Optional[float] = None,
     spedizione: Optional[bool] = None,
+    scambio: Optional[bool] = None,
+    regione: Optional[str] = None,
+    citta: Optional[str] = None,
     db: Session = Depends(get_db)
 ):
     query = db.query(database.AnnuncioDB)
@@ -423,25 +427,37 @@ def ricerca_annunci(
                 database.AnnuncioDB.descrizione.ilike(f"%{ricerca}%")
             )
         )
-    
-    # 2. Filtro Piattaforma/Console
-    if console:
-        query = query.filter(database.AnnuncioDB.piattaforma.ilike(f"%{console}%"))
 
-    # 3. Filtro Condizioni (es. ['nuovo', 'buone'])
+    if tipologia == 'console_fisse':
+        query = query.filter(database.AnnuncioDB.tipologia == 'console',
+                             database.AnnuncioDB.portatile == False)
+    elif tipologia == 'console_portatili':
+        query = query.filter(database.AnnuncioDB.tipologia == 'console',
+                             database.AnnuncioDB.portatile == True)
+    elif tipologia:
+        query = query.filter(database.AnnuncioDB.tipologia == tipologia)
+
+    if marca:
+        query = query.filter(database.AnnuncioDB.piattaforma.ilike(f"%{marca}%"))
+
     if condizioni and len(condizioni) > 0:
         query = query.filter(database.AnnuncioDB.condizione.in_(condizioni))
 
-    # 4. Filtro Prezzo
     if prezzo_min is not None:
         query = query.filter(database.AnnuncioDB.prezzo >= prezzo_min)
     if prezzo_max is not None:
         query = query.filter(database.AnnuncioDB.prezzo <= prezzo_max)
 
-    # 5. Filtro Spedizione
     if spedizione:
         query = query.filter(database.AnnuncioDB.spedizione == True)
 
-    # Esegui la query e restituisci i risultati ordinati dal più recente
+    if scambio:
+        query = query.filter(database.AnnuncioDB.presenza == True)
+
+    if citta:
+        query = query.filter(database.AnnuncioDB.posizione.ilike(f"%{citta}%"))
+    elif regione:
+        query = query.filter(database.AnnuncioDB.posizione.ilike(f"%{regione}%"))
+
     annunci_filtrati = query.order_by(database.AnnuncioDB.data_pubblicazione.desc()).all()
     return annunci_filtrati

@@ -39,6 +39,7 @@ class AnnuncioDB(Base):
     modello = Column(String, nullable=False)    
     tipologia = Column(String, nullable=False)
     utente = Column(String, ForeignKey("utenti.nickname"))
+    portatile = Column(Boolean, nullable=True)
     spedizione = Column(Boolean, default=False)
     prezzo_spedizione = Column(Float, default=0.0)
     presenza = Column(Boolean, default=True)

@@ -17,6 +17,13 @@ const MODELLI_PER_PIATTAFORMA = {
   Altro:        ['Amiga', 'Arcade / Cabinati'],
 };
 
+const CONSOLE_PORTATILI = new Set([
+  'PSP', 'PSVita',
+  'GameBoy', 'GameBoy Advance', 'DS', '3DS', 'Switch', 'Switch2',
+  'GameGear',
+  'Atari Lynx',
+]);
+
 const MAX_FOTO = 10;
 
 export default function CreaAnnuncio() {
@@ -26,7 +33,13 @@ export default function CreaAnnuncio() {
   const [caricamento, setCaricamento] = useState(false);
   const [errore, setErrore] = useState('');
   const [piattaforma, setPiattaforma] = useState('');
+  const [modello, setModello] = useState('');
   const [spedizione, setSpedizione] = useState(false);
+  const [tipologiaBase, setTipologiaBase] = useState('');
+
+  const portatile = tipologiaBase === 'console' && modello
+    ? CONSOLE_PORTATILI.has(modello)
+    : null;
 
   useEffect(() => {
     if (!loading && !utente) navigate('/');
@@ -62,8 +75,9 @@ export default function CreaAnnuncio() {
       prezzo:           parseFloat(fd.get('prezzo')),
       condizione:       fd.get('condizione'),
       piattaforma:      fd.get('piattaforma'),
-      modello:          fd.get('modello') || '',
-      tipologia:        fd.get('tipologia'),
+      modello:          modello,
+      tipologia:        tipologiaBase,
+      portatile:        tipologiaBase === 'console' ? portatile : null,
       utente:           utente.nickname,
       spedizione:       fd.get('spedizione') === 'on',
       prezzo_spedizione: fd.get('spedizione') === 'on' ? parseFloat(fd.get('prezzo_spedizione') || 0) : 0,
@@ -192,7 +206,7 @@ export default function CreaAnnuncio() {
                     className="form-select border-secondary shadow-none"
                     required
                     defaultValue=""
-                    onChange={(e) => { setPiattaforma(e.target.value); }}
+                    onChange={(e) => { setPiattaforma(e.target.value); setModello(''); }}
                   >
                     <option value="" disabled>Piattaforma...</option>
                     {Object.keys(MODELLI_PER_PIATTAFORMA).map((p) => (
@@ -200,19 +214,36 @@ export default function CreaAnnuncio() {
                     ))}
                   </select>
                   {piattaforma && (
-                    <select name="modello" className="form-select border-secondary shadow-none" required defaultValue="">
+                    <select
+                      name="modello"
+                      className="form-select border-secondary shadow-none"
+                      required
+                      value={modello}
+                      onChange={(e) => setModello(e.target.value)}
+                    >
                       <option value="" disabled>Modello...</option>
                       {MODELLI_PER_PIATTAFORMA[piattaforma].map((m) => (
                         <option key={m}>{m}</option>
                       ))}
                     </select>
                   )}
-                  <select name="tipologia" className="form-select border-secondary shadow-none" required defaultValue="">
+                  <select
+                    className="form-select border-secondary shadow-none"
+                    required
+                    value={tipologiaBase}
+                    onChange={(e) => { setTipologiaBase(e.target.value); setPortatile(false); }}
+                  >
                     <option value="" disabled>Tipologia...</option>
-                    <option>Console</option>
-                    <option>Gioco</option>
-                    <option>Accessorio</option>
+                    <option value="console">Console</option>
+                    <option value="giochi">Gioco</option>
+                    <option value="accessori">Accessorio</option>
                   </select>
+                  {tipologiaBase === 'console' && modello && (
+                    <div className="d-flex align-items-center gap-2 small text-secondary">
+                      <i className={`bi ${portatile ? 'bi-handbag' : 'bi-tv'}`}></i>
+                      <span>{portatile ? 'Console portatile' : 'Console fissa'}</span>
+                    </div>
+                  )}
                 </div>
               </div>
 

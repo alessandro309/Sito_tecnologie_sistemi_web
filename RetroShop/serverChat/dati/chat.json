@@ -21,6 +21,28 @@
       "titoloAnnuncio": "GameBoy Advance Sp ",
       "prezzoAnnuncio": 80,
       "creatoIl": "2026-05-01T09:19:10.564Z"
+    },
+    {
+      "id": "acaaebff-be33-4035-afba-fb36609a4ab4",
+      "partecipanti": [
+        "James_Metallica",
+        "Shreck"
+      ],
+      "idAnnuncio": "2",
+      "titoloAnnuncio": "PSP 3004",
+      "prezzoAnnuncio": 50,
+      "creatoIl": "2026-05-01T12:35:52.343Z"
+    },
+    {
+      "id": "268f9df5-6739-45b5-8ae8-eaa5bfdbb82a",
+      "partecipanti": [
+        "Shreck",
+        "James_Metallica"
+      ],
+      "idAnnuncio": "6",
+      "titoloAnnuncio": "Pokemon Platino ",
+      "prezzoAnnuncio": 80,
+      "creatoIl": "2026-05-01T12:36:43.066Z"
     }
   ],
   "messaggi": [
@@ -71,6 +93,22 @@
       "testo": "Assolutamente no",
       "ora": "2026-04-30T20:50:06.946Z",
       "letto": true
+    },
+    {
+      "id": "0f482ab0-b37e-4aed-8285-c85e447fb2cf",
+      "conversazioneId": "268f9df5-6739-45b5-8ae8-eaa5bfdbb82a",
+      "mittente": "Shreck",
+      "testo": "Grande James sono un tuo grande fan",
+      "ora": "2026-05-01T12:37:02.685Z",
+      "letto": true
+    },
+    {
+      "id": "208a43da-b328-4207-b72a-1b4623f0bab5",
+      "conversazioneId": "268f9df5-6739-45b5-8ae8-eaa5bfdbb82a",
+      "mittente": "James_Metallica",
+      "testo": "Gimme fuel, gimmw fire",
+      "ora": "2026-05-01T12:37:24.495Z",
+      "letto": false
     }
   ]
 }

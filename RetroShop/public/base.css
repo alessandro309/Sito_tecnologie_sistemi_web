@@ -21,6 +21,12 @@ body {
     background-color: var(--colore-sfondo);
 }
 
+#root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
 /* Placeholder bianco semi-trasparente: gli input hanno sfondo scuro,
    quindi il placeholder grigio di default di Bootstrap sarebbe quasi invisibile */
 .form-control::placeholder {

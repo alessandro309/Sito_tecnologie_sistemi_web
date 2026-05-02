@@ -32,6 +32,7 @@ export default function Profilo() {
   const [formPassword, setFormPassword] = useState({ password_attuale: '', nuova_password: '', conferma_password: '' });
   const [salvaPasswordInCorso, setSalvaPasswordInCorso] = useState(false);
   const [feedbackPassword, setFeedbackPassword] = useState(null);
+  const [mostraPassword, setMostraPassword] = useState({ attuale: false, nuova: false, conferma: false });
 
   // Manda via gli utenti non loggati
   useEffect(() => {
@@ -84,6 +85,17 @@ export default function Profilo() {
       })
       .catch(() => setCaricamentoPreferiti(false));
   }, [utente]);
+
+  // Popola il form con i dati attuali appena arrivano dal server
+  useEffect(() => {
+    if (!datiProfilo) return;
+    setFormDati({
+      nome:    datiProfilo.nome    ?? '',
+      cognome: datiProfilo.cognome ?? '',
+      mail:    datiProfilo.mail    ?? '',
+      citta:   datiProfilo.citta   ?? '',
+    });
+  }, [datiProfilo]);
 
   // Applica il tema scelto al body e lo salva in localStorage.
   // Si esegue anche al mount, garantendo che lo stato del body
@@ -582,39 +594,33 @@ export default function Profilo() {
                 </h6>
                 <form onSubmit={handleAggiornaPassword}>
                   <div className="row g-3">
-                    <div className="col-md-6">
-                      <label className="form-label small text-secondary mb-1">Password attuale</label>
-                      <input
-                        type="password"
-                        className="form-control bg-transparent text-white border-secondary rounded-1"
-                        placeholder="Password attuale"
-                        value={formPassword.password_attuale}
-                        onChange={(e) => setFormPassword((p) => ({ ...p, password_attuale: e.target.value }))}
-                        required
-                      />
-                    </div>
-                    <div className="col-md-6">
-                      <label className="form-label small text-secondary mb-1">Nuova Password</label>
-                      <input
-                        type="password"
-                        className="form-control bg-transparent text-white border-secondary rounded-1"
-                        placeholder="Nuova password"
-                        value={formPassword.nuova_password}
-                        onChange={(e) => setFormPassword((p) => ({ ...p, nuova_password: e.target.value }))}
-                        required
-                      />
-                    </div>
-                    <div className="col-md-6">
-                      <label className="form-label small text-secondary mb-1">Conferma nuova Password</label>
-                      <input
-                        type="password"
-                        className="form-control bg-transparent text-white border-secondary rounded-1"
-                        placeholder="Conferma nuova password"
-                        value={formPassword.conferma_password}
-                        onChange={(e) => setFormPassword((p) => ({ ...p, conferma_password: e.target.value }))}
-                        required
-                      />
-                    </div>
+                    {[
+                      { campo: 'attuale',  label: 'Password attuale',        key: 'password_attuale' },
+                      { campo: 'nuova',    label: 'Nuova Password',           key: 'nuova_password'   },
+                      { campo: 'conferma', label: 'Conferma nuova Password',  key: 'conferma_password' },
+                    ].map(({ campo, label, key }) => (
+                      <div className="col-md-6" key={key}>
+                        <label className="form-label small text-secondary mb-1">{label}</label>
+                        <div className="input-group">
+                          <input
+                            type={mostraPassword[campo] ? 'text' : 'password'}
+                            className="form-control bg-transparent text-white border-secondary rounded-start-1"
+                            placeholder={label}
+                            value={formPassword[key]}
+                            onChange={(e) => setFormPassword((p) => ({ ...p, [key]: e.target.value }))}
+                            required
+                          />
+                          <button
+                            type="button"
+                            className="btn btn-outline-secondary rounded-end-1"
+                            onClick={() => setMostraPassword((p) => ({ ...p, [campo]: !p[campo] }))}
+                            tabIndex={-1}
+                          >
+                            <i className={`bi bi-eye${mostraPassword[campo] ? '-slash' : ''}`}></i>
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                     {feedbackPassword && (
                       <div className="col-12">
                         <p className={`small mb-0 ${feedbackPassword.tipo === 'ok' ? 'text-success' : 'text-danger'}`}>

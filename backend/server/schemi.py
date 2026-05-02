@@ -38,7 +38,8 @@ class AnnuncioBase(BaseModel):
     piattaforma: str
     modello: str
     tipologia: str
-    utente: str 
+    portatile: Optional[bool] = None
+    utente: str
     spedizione: bool
     prezzo_spedizione: float
     presenza: bool
