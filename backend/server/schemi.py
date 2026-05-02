@@ -60,3 +60,15 @@ class AnnuncioResponse(AnnuncioBase):
 class LoginRequest(BaseModel):
     nickname: str
     password: str
+
+# --- SCHEMI MODIFICA ACCOUNT ---
+
+class AggiornaDatiUtente(BaseModel):
+    nome: Optional[str] = None
+    cognome: Optional[str] = None
+    mail: Optional[str] = None
+    citta: Optional[str] = None
+
+class AggiornaPassword(BaseModel):
+    password_attuale: str
+    nuova_password: str

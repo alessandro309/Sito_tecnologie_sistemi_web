@@ -68,6 +68,24 @@ const api = {
   eliminaAnnuncio: (idAnnuncio) =>
     apiFetch(`${BASE}/annunci/${idAnnuncio}`, { method: 'DELETE' }),
 
+
+  aggiornaDati: (nickname, dati) =>
+    apiFetch(`${BASE}/utenti/${nickname}/dati`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dati),
+    }),
+
+  aggiornaPassword: (nickname, dati) =>
+    apiFetch(`${BASE}/utenti/${nickname}/password`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dati),
+    }),
+
+  eliminaAccount: (nickname) =>
+    apiFetch(`${BASE}/utenti/${nickname}`, { method: 'DELETE' }),
+
   // --- Preferiti ---
 
   getPreferiti: () =>

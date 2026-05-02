@@ -16,9 +16,22 @@ export default function Profilo() {
   const [preferiti, setPreferiti] = useState([]);
   const [caricamentoPreferiti, setCaricamentoPreferiti] = useState(true);
   const [tema, setTema] = useState(localStorage.getItem('temaSelezionato') || 'dark');
-  const [annuncioInElimina, setAnnuncioInElimina] = useState(null); // annuncio selezionato per la conferma
+  const [annuncioInElimina, setAnnuncioInElimina] = useState(null);
   const [eliminazioneInCorso, setEliminazioneInCorso] = useState(false);
   const [erroreElimina, setErroreElimina] = useState(null);
+  const [mostraModalEliminaAccount, setMostraModalEliminaAccount] = useState(false);
+  const [eliminaAccountInCorso, setEliminaAccountInCorso] = useState(false);
+  const [erroreEliminaAccount, setErroreEliminaAccount] = useState(null);
+
+  // Dati personali
+  const [formDati, setFormDati] = useState({ nome: '', cognome: '', mail: '', citta: '' });
+  const [salvaDatiInCorso, setSalvaDatiInCorso] = useState(false);
+  const [feedbackDati, setFeedbackDati] = useState(null); // { tipo: 'ok'|'errore', messaggio }
+
+  // Password
+  const [formPassword, setFormPassword] = useState({ password_attuale: '', nuova_password: '', conferma_password: '' });
+  const [salvaPasswordInCorso, setSalvaPasswordInCorso] = useState(false);
+  const [feedbackPassword, setFeedbackPassword] = useState(null);
 
   // Manda via gli utenti non loggati
   useEffect(() => {
@@ -50,13 +63,11 @@ export default function Profilo() {
     if (!utente?.nickname) return;
     const nickname = utente.nickname;
 
-    // Dati anagrafici dell'utente
     api.utente(nickname)
       .then((r) => r.ok ? r.json() : null)
       .then((dati) => setDatiProfilo(dati))
       .catch(console.error);
 
-    // Annunci: carichiamo tutti e filtriamo quelli dell'utente loggato
     api.ricercaAnnunci('')
       .then((r) => r.json())
       .then((tutti) => {
@@ -65,7 +76,6 @@ export default function Profilo() {
       })
       .catch(() => setCaricamentoAnnunci(false));
 
-    // Preferiti salvati dall'utente
     api.getPreferiti()
       .then((r) => r.ok ? r.json() : [])
       .then((dati) => {
@@ -75,7 +85,9 @@ export default function Profilo() {
       .catch(() => setCaricamentoPreferiti(false));
   }, [utente]);
 
-  // Applica il tema scelto al body e lo salva in localStorage
+  // Applica il tema scelto al body e lo salva in localStorage.
+  // Si esegue anche al mount, garantendo che lo stato del body
+  // sia sempre sincronizzato con il valore letto dal localStorage.
   useEffect(() => {
     if (tema === 'light') {
       document.body.classList.add('tema-chiaro');
@@ -86,27 +98,23 @@ export default function Profilo() {
     }
   }, [tema]);
 
-  // Apre il modal di conferma eliminazione
   function handleElimina(annuncio) {
     setErroreElimina(null);
     setAnnuncioInElimina(annuncio);
   }
 
-  // Aggiunge o rimuove un annuncio dai preferiti con aggiornamento ottimistico
   async function handleTogglePreferito(annuncio, nuovoStato) {
     if (nuovoStato) {
       setPreferiti((prev) => [...prev, annuncio]);
     } else {
       setPreferiti((prev) => prev.filter((a) => a.idAnnuncio !== annuncio.idAnnuncio));
     }
-
     try {
       const res = nuovoStato
         ? await api.aggiungiPreferito(annuncio.idAnnuncio)
         : await api.rimuoviPreferito(annuncio.idAnnuncio);
       if (!res.ok && res.status !== 204 && res.status !== 201) throw new Error();
     } catch {
-      // Se qualcosa va storto ripristiniamo il vecchio stato
       if (nuovoStato) {
         setPreferiti((prev) => prev.filter((a) => a.idAnnuncio !== annuncio.idAnnuncio));
       } else {
@@ -115,7 +123,6 @@ export default function Profilo() {
     }
   }
 
-  // Elimina l'annuncio dopo la conferma nel modal
   async function handleConfermaElimina() {
     if (!annuncioInElimina) return;
     setEliminazioneInCorso(true);
@@ -126,7 +133,6 @@ export default function Profilo() {
         const err = await res.json().catch(() => ({}));
         throw new Error(err.detail || 'Errore durante l\'eliminazione');
       }
-      // Rimuoviamo l'annuncio dalla lista senza ricaricare tutto
       setAnnunci((prev) => prev.filter((a) => a.idAnnuncio !== annuncioInElimina.idAnnuncio));
       setAnnuncioInElimina(null);
     } catch (e) {
@@ -136,10 +142,74 @@ export default function Profilo() {
     }
   }
 
-  // Aspettiamo che il context abbia caricato prima di renderizzare
+  async function handleSalvaDati(e) {
+    e.preventDefault();
+    setSalvaDatiInCorso(true);
+    setFeedbackDati(null);
+    try {
+      const res = await api.aggiornaDati(utente.nickname, formDati);
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || 'Errore durante il salvataggio');
+      }
+      const aggiornato = await res.json();
+      setDatiProfilo(aggiornato);
+      setFeedbackDati({ tipo: 'ok', messaggio: 'Dati aggiornati con successo!' });
+    } catch (e) {
+      setFeedbackDati({ tipo: 'errore', messaggio: e.message });
+    } finally {
+      setSalvaDatiInCorso(false);
+    }
+  }
+
+  async function handleAggiornaPassword(e) {
+    e.preventDefault();
+    setFeedbackPassword(null);
+    if (formPassword.nuova_password !== formPassword.conferma_password) {
+      setFeedbackPassword({ tipo: 'errore', messaggio: 'Le nuove password non coincidono' });
+      return;
+    }
+    if (formPassword.nuova_password.length < 6) {
+      setFeedbackPassword({ tipo: 'errore', messaggio: 'La nuova password deve essere di almeno 6 caratteri' });
+      return;
+    }
+    setSalvaPasswordInCorso(true);
+    try {
+      const res = await api.aggiornaPassword(utente.nickname, {
+        password_attuale: formPassword.password_attuale,
+        nuova_password:   formPassword.nuova_password,
+      });
+      if (!res.ok && res.status !== 204) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || 'Errore durante il cambio password');
+      }
+      setFormPassword({ password_attuale: '', nuova_password: '', conferma_password: '' });
+      setFeedbackPassword({ tipo: 'ok', messaggio: 'Password aggiornata con successo!' });
+    } catch (e) {
+      setFeedbackPassword({ tipo: 'errore', messaggio: e.message });
+    } finally {
+      setSalvaPasswordInCorso(false);
+    }
+  }
+
+  async function handleConfermaEliminaAccount() {
+    setEliminaAccountInCorso(true);
+    setErroreEliminaAccount(null);
+    try {
+      const res = await api.eliminaAccount(utente.nickname);
+      if (!res.ok && res.status !== 204) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || "Errore durante l'eliminazione dell'account");
+      }
+      window.location.href = "/";
+    } catch (e) {
+      setErroreEliminaAccount(e.message);
+      setEliminaAccountInCorso(false);
+    }
+  }
+
   if (loading || !utente) return null;
 
-  // Foto profilo: usiamo quella caricata dall'utente oppure un placeholder con le iniziali
   const iniziali = datiProfilo
     ? encodeURIComponent((datiProfilo.nome?.[0] ?? '?') + (datiProfilo.cognome?.[0] ?? ''))
     : '?';
@@ -151,6 +221,30 @@ export default function Profilo() {
   const citta = datiProfilo?.citta
     ? datiProfilo.provincia ? `${datiProfilo.citta} (${datiProfilo.provincia})` : datiProfilo.citta
     : '—';
+
+  // Classi dipendenti dal tema — sostituiscono i vecchi stili hardcoded nel tag <style>
+  const chiaro = tema === 'light';
+
+  const cls = {
+    profiloHeader: chiaro
+      ? 'profilo-header-light p-4 mb-4 shadow'
+      : 'profilo-header-dark p-4 mb-4 shadow',
+    panel: chiaro
+      ? 'panel-impostazioni-light'
+      : 'panel-impostazioni-dark',
+    statoVuoto: chiaro
+      ? 'stato-vuoto-light'
+      : 'stato-vuoto-dark',
+    avatarBorder: chiaro ? '#0096D6' : '#dc3545',
+    sezioneBorder: chiaro ? '#BFBFBF' : '#333',
+    panelBorder: chiaro ? '#BFBFBF' : '#333',
+    panelBg: chiaro ? '#F0F0F0' : '#000',
+    panelH6: chiaro ? '#555' : '#6c757d',
+    statoVuotoBg: chiaro ? '#E8E8E8' : '#000',
+    statoVuotoBorder: chiaro ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.15)',
+    profiloBg: chiaro ? '#F8F8F8' : '#000',
+    profiloBorder: chiaro ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)',
+  };
 
   return (
     <>
@@ -191,10 +285,10 @@ export default function Profilo() {
             <div className="sidebar-profilo sticky-top bg-black" style={{ top: 100 }}>
               <div className="list-group list-group-flush" id="scroll-spy-nav">
                 {[
-                  { href: '#sezioneProfilo',     icon: 'person-fill',  label: 'Il mio profilo' },
-                  { href: '#sezioneMieiAnnunci', icon: 'tags-fill',    label: 'I miei annunci' },
-                  { href: '#sezionePreferiti',   icon: 'floppy-fill',  label: 'Annunci salvati' },
-                  { href: '#sezioneImpostazioni',icon: 'gear-fill',    label: 'Impostazioni' },
+                  { href: '#sezioneProfilo',      icon: 'person-fill', label: 'Il mio profilo' },
+                  { href: '#sezioneMieiAnnunci',  icon: 'tags-fill',   label: 'I miei annunci' },
+                  { href: '#sezionePreferiti',    icon: 'floppy-fill', label: 'Annunci salvati' },
+                  { href: '#sezioneImpostazioni', icon: 'gear-fill',   label: 'Impostazioni' },
                 ].map((item) => (
                   <a key={item.href} href={item.href} className="list-group-item list-group-item-action fw-bold text-uppercase py-3">
                     <i className={`bi bi-${item.icon} me-2`}></i>{item.label}
@@ -208,10 +302,29 @@ export default function Profilo() {
 
             {/* Sezione: dati profilo */}
             <section id="sezioneProfilo" className="pb-5 mb-5 border-bottom border-secondary">
-              <div className="profilo-header p-4 mb-4 shadow">
+              <div
+                style={{
+                  backgroundColor: cls.profiloBg,
+                  border: `1px solid ${cls.profiloBorder}`,
+                  borderRadius: 20,
+                  transition: 'background-color 0.3s ease, border-color 0.3s ease',
+                }}
+                className="p-4 mb-4 shadow"
+              >
                 <div className="d-flex align-items-center gap-4 flex-wrap">
-                  <div className="avatar-wrapper">
-                    <img src={fotoProfilo} alt="Foto Profilo" className="rounded-circle shadow" />
+                  <div>
+                    <img
+                      src={fotoProfilo}
+                      alt="Foto Profilo"
+                      className="rounded-circle shadow"
+                      style={{
+                        width: 110,
+                        height: 110,
+                        objectFit: 'cover',
+                        border: `3px solid ${cls.avatarBorder}`,
+                        transition: 'border-color 0.3s ease',
+                      }}
+                    />
                   </div>
                   <div>
                     <h2 className="fw-bold mb-1 text-uppercase text-white">
@@ -231,8 +344,16 @@ export default function Profilo() {
 
             {/* Sezione: annunci pubblicati dall'utente */}
             <section id="sezioneMieiAnnunci" className="pb-5 mb-5 border-bottom border-secondary">
-              <div className="sezione-titolo d-flex justify-content-between align-items-center">
-                <h4 className="fw-bold text-uppercase">
+              <div
+                className="d-flex justify-content-between align-items-center"
+                style={{
+                  borderBottom: `1px solid ${cls.sezioneBorder}`,
+                  paddingBottom: '0.6rem',
+                  marginBottom: '1.5rem',
+                  transition: 'border-color 0.3s ease',
+                }}
+              >
+                <h4 className="fw-bold text-uppercase" style={{ fontSize: '0.95rem', letterSpacing: '0.08em', margin: 0 }}>
                   <i className="bi bi-tags-fill text-danger me-2"></i>
                   I miei annunci
                   <span className="text-danger ms-1">({annunci.length})</span>
@@ -245,7 +366,14 @@ export default function Profilo() {
                   <p className="mt-2 small text-secondary">Caricamento annunci...</p>
                 </div>
               ) : annunci.length === 0 ? (
-                <div className="stato-vuoto">
+                <div
+                  style={{
+                    backgroundColor: cls.statoVuotoBg,
+                    border: `1px dashed ${cls.statoVuotoBorder}`,
+                    borderRadius: 16,
+                    transition: 'background-color 0.3s ease, border-color 0.3s ease',
+                  }}
+                >
                   <div className="d-flex flex-column justify-content-center align-items-center py-5 text-secondary">
                     <i className="bi bi-tags fs-1 mb-3 opacity-50 text-danger"></i>
                     <p className="small text-uppercase mb-3">Non hai ancora pubblicato nessun annuncio</p>
@@ -267,8 +395,16 @@ export default function Profilo() {
 
             {/* Sezione: annunci salvati nei preferiti */}
             <section id="sezionePreferiti" className="py-5 mb-5 border-bottom border-secondary">
-              <div className="sezione-titolo d-flex justify-content-between align-items-center">
-                <h4 className="fw-bold text-uppercase">
+              <div
+                className="d-flex justify-content-between align-items-center"
+                style={{
+                  borderBottom: `1px solid ${cls.sezioneBorder}`,
+                  paddingBottom: '0.6rem',
+                  marginBottom: '1.5rem',
+                  transition: 'border-color 0.3s ease',
+                }}
+              >
+                <h4 className="fw-bold text-uppercase" style={{ fontSize: '0.95rem', letterSpacing: '0.08em', margin: 0 }}>
                   <i className="bi bi-floppy-fill text-danger me-2"></i>
                   Annunci Salvati
                   <span className="text-danger ms-1">({preferiti.length})</span>
@@ -281,7 +417,14 @@ export default function Profilo() {
                   <p className="mt-2 small text-secondary">Caricamento preferiti...</p>
                 </div>
               ) : preferiti.length === 0 ? (
-                <div className="stato-vuoto">
+                <div
+                  style={{
+                    backgroundColor: cls.statoVuotoBg,
+                    border: `1px dashed ${cls.statoVuotoBorder}`,
+                    borderRadius: 16,
+                    transition: 'background-color 0.3s ease, border-color 0.3s ease',
+                  }}
+                >
                   <div className="d-flex flex-column justify-content-center align-items-center py-5 text-secondary">
                     <i className="bi bi-floppy fs-1 mb-3 opacity-50 text-danger"></i>
                     <p className="small text-uppercase mb-3">Nessun annuncio salvato nei preferiti</p>
@@ -305,15 +448,33 @@ export default function Profilo() {
 
             {/* Sezione: impostazioni account */}
             <section id="sezioneImpostazioni" className="py-5">
-              <div className="sezione-titolo">
-                <h4 className="fw-bold text-uppercase">
+              <div
+                style={{
+                  borderBottom: `1px solid ${cls.sezioneBorder}`,
+                  paddingBottom: '0.6rem',
+                  marginBottom: '1.5rem',
+                  transition: 'border-color 0.3s ease',
+                }}
+              >
+                <h4 className="fw-bold text-uppercase" style={{ fontSize: '0.95rem', letterSpacing: '0.08em', margin: 0 }}>
                   <i className="bi bi-gear-fill text-danger me-2"></i>Impostazioni Account
                 </h4>
               </div>
 
-              {/* Selezione tema chiaro/scuro */}
-              <div className="panel-impostazioni">
-                <h6 className="fw-bold text-uppercase">Tema dell'interfaccia</h6>
+              {/* Selezione tema */}
+              <div
+                style={{
+                  backgroundColor: cls.panelBg,
+                  border: `1px solid ${cls.panelBorder}`,
+                  borderRadius: 16,
+                  padding: '1.5rem',
+                  marginBottom: '1.25rem',
+                  transition: 'background-color 0.3s ease, border-color 0.3s ease',
+                }}
+              >
+                <h6 style={{ fontSize: '0.7rem', letterSpacing: '0.1em', color: cls.panelH6, marginBottom: '1rem' }} className="fw-bold text-uppercase">
+                  Tema dell'interfaccia
+                </h6>
                 <div className="btn-group w-100 shadow-sm" role="group">
                   <input type="radio" className="btn-check" name="sceltaTema" id="temaScuro" value="dark" checked={tema === 'dark'} onChange={() => setTema('dark')} />
                   <label className="btn btn-outline-danger text-uppercase fw-bold py-2 rounded-start-1" htmlFor="temaScuro">
@@ -326,58 +487,164 @@ export default function Profilo() {
                 </div>
               </div>
 
-              {/* Modifica dati personali - TODO: collegare al backend */}
-              <div className="panel-impostazioni">
-                <h6 className="fw-bold text-uppercase">Informazioni Personali</h6>
-                <form onSubmit={(e) => e.preventDefault()}>
+              {/* Informazioni personali */}
+              <div
+                style={{
+                  backgroundColor: cls.panelBg,
+                  border: `1px solid ${cls.panelBorder}`,
+                  borderRadius: 16,
+                  padding: '1.5rem',
+                  marginBottom: '1.25rem',
+                  transition: 'background-color 0.3s ease, border-color 0.3s ease',
+                }}
+              >
+                <h6 style={{ fontSize: '0.7rem', letterSpacing: '0.1em', color: cls.panelH6, marginBottom: '1rem' }} className="fw-bold text-uppercase">
+                  Informazioni Personali
+                </h6>
+                <form onSubmit={handleSalvaDati}>
                   <div className="row g-3">
                     <div className="col-md-6">
                       <label className="form-label small text-secondary mb-1">Nome</label>
-                      <input type="text" className="form-control bg-transparent text-white border-secondary rounded-1" defaultValue={datiProfilo?.nome ?? ''} placeholder="Nome" />
+                      <input
+                        type="text"
+                        className="form-control bg-transparent text-white border-secondary rounded-1"
+                        placeholder="Nome"
+                        value={formDati.nome}
+                        onChange={(e) => setFormDati((p) => ({ ...p, nome: e.target.value }))}
+                        required
+                      />
                     </div>
                     <div className="col-md-6">
                       <label className="form-label small text-secondary mb-1">Cognome</label>
-                      <input type="text" className="form-control bg-transparent text-white border-secondary rounded-1" defaultValue={datiProfilo?.cognome ?? ''} placeholder="Cognome" />
+                      <input
+                        type="text"
+                        className="form-control bg-transparent text-white border-secondary rounded-1"
+                        placeholder="Cognome"
+                        value={formDati.cognome}
+                        onChange={(e) => setFormDati((p) => ({ ...p, cognome: e.target.value }))}
+                        required
+                      />
                     </div>
                     <div className="col-md-6">
                       <label className="form-label small text-secondary mb-1">Email</label>
-                      <input type="email" className="form-control bg-transparent text-white border-secondary rounded-1" defaultValue={datiProfilo?.mail ?? ''} placeholder="email@esempio.com" />
+                      <input
+                        type="email"
+                        className="form-control bg-transparent text-white border-secondary rounded-1"
+                        placeholder="email@esempio.com"
+                        value={formDati.mail}
+                        onChange={(e) => setFormDati((p) => ({ ...p, mail: e.target.value }))}
+                        required
+                      />
                     </div>
                     <div className="col-md-6">
                       <label className="form-label small text-secondary mb-1">Città</label>
-                      <input type="text" className="form-control bg-transparent text-white border-secondary rounded-1" defaultValue={datiProfilo?.citta ?? ''} placeholder="Città" />
+                      <input
+                        type="text"
+                        className="form-control bg-transparent text-white border-secondary rounded-1"
+                        placeholder="Città"
+                        value={formDati.citta}
+                        onChange={(e) => setFormDati((p) => ({ ...p, citta: e.target.value }))}
+                      />
                     </div>
+                    {feedbackDati && (
+                      <div className="col-12">
+                        <p className={`small mb-0 ${feedbackDati.tipo === 'ok' ? 'text-success' : 'text-danger'}`}>
+                          <i className={`bi bi-${feedbackDati.tipo === 'ok' ? 'check-circle' : 'exclamation-triangle'} me-1`}></i>
+                          {feedbackDati.messaggio}
+                        </p>
+                      </div>
+                    )}
                     <div className="col-12 mt-2 text-end">
-                      <button type="submit" className="btn bottone_login rounded-1 text-uppercase fw-bold px-4">Salva modifiche</button>
+                      <button type="submit" className="btn bottone_login rounded-1 text-uppercase fw-bold px-4" disabled={salvaDatiInCorso}>
+                        {salvaDatiInCorso
+                          ? <><span className="spinner-border spinner-border-sm me-2" role="status" />Salvataggio...</>
+                          : 'Salva modifiche'
+                        }
+                      </button>
                     </div>
                   </div>
                 </form>
               </div>
 
-              {/* Cambio password - TODO: collegare al backend */}
-              <div className="panel-impostazioni">
-                <h6 className="fw-bold text-uppercase">Sicurezza Password</h6>
-                <form onSubmit={(e) => e.preventDefault()}>
+              {/* Sicurezza password */}
+              <div
+                style={{
+                  backgroundColor: cls.panelBg,
+                  border: `1px solid ${cls.panelBorder}`,
+                  borderRadius: 16,
+                  padding: '1.5rem',
+                  marginBottom: '1.25rem',
+                  transition: 'background-color 0.3s ease, border-color 0.3s ease',
+                }}
+              >
+                <h6 style={{ fontSize: '0.7rem', letterSpacing: '0.1em', color: cls.panelH6, marginBottom: '1rem' }} className="fw-bold text-uppercase">
+                  Sicurezza Password
+                </h6>
+                <form onSubmit={handleAggiornaPassword}>
                   <div className="row g-3">
                     <div className="col-md-6">
-                      <label className="form-label small text-secondary mb-1">Nuova Password</label>
-                      <input type="password" className="form-control bg-transparent text-white border-secondary rounded-1" placeholder="********" />
+                      <label className="form-label small text-secondary mb-1">Password attuale</label>
+                      <input
+                        type="password"
+                        className="form-control bg-transparent text-white border-secondary rounded-1"
+                        placeholder="Password attuale"
+                        value={formPassword.password_attuale}
+                        onChange={(e) => setFormPassword((p) => ({ ...p, password_attuale: e.target.value }))}
+                        required
+                      />
                     </div>
                     <div className="col-md-6">
-                      <label className="form-label small text-secondary mb-1">Conferma Password</label>
-                      <input type="password" className="form-control bg-transparent text-white border-secondary rounded-1" placeholder="********" />
+                      <label className="form-label small text-secondary mb-1">Nuova Password</label>
+                      <input
+                        type="password"
+                        className="form-control bg-transparent text-white border-secondary rounded-1"
+                        placeholder="Nuova password"
+                        value={formPassword.nuova_password}
+                        onChange={(e) => setFormPassword((p) => ({ ...p, nuova_password: e.target.value }))}
+                        required
+                      />
                     </div>
+                    <div className="col-md-6">
+                      <label className="form-label small text-secondary mb-1">Conferma nuova Password</label>
+                      <input
+                        type="password"
+                        className="form-control bg-transparent text-white border-secondary rounded-1"
+                        placeholder="Conferma nuova password"
+                        value={formPassword.conferma_password}
+                        onChange={(e) => setFormPassword((p) => ({ ...p, conferma_password: e.target.value }))}
+                        required
+                      />
+                    </div>
+                    {feedbackPassword && (
+                      <div className="col-12">
+                        <p className={`small mb-0 ${feedbackPassword.tipo === 'ok' ? 'text-success' : 'text-danger'}`}>
+                          <i className={`bi bi-${feedbackPassword.tipo === 'ok' ? 'check-circle' : 'exclamation-triangle'} me-1`}></i>
+                          {feedbackPassword.messaggio}
+                        </p>
+                      </div>
+                    )}
                     <div className="col-12 mt-2 text-end">
-                      <button type="submit" className="btn bottone_login rounded-1 text-uppercase fw-bold px-4">Aggiorna Password</button>
+                      <button type="submit" className="btn bottone_login rounded-1 text-uppercase fw-bold px-4" disabled={salvaPasswordInCorso}>
+                        {salvaPasswordInCorso
+                          ? <><span className="spinner-border spinner-border-sm me-2" role="status" />Aggiornamento...</>
+                          : 'Aggiorna Password'
+                        }
+                      </button>
                     </div>
                   </div>
                 </form>
               </div>
 
-              <div className="mt-4 pt-4 border-top border-secondary d-flex justify-content-between align-items-center opacity-75">
-                <span className="small text-secondary">Zona pericolosa</span>
-                <button className="btn btn-sm btn-outline-secondary text-uppercase fw-bold px-3 rounded-1">
-                  <i className="bi bi-person-x me-1"></i>Disabilita Account
+              <div className="mt-4 pt-4 border-top border-secondary d-flex justify-content-between align-items-center">
+                <div>
+                  <span className="small text-danger fw-bold text-uppercase">Zona pericolosa</span>
+                  <p className="small text-secondary mb-0 mt-1">Questa azione è irreversibile. Tutti i tuoi annunci e dati verranno cancellati.</p>
+                </div>
+                <button
+                  className="btn btn-sm btn-outline-danger text-uppercase fw-bold px-3 rounded-1 ms-3 text-nowrap"
+                  onClick={() => { setErroreEliminaAccount(null); setMostraModalEliminaAccount(true); }}
+                >
+                  <i className="bi bi-person-x me-1"></i>Elimina Account
                 </button>
               </div>
             </section>
@@ -441,16 +708,61 @@ export default function Profilo() {
           </div>
         </div>
       )}
-
-      <style>{`
-        .profilo-header { background-color: #000; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; }
-        .avatar-wrapper img { width: 110px; height: 110px; object-fit: cover; border: 3px solid #dc3545; }
-        .sezione-titolo { border-bottom: 1px solid #333; padding-bottom: 0.6rem; margin-bottom: 1.5rem; }
-        .sezione-titolo h4 { font-size: 0.95rem; letter-spacing: 0.08em; margin: 0; }
-        .panel-impostazioni { background-color: #000; border: 1px solid #333; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.25rem; }
-        .panel-impostazioni h6 { font-size: 0.7rem; letter-spacing: 0.1em; color: #6c757d; margin-bottom: 1rem; }
-        .stato-vuoto { background-color: #000; border: 1px dashed rgba(255,255,255,0.15); border-radius: 16px; }
-      `}</style>
+      {/* Modal di conferma eliminazione account */}
+      {mostraModalEliminaAccount && (
+        <div
+          className="modal d-block"
+          style={{ backgroundColor: 'rgba(0,0,0,0.85)' }}
+          onClick={(e) => { if (e.target === e.currentTarget && !eliminaAccountInCorso) setMostraModalEliminaAccount(false); }}
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content bg-black border border-danger text-white font-monospace shadow-lg">
+              <div className="modal-header border-danger">
+                <h5 className="modal-title text-uppercase fs-6 fw-bold text-danger">
+                  <i className="bi bi-exclamation-triangle-fill me-2"></i>Elimina Account
+                </h5>
+                <button
+                  className="btn-close btn-close-white"
+                  onClick={() => setMostraModalEliminaAccount(false)}
+                  disabled={eliminaAccountInCorso}
+                />
+              </div>
+              <div className="modal-body">
+                <p className="small mb-2">
+                  Stai per eliminare definitivamente l'account <strong className="text-danger">@{utente.nickname}</strong>.
+                </p>
+                <p className="small text-secondary mb-0">
+                  Verranno cancellati tutti i tuoi annunci, i preferiti e la foto profilo. <strong>Non potrai recuperarli.</strong>
+                </p>
+                {erroreEliminaAccount && (
+                  <p className="small text-danger mt-3 mb-0">
+                    <i className="bi bi-exclamation-triangle me-1"></i>{erroreEliminaAccount}
+                  </p>
+                )}
+              </div>
+              <div className="modal-footer border-secondary">
+                <button
+                  className="btn btn-outline-secondary rounded-1 text-uppercase fw-bold px-3 small"
+                  onClick={() => setMostraModalEliminaAccount(false)}
+                  disabled={eliminaAccountInCorso}
+                >
+                  Annulla
+                </button>
+                <button
+                  className="btn btn-danger rounded-1 text-uppercase fw-bold px-3 small"
+                  onClick={handleConfermaEliminaAccount}
+                  disabled={eliminaAccountInCorso}
+                >
+                  {eliminaAccountInCorso
+                    ? <span className="spinner-border spinner-border-sm" role="status" />
+                    : <><i className="bi bi-person-x me-1"></i>Sì, elimina account</>
+                  }
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

@@ -224,6 +224,65 @@ def ottieni_utente_loggato(request: Request, db: Session = Depends(get_db)):
         
     return sessione.nickname_utente
 
+
+# --- ENDPOINT: MODIFICA DATI PERSONALI UTENTE ---
+@app.patch("/utenti/{nickname}/dati", response_model=schemi.UtenteResponse)
+def aggiorna_dati_utente(
+    nickname: str,
+    dati: schemi.AggiornaDatiUtente,
+    utente_corrente: str = Depends(ottieni_utente_loggato),
+    db: Session = Depends(get_db)
+):
+    if utente_corrente != nickname:
+        raise HTTPException(status_code=403, detail="Non autorizzato")
+
+    utente = db.query(database.UtenteDB).filter(database.UtenteDB.nickname == nickname).first()
+    if not utente:
+        raise HTTPException(status_code=404, detail="Utente non trovato")
+
+    # Aggiorniamo solo i campi forniti (quelli non None)
+    if dati.nome is not None:
+        utente.nome = dati.nome
+    if dati.cognome is not None:
+        utente.cognome = dati.cognome
+    if dati.mail is not None:
+        # Verifichiamo che la nuova email non sia già usata da un altro utente
+        esistente = db.query(database.UtenteDB).filter(
+            database.UtenteDB.mail == dati.mail,
+            database.UtenteDB.nickname != nickname
+        ).first()
+        if esistente:
+            raise HTTPException(status_code=400, detail="Email già in uso da un altro account")
+        utente.mail = dati.mail
+    if dati.citta is not None:
+        utente.citta = dati.citta
+
+    db.commit()
+    db.refresh(utente)
+    return utente
+
+
+# --- ENDPOINT: MODIFICA PASSWORD UTENTE ---
+@app.patch("/utenti/{nickname}/password", status_code=204)
+def aggiorna_password(
+    nickname: str,
+    dati: schemi.AggiornaPassword,
+    utente_corrente: str = Depends(ottieni_utente_loggato),
+    db: Session = Depends(get_db)
+):
+    if utente_corrente != nickname:
+        raise HTTPException(status_code=403, detail="Non autorizzato")
+
+    utente = db.query(database.UtenteDB).filter(database.UtenteDB.nickname == nickname).first()
+    if not utente:
+        raise HTTPException(status_code=404, detail="Utente non trovato")
+
+    if not verifica_password(dati.password_attuale, utente.password):
+        raise HTTPException(status_code=400, detail="Password attuale non corretta")
+
+    utente.password = ottieni_hash_password(dati.nuova_password)
+    db.commit()
+
 # --- ENDPOINT: ELIMINAZIONE ANNUNCIO ---
 @app.delete("/annunci/{idAnnuncio}", status_code=204)
 def elimina_annuncio(
@@ -305,6 +364,44 @@ def logout(request: Request, response: Response, db: Session = Depends(get_db)):
 @app.get("/utente/me")
 def controlla_sessione(utente_corrente: str = Depends(ottieni_utente_loggato)):
     return {"nickname": utente_corrente, "loggato": True}
+
+
+# --- ENDPOINT: ELIMINAZIONE ACCOUNT UTENTE ---
+@app.delete("/utenti/{nickname}", status_code=204)
+def elimina_account(
+    nickname: str,
+    request: Request,
+    response: Response,
+    utente_corrente: str = Depends(ottieni_utente_loggato),
+    db: Session = Depends(get_db)
+):
+    # Verifica che l'utente stia eliminando solo il proprio account
+    if utente_corrente != nickname:
+        raise HTTPException(status_code=403, detail="Non sei autorizzato a eliminare questo account")
+
+    utente = db.query(database.UtenteDB).filter(database.UtenteDB.nickname == nickname).first()
+    if not utente:
+        raise HTTPException(status_code=404, detail="Utente non trovato")
+
+    # Elimina la cartella con la foto profilo dal filesystem, se presente
+    cartella_utente = os.path.join(BASE_DIR_UTENTI, nickname)
+    if os.path.exists(cartella_utente):
+        shutil.rmtree(cartella_utente)
+
+    # Elimina le cartelle delle immagini di tutti gli annunci dell'utente
+    for annuncio in utente.annunci:
+        cartella_annuncio = os.path.join(BASE_DIR_IMMAGINI, str(annuncio.idAnnuncio))
+        if os.path.exists(cartella_annuncio):
+            shutil.rmtree(cartella_annuncio)
+
+    # Elimina l'utente dal database.
+    # Grazie alle relazioni con ondelete="CASCADE" nel database, vengono eliminati
+    # automaticamente anche: sessioni, preferiti e annunci collegati.
+    db.delete(utente)
+    db.commit()
+
+    # Cancella il cookie di sessione dal browser
+    response.delete_cookie("sessione_retroshop")
 
 
 @app.get("/annunci/ricerca/", response_model=List[schemi.AnnuncioResponse])
