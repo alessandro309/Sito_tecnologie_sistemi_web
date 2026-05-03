@@ -231,7 +231,7 @@ export default function CreaAnnuncio() {
                     className="form-select border-secondary shadow-none"
                     required
                     value={tipologiaBase}
-                    onChange={(e) => { setTipologiaBase(e.target.value); setPortatile(false); }}
+                    onChange={(e) => setTipologiaBase(e.target.value)}
                   >
                     <option value="" disabled>Tipologia...</option>
                     <option value="console">Console</option>
