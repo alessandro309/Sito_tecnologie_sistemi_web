@@ -1,139 +1,31 @@
-import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 // Struttura dati dei menu console — evita 400 righe di JSX ripetuto
 const CONSOLE_MENUS = [
-  {
-    label: 'PLAYSTATION',
-    icon: <i className="bi bi-playstation fs-5" />,
-    items: [
-      { name: 'PS1' }, { name: 'PS2' }, { name: 'PS3' }, { name: 'PS4' },
-      { name: 'PS5' }, { name: 'PSP' }, { name: 'PSVita' },
-    ],
-    subs: ['Console', 'Giochi', 'Accessori'],
-    tutto: 'Tutto PlayStation',
-  },
-  {
-    label: 'XBOX',
-    icon: <i className="bi bi-xbox fs-5" />,
-    items: [
-      { name: 'XBOX originale' }, { name: 'Xbox360' },
-      { name: 'XBOX ONE' }, { name: 'XBOX Series X|S' },
-    ],
-    subs: ['Console', 'Giochi', 'Accessori'],
-    tutto: 'Tutto XBOX',
-  },
-  {
-    label: 'NINTENDO',
-    icon: <i className="bi bi-nintendo-switch fs-5" />,
-    items: [
-      { name: 'NES' }, { name: 'SNES' }, { name: 'Nintendo64' }, { name: 'GameCube' },
-      { name: 'WII' }, { name: 'WIIu' }, { name: 'Switch' }, { name: 'Switch2' },
-      { name: 'GameBoy' }, { name: 'GameBoy Advance' }, { name: 'DS' }, { name: '3DS' },
-    ],
-    subs: ['Console', 'Giochi', 'Accessori'],
-    tutto: 'Tutto Nintendo',
-  },
-  {
-    label: 'SEGA',
-    icon: <img src="/logo_sega.svg" alt="Sega" style={{ height: 20, filter: 'invert(1)' }} />,
-    items: [
-      { name: 'Master System' }, { name: 'Mega Drive' }, { name: 'MegaCD' },
-      { name: 'GameGear' }, { name: 'Saturn' }, { name: 'DreamCast' },
-    ],
-    subs: ['Console', 'Giochi', 'Accessori'],
-    tutto: 'Tutto SEGA',
-  },
-  {
-    label: 'COMMODORE',
-    icon: <img src="/logo_commodore.svg" alt="Commodore" style={{ height: 20, filter: 'brightness(0) invert(1)' }} />,
-    items: [
-      { name: 'VIC-20' },
-      { name: 'Commodore 64' },
-      { name: 'Commodore 128', subs: ['Console / PC', 'Giochi', 'Accessori'] },
-    ],
-    subs: ['Console', 'Giochi', 'Accessori'],
-    tutto: 'Tutto Commodore',
-  },
-  {
-    label: 'ATARI',
-    icon: <img src="/logo_atari.svg" alt="Atari" style={{ height: 20, filter: 'invert(1)' }} />,
-    items: [
-      { name: 'Atari 2600' }, { name: 'Atari 5200' }, { name: 'Atari 7800' },
-      { name: 'Atari Lynx' }, { name: 'Atari Jaguar' },
-    ],
-    subs: ['Console', 'Giochi', 'Accessori'],
-    tutto: 'Tutto Atari',
-  },
-  {
-    label: 'ALTRO',
-    icon: null,
-    items: [
-      { name: 'Amiga', subs: ['Console', 'Giochi', 'Accessori'] },
-      { name: 'Arcade / Cabinati', subs: ['Cabinati', 'Accessori'] },
-    ],
-    subs: [],
-    tutto: 'Esplora Tutto',
-  },
+  { label: 'PLAYSTATION', marca: 'PlayStation', icon: <i className="bi bi-playstation fs-5" /> },
+  { label: 'XBOX',        marca: 'Xbox',        icon: <i className="bi bi-xbox fs-5" /> },
+  { label: 'NINTENDO',    marca: 'Nintendo',    icon: <i className="bi bi-nintendo-switch fs-5" /> },
+  { label: 'SEGA',        marca: 'Sega',        icon: <img src="/logo_sega.svg" alt="Sega" style={{ height: 20, filter: 'invert(1)' }} /> },
+  { label: 'COMMODORE',   marca: 'Commodore',   icon: <img src="/logo_commodore.svg" alt="Commodore" style={{ height: 20, filter: 'brightness(0) invert(1)' }} /> },
+  { label: 'ATARI',       marca: 'Atari',       icon: <img src="/logo_atari.svg" alt="Atari" style={{ height: 20, filter: 'invert(1)' }} /> },
+  { label: 'ALTRO',       marca: null,          icon: null },
 ];
 
-// Singolo elemento del menu con eventuali sottomenu
-function ConsoleMenuItem({ item, menuSubs, openKey, onToggle, isMobile }) {
-  const subs = item.subs ?? menuSubs;
-  const key = item.name;
-  const isOpen = openKey === key;
-
-  function handleClick(e) {
-    if (isMobile) {
-      e.preventDefault();
-      e.stopPropagation();
-      onToggle(isOpen ? null : key);
-    }
-  }
+// Voce della barra console: Link diretto agli annunci filtrati per marca
+function ConsoleLink({ menu }) {
+  // "ALTRO" non ha una marca specifica: porta a tutti gli annunci
+  const to = menu.marca ? `/annunci?marca=${encodeURIComponent(menu.marca)}` : '/annunci';
 
   return (
-    <li className="dropdown-submenu">
-      <a className="dropdown-item dropdown-toggle font-monospace" href="#" onClick={handleClick}>
-        {item.name}
-      </a>
-      <ul className={`dropdown-menu dropdown-menu-dark submenu-retro rounded-2 ${isMobile && isOpen ? 'show' : ''}`}>
-        {subs.map((sub) => (
-          <li key={sub}><a className="dropdown-item font-monospace" href="#">{sub}</a></li>
-        ))}
-      </ul>
-    </li>
-  );
-}
-
-// Menu principale di una console (PlayStation, Xbox, ecc.)
-function ConsoleMenu({ menu, isMobile }) {
-  const [openSubmenu, setOpenSubmenu] = useState(null);
-
-  return (
-    <li className="nav-item dropdown">
-      <a
-        className="nav-link dropdown-toggle text-white font-monospace d-flex align-items-center gap-2"
-        data-bs-toggle="dropdown"
-        href="#"
+    <li className="nav-item">
+      <Link
+        to={to}
+        className="nav-link text-white font-monospace d-flex align-items-center gap-2"
       >
         {menu.icon}
         {menu.label}
-      </a>
-      <ul className="dropdown-menu dropdown-menu-dark rounded-2">
-        {menu.items.map((item) => (
-          <ConsoleMenuItem
-            key={item.name}
-            item={item}
-            menuSubs={menu.subs}
-            openKey={openSubmenu}
-            onToggle={setOpenSubmenu}
-            isMobile={isMobile}
-          />
-        ))}
-        <li><hr className="dropdown-divider border-secondary" /></li>
-        <li><a className="dropdown-item font-monospace" href="#">{menu.tutto}</a></li>
-      </ul>
+      </Link>
     </li>
   );
 }
@@ -229,13 +121,6 @@ function NavbarDestra() {
 }
 
 export default function Navbar({ children }) {
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 992);
-
-  useEffect(() => {
-    const handler = () => setIsMobile(window.innerWidth < 992);
-    window.addEventListener('resize', handler);
-    return () => window.removeEventListener('resize', handler);
-  }, []);
 
   return (
     <header>
@@ -274,7 +159,7 @@ export default function Navbar({ children }) {
       <div className="collapse d-lg-block miei-menu-mobile">
         <ul className="nav flex-column flex-lg-row bg-black justify-content-center align-items-center bg-opacity-50 p-2 border-bottom border-secondary text-center m-0">
           {CONSOLE_MENUS.map((menu) => (
-            <ConsoleMenu key={menu.label} menu={menu} isMobile={isMobile} />
+            <ConsoleLink key={menu.label} menu={menu} />
           ))}
         </ul>
       </div>

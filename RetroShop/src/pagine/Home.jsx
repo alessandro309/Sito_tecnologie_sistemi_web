@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import Navbar from '../componenti/Navbar';
 import BarraRicerca from '../componenti/BarraRicerca';
 import ModalLogin from '../componenti/Login';
@@ -9,31 +10,35 @@ const CATEGORIE = [
   {
     id: 'box_fisse',
     titolo: 'Console\nFisse',
-    align: 'left', // testo a sinistra
+    align: 'left',
+    filtro: 'console_fisse',
   },
   {
     id: 'box_portatili',
     titolo: 'Console\nPortatili',
     align: 'right',
+    filtro: 'console_portatili',
   },
   {
     id: 'box_accessori',
     titolo: 'Accessori',
     align: 'left',
+    filtro: 'accessori',
   },
   {
     id: 'box_giochi',
     titolo: 'Giochi',
     align: 'right',
+    filtro: 'giochi',
   },
 ];
 
-function BoxCategoria({ id, titolo, align }) {
+function BoxCategoria({ id, titolo, align, filtro }) {
   const isRight = align === 'right';
 
   return (
-    <a
-      href="#"
+    <Link
+      to={`/annunci?tipologia=${filtro}`}
       className="box_categoria rounded-4 d-flex align-items-center text-decoration-none shadow"
       id={id}
     >
@@ -53,7 +58,7 @@ function BoxCategoria({ id, titolo, align }) {
           Esplora il catalogo <i className="bi bi-arrow-right fs-5"></i>
         </span>
       </div>
-    </a>
+    </Link>
   );
 }
 

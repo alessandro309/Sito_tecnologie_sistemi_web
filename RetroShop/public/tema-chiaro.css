@@ -427,3 +427,35 @@ body.tema-chiaro .list-group-item-action:hover {
     background-color: rgba(0, 150, 214, 0.1) !important;
     color: #0096D6 !important;
 }
+
+/*Logo in tema chiaro*/
+
+body.tema-chiaro .navbar-brand img {
+    filter: brightness(0) drop-shadow(0 0 6px rgba(0, 150, 214, 0.4)) !important;
+}
+
+/*Gradiente box*/
+
+body.tema-chiaro #box_fisse {
+    background-image:
+        linear-gradient(to right, rgba(220, 220, 220, 0.95) 10%, rgba(0, 150, 214, 0.3) 30%, rgba(0, 0, 0, 0) 60%),
+        url('Home_console.png') !important;
+}
+ 
+body.tema-chiaro #box_portatili {
+    background-image:
+        linear-gradient(to left, rgba(220, 220, 220, 0.95) 10%, rgba(0, 150, 214, 0.3) 30%, rgba(0, 0, 0, 0) 60%),
+        url('Portatili.png') !important;
+}
+ 
+body.tema-chiaro #box_accessori {
+    background-image:
+        linear-gradient(to right, rgba(220, 220, 220, 0.95) 10%, rgba(0, 150, 214, 0.3) 40%, rgba(0, 0, 0, 0) 70%),
+        url('controller.png') !important;
+}
+ 
+body.tema-chiaro #box_giochi {
+    background-image:
+        linear-gradient(to left, rgba(220, 220, 220, 0.95) 10%, rgba(0, 150, 214, 0.3) 30%, rgba(0, 0, 0, 0) 60%),
+        url('giochi_totali.png') !important;
+}

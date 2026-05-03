@@ -13,7 +13,7 @@ export default function Footer() {
             <a href="https://youtu.be/QDia3e12czc?si=flfCdFpj-f2wJr3u" className="text-secondary me-3">
               <i className="bi bi-youtube fs-5"></i>
             </a>
-            <a href="#" className="text-secondary me-3">
+            <a href="https://www.instagram.com/_retro_shop_official_/" className="text-secondary me-3">
               <i className="bi bi-instagram fs-5"></i>
             </a>
             <a href="#" className="text-secondary">
