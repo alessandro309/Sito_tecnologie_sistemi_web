@@ -177,10 +177,12 @@ export default function PaginaAnnuncio() {
 
                     {/* ── PULSANTE CONTATTA ── */}
                     {isProprietario ? (
-                      // Se è il proprietario mostra un badge informativo al posto del pulsante
-                      <span className="btn pulsante_arancione font-monospace px-4 py-2 rounded-2 shadow-sm d-flex align-items-center justify-content-center flex-grow-1 opacity-50" style={{ cursor: 'default' }}>
-                        <i className="bi bi-person-check-fill me-2"></i>Tuo annuncio
-                      </span>
+                      <button
+                        className="btn pulsante_arancione font-monospace px-4 py-2 rounded-2 shadow-sm d-flex align-items-center justify-content-center flex-grow-1"
+                        onClick={() => navigate(`/annunci/${id}/modifica`)}
+                      >
+                        <i className="bi bi-pencil-fill me-2"></i>Modifica
+                      </button>
                     ) : (
                       <button
                         className="btn pulsante_arancione font-monospace px-4 py-2 rounded-2 shadow-sm d-flex align-items-center justify-content-center flex-grow-1"

@@ -68,6 +68,16 @@ const api = {
   eliminaAnnuncio: (idAnnuncio) =>
     apiFetch(`${BASE}/annunci/${idAnnuncio}`, { method: 'DELETE' }),
 
+  modificaAnnuncio: (id, dati) =>
+    apiFetch(`${BASE}/annunci/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dati),
+    }),
+
+  eliminaImmagine: (immagineId) =>
+    apiFetch(`${BASE}/immagini/${immagineId}`, { method: 'DELETE' }),
+
 
   aggiornaDati: (nickname, dati) =>
     apiFetch(`${BASE}/utenti/${nickname}/dati`, {

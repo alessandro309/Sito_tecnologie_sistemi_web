@@ -106,8 +106,8 @@ export default function ModalFiltri() {
   const [condizioni,   setCondizioni]   = useState([]);
   const [prezzoMin,    setPrezzoMin]    = useState('');
   const [prezzoMax,    setPrezzoMax]    = useState('');
-  const [spedizione,   setSpedizione]   = useState(false);
-  const [scambioMano,  setScambioMano]  = useState(false);
+  const [spedizione,      setSpedizione]      = useState(false);
+  const [consegnaAMano,   setConsegnaAMano]   = useState(false);
 
   // Conta i filtri attivi per aggiornare il badge nella barra di ricerca
   const contaFiltri =
@@ -118,7 +118,7 @@ export default function ModalFiltri() {
     (prezzoMin !== '' ? 1 : 0) +
     (prezzoMax !== '' ? 1 : 0) +
     (spedizione ? 1 : 0) +
-    (scambioMano ? 1 : 0);
+    (consegnaAMano ? 1 : 0);
 
   useEffect(() => {
     const badge = document.getElementById('badgeFiltri');
@@ -147,7 +147,7 @@ export default function ModalFiltri() {
     setPrezzoMin('');
     setPrezzoMax('');
     setSpedizione(false);
-    setScambioMano(false);
+    setConsegnaAMano(false);
   }
 
   function handleApplica(e) {
@@ -158,7 +158,7 @@ export default function ModalFiltri() {
 
     // Puliamo i filtri precedenti prima di aggiungere quelli nuovi
     ['tipologia', 'marca', 'regione', 'citta', 'condizioni',
-     'prezzo_min', 'prezzo_max', 'spedizione', 'scambio'].forEach((k) => params.delete(k));
+     'prezzo_min', 'prezzo_max', 'spedizione', 'presenza'].forEach((k) => params.delete(k));
 
     if (tipologia)                             params.set('tipologia',  tipologia);
     if (marca)                                 params.set('marca',      marca);
@@ -168,7 +168,7 @@ export default function ModalFiltri() {
     if (prezzoMin !== '')                      params.set('prezzo_min', prezzoMin);
     if (prezzoMax !== '')                      params.set('prezzo_max', prezzoMax);
     if (spedizione)                            params.set('spedizione', 'true');
-    if (scambioMano)                           params.set('scambio',    'true');
+    if (consegnaAMano)                         params.set('presenza',   'true');
 
     // Chiude il modal Bootstrap
     const el = document.getElementById('modalFiltri');
@@ -339,7 +339,7 @@ export default function ModalFiltri() {
                 </div>
               </div>
 
-              {/* SPEDIZIONE + SCAMBIO A MANO */}
+              {/* SPEDIZIONE + CONSEGNA A MANO */}
               <div className="mb-4">
                 <div className="form-check form-switch mb-2">
                   <input
@@ -357,12 +357,12 @@ export default function ModalFiltri() {
                   <input
                     className="form-check-input"
                     type="checkbox"
-                    id="filtroScambioMano"
-                    checked={scambioMano}
-                    onChange={(e) => setScambioMano(e.target.checked)}
+                    id="filtroConsegnaAMano"
+                    checked={consegnaAMano}
+                    onChange={(e) => setConsegnaAMano(e.target.checked)}
                   />
-                  <label className="form-check-label small text-secondary" htmlFor="filtroScambioMano">
-                    Scambio a mano
+                  <label className="form-check-label small text-secondary" htmlFor="filtroConsegnaAMano">
+                    Consegna a mano
                   </label>
                 </div>
               </div>

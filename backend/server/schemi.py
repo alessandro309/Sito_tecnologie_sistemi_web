@@ -73,3 +73,17 @@ class AggiornaDatiUtente(BaseModel):
 class AggiornaPassword(BaseModel):
     password_attuale: str
     nuova_password: str
+
+class AggiornaAnnuncio(BaseModel):
+    nome: str
+    prezzo: float
+    condizione: str
+    piattaforma: str
+    modello: str
+    tipologia: str
+    portatile: Optional[bool] = None
+    spedizione: bool
+    prezzo_spedizione: float
+    presenza: bool
+    posizione: str
+    descrizione: str

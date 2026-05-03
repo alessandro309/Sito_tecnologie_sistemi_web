@@ -283,6 +283,49 @@ def aggiorna_password(
     utente.password = ottieni_hash_password(dati.nuova_password)
     db.commit()
 
+# --- ENDPOINT: MODIFICA ANNUNCIO ---
+@app.patch("/annunci/{idAnnuncio}", response_model=schemi.AnnuncioResponse)
+def aggiorna_annuncio(
+    idAnnuncio: int,
+    dati: schemi.AggiornaAnnuncio,
+    utente_corrente: str = Depends(ottieni_utente_loggato),
+    db: Session = Depends(get_db)
+):
+    annuncio = db.query(database.AnnuncioDB).filter(database.AnnuncioDB.idAnnuncio == idAnnuncio).first()
+    if not annuncio:
+        raise HTTPException(status_code=404, detail="Annuncio non trovato")
+    if annuncio.utente != utente_corrente:
+        raise HTTPException(status_code=403, detail="Non sei autorizzato a modificare questo annuncio")
+
+    for campo, valore in dati.model_dump().items():
+        setattr(annuncio, campo, valore)
+
+    db.commit()
+    db.refresh(annuncio)
+    return annuncio
+
+# --- ENDPOINT: ELIMINAZIONE SINGOLA IMMAGINE ---
+@app.delete("/immagini/{immagine_id}", status_code=204)
+def elimina_immagine(
+    immagine_id: int,
+    utente_corrente: str = Depends(ottieni_utente_loggato),
+    db: Session = Depends(get_db)
+):
+    immagine = db.query(database.ImmagineAnnuncioDB).filter(database.ImmagineAnnuncioDB.id == immagine_id).first()
+    if not immagine:
+        raise HTTPException(status_code=404, detail="Immagine non trovata")
+
+    annuncio = db.query(database.AnnuncioDB).filter(database.AnnuncioDB.idAnnuncio == immagine.annuncio_id).first()
+    if not annuncio or annuncio.utente != utente_corrente:
+        raise HTTPException(status_code=403, detail="Non sei autorizzato")
+
+    file_path = immagine.url_immagine.lstrip('/')
+    if os.path.exists(file_path):
+        os.remove(file_path)
+
+    db.delete(immagine)
+    db.commit()
+
 # --- ENDPOINT: ELIMINAZIONE ANNUNCIO ---
 @app.delete("/annunci/{idAnnuncio}", status_code=204)
 def elimina_annuncio(
@@ -413,7 +456,7 @@ def ricerca_annunci(
     prezzo_min: Optional[float] = None,
     prezzo_max: Optional[float] = None,
     spedizione: Optional[bool] = None,
-    scambio: Optional[bool] = None,
+    presenza: Optional[bool] = None,
     regione: Optional[str] = None,
     citta: Optional[str] = None,
     db: Session = Depends(get_db)
@@ -451,7 +494,7 @@ def ricerca_annunci(
     if spedizione:
         query = query.filter(database.AnnuncioDB.spedizione == True)
 
-    if scambio:
+    if presenza:
         query = query.filter(database.AnnuncioDB.presenza == True)
 
     if citta:

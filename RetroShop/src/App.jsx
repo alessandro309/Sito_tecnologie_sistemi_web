@@ -6,6 +6,7 @@ import Registrazione from './pagine/Registrazione';
 import MostraAnnunci from './pagine/MostraAnnunci';
 import PaginaAnnuncio from './pagine/PaginaAnnuncio';
 import CreaAnnuncio from './pagine/CreaAnnuncio';
+import ModificaAnnuncio from './pagine/ModificaAnnuncio';
 import Profilo from './pagine/Profilo';
 import Chat from './pagine/Chat';
 
@@ -18,7 +19,8 @@ export default function App() {
           <Route path="/registrazione"   element={<Registrazione />} />
           <Route path="/annunci"         element={<MostraAnnunci />} />
           <Route path="/annunci/:id"     element={<PaginaAnnuncio />} />
-          <Route path="/crea-annuncio"   element={<CreaAnnuncio />} />
+          <Route path="/crea-annuncio"          element={<CreaAnnuncio />} />
+          <Route path="/annunci/:id/modifica"  element={<ModificaAnnuncio />} />
           <Route path="/profilo"         element={<Profilo />} />
            <Route path="/chat"           element={<Chat />} />
         </Routes>

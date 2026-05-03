@@ -35,6 +35,7 @@ export default function CreaAnnuncio() {
   const [piattaforma, setPiattaforma] = useState('');
   const [modello, setModello] = useState('');
   const [spedizione, setSpedizione] = useState(false);
+  const [presenza, setPresenza] = useState(true);
   const [tipologiaBase, setTipologiaBase] = useState('');
 
   const portatile = tipologiaBase === 'console' && modello
@@ -65,6 +66,7 @@ export default function CreaAnnuncio() {
   async function handleSubmit(e) {
     e.preventDefault();
     if (foto.length === 0) { setErrore('Carica almeno una foto.'); return; }
+    if (!spedizione && !presenza) { setErrore('Seleziona almeno una modalità di consegna.'); return; }
     setCaricamento(true);
     setErrore('');
 
@@ -81,7 +83,7 @@ export default function CreaAnnuncio() {
       utente:           utente.nickname,
       spedizione:       fd.get('spedizione') === 'on',
       prezzo_spedizione: fd.get('spedizione') === 'on' ? parseFloat(fd.get('prezzo_spedizione') || 0) : 0,
-      presenza:         true,
+      presenza:         presenza,
       posizione:        fd.get('posizione'),
       descrizione:      fd.get('descrizione'),
     };
@@ -120,9 +122,9 @@ export default function CreaAnnuncio() {
           <input
             type="text"
             name="nome"
-            className="form-control form-control-lg bg-transparent border-0 border-bottom border-secondary rounded-0 px-0 fw-bold"
+            className="form-control form-control-lg bg-transparent border-0 border-bottom border-light rounded-0 px-0 fw-bold text-white shadow-none"
             placeholder="Titolo dell'annuncio..."
-            style={{ fontSize: '2rem' }}
+            style={{ fontSize: '2rem', caretColor: '#fff' }}
             required
           />
         </div>
@@ -248,8 +250,19 @@ export default function CreaAnnuncio() {
               </div>
 
               <div className="mb-4">
-                <label className="small text-secondary text-uppercase mb-2">Luogo e Spedizione</label>
+                <label className="small text-secondary text-uppercase mb-2">Luogo e Consegna</label>
                 <input type="text" name="posizione" className="form-control bg-transparent border-secondary text-white shadow-none mb-3" placeholder="Località (es. Milano)" required />
+                <div className="form-check form-switch p-0 d-flex align-items-center justify-content-between mb-3">
+                  <label className="form-check-label text-white" htmlFor="presenzaSwitch">Consegna a mano</label>
+                  <input
+                    className="form-check-input ms-0 mt-0"
+                    type="checkbox"
+                    role="switch"
+                    id="presenzaSwitch"
+                    checked={presenza}
+                    onChange={(e) => setPresenza(e.target.checked)}
+                  />
+                </div>
                 <div className="form-check form-switch p-0 d-flex align-items-center justify-content-between mb-3">
                   <label className="form-check-label text-white" htmlFor="spedizioneSwitch">Disponibile a spedire</label>
                   <input
