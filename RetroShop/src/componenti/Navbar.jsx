@@ -1,5 +1,37 @@
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+
+
+// Pulsante sole/luna per cambiare tema — sincronizzato con localStorage
+function PulsanteTema() {
+  const [tema, setTema] = useState(localStorage.getItem('temaSelezionato') || 'dark');
+
+  useEffect(() => {
+    if (tema === 'light') {
+      document.body.classList.add('tema-chiaro');
+      localStorage.setItem('temaSelezionato', 'light');
+    } else {
+      document.body.classList.remove('tema-chiaro');
+      localStorage.setItem('temaSelezionato', 'dark');
+    }
+  }, [tema]);
+
+  function toggle() {
+    setTema((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  }
+
+  return (
+    <button
+      onClick={toggle}
+      className="btn bottone_login font-monospace rounded-1 bg-transparent border-0 p-0 m-0 d-flex align-items-center justify-content-center w-100 w-lg-auto px-4 py-2 text-nowrap"
+      title={tema === 'dark' ? 'Passa al tema chiaro' : 'Passa al tema scuro'}
+      style={{ minWidth: 44 }}
+    >
+      <i className={`bi bi-${tema === 'dark' ? 'sun-fill' : 'moon-stars-fill'} fs-5`}></i>
+    </button>
+  );
+}
 
 // Struttura dati dei menu console — evita 400 righe di JSX ripetuto
 const CONSOLE_MENUS = [
@@ -76,20 +108,20 @@ function NavbarDestra() {
   }
 
   return (
-    <div className="d-flex flex-column flex-lg-row align-items-center gap-3 ms-lg-4 mt-3 mt-lg-0">
+    <div className="d-flex flex-column flex-lg-row align-items-center gap-2 ms-lg-1 mt-3 mt-lg-0">
+      {/* ── PULSANTE CHAT (visibile solo se loggato) ── */}
+      <Link
+        to="/chat"
+        className="btn bottone_login font-monospace text-uppercase rounded-1 bg-transparent border-0 p-0 m-0 d-flex align-items-center justify-content-center w-100 w-lg-auto px-4 py-2 text-nowrap"
+      >
+        <i className="bi bi-chat-dots-fill me-2 fs-5"></i>
+      </Link>
+
       <Link
         to="/crea-annuncio"
         className="btn bottone_login font-monospace text-uppercase rounded-1 d-flex align-items-center justify-content-center w-100 w-lg-auto px-4 py-2 text-nowrap"
       >
         <i className="bi bi-plus-circle me-2 fs-5"></i> Crea Annuncio
-      </Link>
-
-      {/* ── PULSANTE CHAT (visibile solo se loggato) ── */}
-      <Link
-        to="/chat"
-        className="btn bottone_login font-monospace text-uppercase rounded-1 d-flex align-items-center justify-content-center w-100 w-lg-auto px-4 py-2 text-nowrap"
-      >
-        <i className="bi bi-chat-dots-fill me-2 fs-5"></i> Chat
       </Link>
 
       <div className="nav-item dropdown w-100 w-lg-auto">
@@ -149,6 +181,7 @@ export default function Navbar({ children }) {
           <div className="collapse navbar-collapse miei-menu-mobile">
             <div className="navbar-nav ms-auto align-items-center gap-3 mt-4 mt-lg-0 pb-3 pb-lg-0">
               <LinkPreferiti />
+              <PulsanteTema />
               <NavbarDestra />
             </div>
           </div>
