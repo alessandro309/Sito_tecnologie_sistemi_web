@@ -418,7 +418,7 @@ export default function Profilo() {
               >
                 <h4 className="fw-bold text-uppercase" style={{ fontSize: '0.95rem', letterSpacing: '0.08em', margin: 0 }}>
                   <i className="bi bi-floppy-fill text-danger me-2"></i>
-                  Annunci Salvati
+                  Annunci Preferiti
                   <span className="text-danger ms-1">({preferiti.length})</span>
                 </h4>
               </div>
@@ -490,7 +490,7 @@ export default function Profilo() {
                 <div className="btn-group w-100 shadow-sm" role="group">
                   <input type="radio" className="btn-check" name="sceltaTema" id="temaScuro" value="dark" checked={tema === 'dark'} onChange={() => setTema('dark')} />
                   <label className="btn btn-outline-danger text-uppercase fw-bold py-2 rounded-start-1" htmlFor="temaScuro">
-                    <i className="bi bi-moon-stars-fill me-2"></i>Retro Dark
+                    <i className="bi bi-moon-stars-fill me-2"></i>Retro Nes
                   </label>
                   <input type="radio" className="btn-check" name="sceltaTema" id="temaChiaro" value="light" checked={tema === 'light'} onChange={() => setTema('light')} />
                   <label className="btn btn-outline-danger text-uppercase fw-bold py-2 rounded-end-1" htmlFor="temaChiaro">

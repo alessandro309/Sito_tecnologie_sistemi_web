@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { api, BASE } from "../api";
 import Navbar from "../componenti/Navbar";
 import ModalLogin from "../componenti/Login";
 import ModalFiltri from "../componenti/Filtri";
@@ -30,14 +31,17 @@ function inizialiDa(nome = "") {
   return nome.slice(0, 2).toUpperCase();
 }
 
-// Piccolo componente per l'avatar circolare con le iniziali
-function Avatar({ nickname, size = 38 }) {
+// Avatar circolare: mostra la foto dell'annuncio se disponibile, altrimenti le iniziali
+function Avatar({ nickname, foto, size = 48 }) {
   return (
     <div
       className="chat-avatar flex-shrink-0"
-      style={{ width: size, height: size, minWidth: size, fontSize: size * 0.34 }}
+      style={{ width: size, height: size, minWidth: size, fontSize: size * 0.34, overflow: "hidden" }}
     >
-      {inizialiDa(nickname)}
+      {foto
+        ? <img src={foto} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        : inizialiDa(nickname)
+      }
     </div>
   );
 }
@@ -61,6 +65,8 @@ export default function Chat() {
   const [caricandoMsg, setCaricandoMsg] = useState(false);
   const [mostraSidebar, setMostraSidebar] = useState(true); // su mobile mostriamo o sidebar o chat
 
+  const [fotoAnnunci, setFotoAnnunci] = useState({});
+
   const wsRef = useRef(null);      // riferimento alla connessione WebSocket
   const endRef = useRef(null);     // elemento in fondo alla lista messaggi per lo scroll automatico
 
@@ -82,8 +88,8 @@ export default function Chat() {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messaggi]);
 
-
-  // Carica dal server la lista di tutte le conversazioni dell'utente
+  // Carica dal server la lista di tutte le conversazioni dell'utente,
+  // poi scarica in parallelo la prima immagine di ogni annuncio
   async function fetchConversazioni() {
     if (!utente) return [];
     setCaricandoConv(true);
@@ -91,6 +97,18 @@ export default function Chat() {
       const r = await fetch(`/api/chat/conversazioni?nickname=${utente.nickname}`);
       const data = await r.json();
       setConversazioni(data);
+
+      const ids = [...new Set(data.map((c) => c.idAnnuncio).filter(Boolean))];
+      Promise.allSettled(ids.map((id) => api.annuncio(id).then((r) => r.ok ? r.json() : null)))
+        .then((results) => {
+          const mappa = {};
+          results.forEach((res, i) => {
+            const ann = res.status === "fulfilled" ? res.value : null;
+            mappa[ids[i]] = ann?.immagini?.length > 0 ? `${BASE}${ann.immagini[0].url_immagine}` : null;
+          });
+          setFotoAnnunci((prev) => ({ ...prev, ...mappa }));
+        });
+
       return data;
     } catch {
       return [];
@@ -342,24 +360,24 @@ export default function Chat() {
                       onClick={() => apriChat(conv)}
                       className={`chat-conv-item ${attiva ? "attiva" : ""}`}
                     >
-                      <Avatar nickname={conv.altroUtente} />
+                      <Avatar nickname={conv.altroUtente} foto={fotoAnnunci[conv.idAnnuncio]} />
                       <div className="flex-grow-1" style={{ minWidth: 0 }}>
                         <div className="d-flex justify-content-between align-items-center">
-                          <span className="font-monospace fw-bold text-white" style={{ fontSize: 13 }}>
+                          <span className="font-monospace fw-bold text-white" style={{ fontSize: 16 }}>
                             {conv.altroUtente}
                           </span>
-                          <span className="font-monospace text-secondary" style={{ fontSize: 11 }}>
+                          <span className="font-monospace text-secondary" style={{ fontSize: 13 }}>
                             {formattaOra(conv.oraUltimo)}
                           </span>
                         </div>
-                        <div className="text-danger font-monospace text-truncate" style={{ fontSize: 11 }}>
+                        <div className="text-danger font-monospace text-truncate" style={{ fontSize: 14 }}>
                           {conv.titoloAnnuncio}
                         </div>
                         <div className="d-flex justify-content-between align-items-center mt-1">
                           <span
                             className="font-monospace text-truncate"
                             style={{
-                              fontSize: 12,
+                              fontSize: 14,
                               color: conv.nonLetti > 0 ? "#ddd" : "#666",
                               fontWeight: conv.nonLetti > 0 ? "bold" : "normal",
                               maxWidth: "85%",
@@ -368,7 +386,7 @@ export default function Chat() {
                             {conv.ultimoMessaggio ?? "Inizia la conversazione"}
                           </span>
                           {conv.nonLetti > 0 && (
-                            <span className="badge rounded-pill bg-danger" style={{ fontSize: 10, minWidth: 18 }}>
+                            <span className="badge rounded-pill bg-danger" style={{ fontSize: 12, minWidth: 20 }}>
                               {conv.nonLetti}
                             </span>
                           )}
@@ -404,21 +422,24 @@ export default function Chat() {
                   >
                     <i className="bi bi-arrow-left fs-5" />
                   </button>
-                  <Avatar nickname={selezionata.altroUtente} size={42} />
-                  <div style={{ minWidth: 0 }}>
-                    <div className="font-monospace fw-bold text-white" style={{ fontSize: 14 }}>
+                  <Avatar nickname={selezionata.altroUtente} foto={fotoAnnunci[selezionata.idAnnuncio]} size={56} />
+                  <div style={{ minWidth: 0, flex: 1 }}>
+                    <div className="font-monospace fw-bold text-white" style={{ fontSize: 19 }}>
                       {selezionata.altroUtente}
                     </div>
-                    <div
-                      className="font-monospace text-truncate"
-                      style={{ fontSize: 11, color: "var(--colore-accento)", maxWidth: 300 }}
+                    <Link
+                      to={`/annunci/${selezionata.idAnnuncio}`}
+                      className="d-flex align-items-center gap-2 text-decoration-none mt-1"
+                      style={{ color: "var(--colore-accento)" }}
                     >
-                      <i className="bi bi-tag me-1" />
-                      {selezionata.titoloAnnuncio}
-                      {selezionata.prezzoAnnuncio && (
-                        <span className="text-secondary ms-2">· € {selezionata.prezzoAnnuncio}</span>
-                      )}
-                    </div>
+                      <span className="font-monospace text-truncate" style={{ fontSize: 15 }}>
+                        <i className="bi bi-tag me-1" />
+                        {selezionata.titoloAnnuncio}
+                        {selezionata.prezzoAnnuncio && (
+                          <span className="text-secondary ms-2">· € {selezionata.prezzoAnnuncio}</span>
+                        )}
+                      </span>
+                    </Link>
                   </div>
                 </div>
 
@@ -448,7 +469,7 @@ export default function Chat() {
                             </div>
                             <div
                               className="font-monospace text-secondary"
-                              style={{ fontSize: 10, marginTop: 3, textAlign: mio ? "right" : "left" }}
+                              style={{ fontSize: 11, marginTop: 3, textAlign: mio ? "right" : "left" }}
                             >
                               {formattaOra(msg.ora)}
                             </div>
@@ -509,9 +530,9 @@ export default function Chat() {
         }
 
         .chat-sidebar {
-          width: 300px;
-          min-width: 260px;
-          max-width: 320px;
+          width: 360px;
+          min-width: 310px;
+          max-width: 400px;
           flex-shrink: 0;
           display: flex;
           flex-direction: column;
@@ -549,8 +570,8 @@ export default function Chat() {
         .chat-conv-item {
           display: flex;
           align-items: flex-start;
-          gap: 12px;
-          padding: 13px 16px;
+          gap: 14px;
+          padding: 16px 18px;
           cursor: pointer;
           border-bottom: 1px solid #111;
           border-left: 3px solid transparent;
@@ -588,8 +609,8 @@ export default function Chat() {
         .chat-panel-header {
           display: flex;
           align-items: center;
-          gap: 12px;
-          padding: 12px 20px;
+          gap: 16px;
+          padding: 16px 24px;
           background: #000;
           flex-shrink: 0;
         }
@@ -606,8 +627,8 @@ export default function Chat() {
         .chat-messages::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 4px; }
 
         .chat-bubble {
-          padding: 9px 14px;
-          font-size: 13px;
+          padding: 11px 16px;
+          font-size: 16px;
           line-height: 1.5;
           color: #fff;
           word-break: break-word;
@@ -636,8 +657,8 @@ export default function Chat() {
           border: 1px solid #333;
           border-radius: 8px;
           color: #fff;
-          padding: 9px 12px;
-          font-size: 13px;
+          padding: 10px 14px;
+          font-size: 16px;
           resize: none;
           outline: none;
           line-height: 1.5;
@@ -650,15 +671,15 @@ export default function Chat() {
         .chat-textarea:disabled { opacity: 0.35; }
 
         .chat-send-btn {
-          width: 40px;
-          height: 40px;
+          width: 48px;
+          height: 48px;
           display: flex;
           align-items: center;
           justify-content: center;
           border-radius: 8px !important;
           flex-shrink: 0;
           transition: background 0.2s, color 0.2s, border-color 0.2s;
-          font-size: 15px;
+          font-size: 18px;
         }
 
         /* Su mobile mostriamo o la sidebar o la chat, mai entrambe */

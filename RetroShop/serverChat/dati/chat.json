@@ -43,6 +43,28 @@
       "titoloAnnuncio": "Pokemon Platino ",
       "prezzoAnnuncio": 80,
       "creatoIl": "2026-05-01T12:36:43.066Z"
+    },
+    {
+      "id": "709d0128-a2db-492c-951b-7f0c7651fefd",
+      "partecipanti": [
+        "Zeb89",
+        "Shreck"
+      ],
+      "idAnnuncio": "2",
+      "titoloAnnuncio": "PSP 3004",
+      "prezzoAnnuncio": 50,
+      "creatoIl": "2026-05-04T08:10:38.120Z"
+    },
+    {
+      "id": "2fe6587c-6751-4cf6-9d01-b111bc829bfb",
+      "partecipanti": [
+        "Zeb89",
+        "Rick_Roll"
+      ],
+      "idAnnuncio": "3",
+      "titoloAnnuncio": "GameBoy Advance Sp ",
+      "prezzoAnnuncio": 80,
+      "creatoIl": "2026-05-04T18:28:40.921Z"
     }
   ],
   "messaggi": [
@@ -84,7 +106,7 @@
       "mittente": "Shreck",
       "testo": "Dai, fammi uno sconticino",
       "ora": "2026-04-30T20:50:00.222Z",
-      "letto": false
+      "letto": true
     },
     {
       "id": "4e8132ce-18fa-47dd-b46e-f93508b5d0dc",
@@ -108,6 +130,46 @@
       "mittente": "James_Metallica",
       "testo": "Gimme fuel, gimmw fire",
       "ora": "2026-05-01T12:37:24.495Z",
+      "letto": true
+    },
+    {
+      "id": "dcf7f8ac-5a4e-437e-80ae-cdf921bcd53b",
+      "conversazioneId": "709d0128-a2db-492c-951b-7f0c7651fefd",
+      "mittente": "Zeb89",
+      "testo": "Ah Bello",
+      "ora": "2026-05-04T08:10:43.217Z",
+      "letto": true
+    },
+    {
+      "id": "d7ff90e7-904d-425e-935d-f84d913ecd48",
+      "conversazioneId": "709d0128-a2db-492c-951b-7f0c7651fefd",
+      "mittente": "Shreck",
+      "testo": "Dimme",
+      "ora": "2026-05-04T08:10:52.779Z",
+      "letto": true
+    },
+    {
+      "id": "34cf97c1-6428-4bc7-9bdc-3feb0a827654",
+      "conversazioneId": "709d0128-a2db-492c-951b-7f0c7651fefd",
+      "mittente": "Zeb89",
+      "testo": "Test",
+      "ora": "2026-05-04T18:21:26.729Z",
+      "letto": false
+    },
+    {
+      "id": "9414cd4a-ed2e-4281-9733-05909083e667",
+      "conversazioneId": "2fe6587c-6751-4cf6-9d01-b111bc829bfb",
+      "mittente": "Zeb89",
+      "testo": "Me lo regali?",
+      "ora": "2026-05-04T18:28:50.493Z",
+      "letto": true
+    },
+    {
+      "id": "d641acc9-f7ac-43ac-8932-2c19e6085318",
+      "conversazioneId": "2fe6587c-6751-4cf6-9d01-b111bc829bfb",
+      "mittente": "Rick_Roll",
+      "testo": "Manco per scherzo",
+      "ora": "2026-05-04T18:29:27.578Z",
       "letto": false
     }
   ]

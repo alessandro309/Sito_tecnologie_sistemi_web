@@ -104,3 +104,13 @@
         padding-top: 20px !important;
     }
 }
+
+/* --- LOGHI SVG CONSOLE (Sega, Commodore, Atari) ---------- */
+/* In tema scuro: bianchi; in tema chiaro: neri */
+
+.logo-console-svg {
+    filter: brightness(0) invert(1);
+}
+body.tema-chiaro .logo-console-svg {
+    filter: brightness(0);
+}

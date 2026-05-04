@@ -6,6 +6,42 @@
 ============================================================ */
 
 
+/* --- PAGINAZIONE RISULTATI ------------------------------- */
+
+.pagination .page-link {
+    background-color: transparent;
+    border-color: #444;
+    color: #aaa;
+    font-size: 0.85rem;
+    transition: background-color 0.15s, color 0.15s;
+}
+.pagination .page-link:hover {
+    background-color: var(--colore-accento);
+    border-color: var(--colore-accento);
+    color: #fff;
+}
+.pagination .page-item.active .page-link {
+    background-color: var(--colore-accento);
+    border-color: var(--colore-accento);
+    color: #fff;
+}
+.pagination .page-item.disabled .page-link {
+    background-color: transparent;
+    border-color: #333;
+    color: #555;
+}
+
+body.tema-chiaro .pagination .page-link {
+    background-color: transparent;
+    border-color: #BFBFBF;
+    color: #555;
+}
+body.tema-chiaro .pagination .page-item.disabled .page-link {
+    border-color: #DCDCDC;
+    color: #BFBFBF;
+}
+
+
 /* --- HOME: MENU NAVIGAZIONE CATEGORIE ------------------- */
 
 /* Sfondo semi-trasparente per il menu orizzontale di categorie */

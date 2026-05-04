@@ -19,6 +19,7 @@
 body.tema-chiaro {
     background-color: #D9D9D9 !important;
     color: #000000 !important;
+    --colore-accento: #0096D6;
 }
 
 /* Le card e i componenti con .bg-black diventano quasi-bianchi */
@@ -64,16 +65,34 @@ body.tema-chiaro .text-danger   { color: #0096D6 !important; }
 body.tema-chiaro .bg-danger     { background-color: #0096D6 !important; }
 body.tema-chiaro .border-danger { border-color: #0096D6 !important; }
 
-body.tema-chiaro .btn-danger,
-body.tema-chiaro .btn-outline-danger {
+/* btn-danger: sempre pieno */
+body.tema-chiaro .btn-danger {
     background-color: #0096D6 !important;
     border-color: #0096D6 !important;
     color: #F8F8F8 !important;
 }
 
-/* Hover più chiaro dell'azzurro base per dare feedback visivo */
+/* btn-outline-danger: solo bordo, sfondo trasparente di default */
+body.tema-chiaro .btn-outline-danger {
+    background-color: transparent !important;
+    border-color: #0096D6 !important;
+    color: #0096D6 !important;
+}
+
+/* Stato selezionato (btn-check) o attivo: riempito */
+body.tema-chiaro .btn-check:checked + .btn-outline-danger,
+body.tema-chiaro .btn-outline-danger.active,
+body.tema-chiaro .btn-outline-danger:active {
+    background-color: #0096D6 !important;
+    border-color: #0096D6 !important;
+    color: #F8F8F8 !important;
+}
+
+/* Hover */
 body.tema-chiaro .btn-outline-danger:hover {
     background-color: #84C9F0 !important;
+    border-color: #84C9F0 !important;
+    color: #F8F8F8 !important;
 }
 
 /* Il bottone principale (bottone_login) usa il rosso come accento:
@@ -85,6 +104,12 @@ body.tema-chiaro .bottone_login {
 body.tema-chiaro .bottone_login:hover {
     background-color: #0096D6 !important;
     color: #F8F8F8 !important;
+}
+
+/* Icone senza bordo (chat, tema): nessun box colorato al hover */
+body.tema-chiaro .bottone_login.border-0:hover {
+    background-color: transparent !important;
+    color: inherit !important;
 }
 
 /* Il testo .scritte_arancioni (prezzi, accenti) passa da rosso ad azzurro */
@@ -413,19 +438,87 @@ body.tema-chiaro hr {
 
 
 /* --- CHAT ------------------------------------------------ */
-/* La pagina Chat usa stili inline in JSX con colori hardcoded.
-   Questi override intervengono sulle classi esplicite dove possibile. */
 
-body.tema-chiaro .list-group-item.bg-black,
-body.tema-chiaro .list-group-item {
-    background-color: #F8F8F8 !important;
-    color: #000000 !important;
-    border-color: #BFBFBF !important;
+body.tema-chiaro .chat-wrapper {
+    background: #E8E8E8 !important;
 }
 
-body.tema-chiaro .list-group-item-action:hover {
-    background-color: rgba(0, 150, 214, 0.1) !important;
-    color: #0096D6 !important;
+body.tema-chiaro .chat-sidebar {
+    background: #F8F8F8 !important;
+    border-right: 1px solid #BFBFBF !important;
+}
+
+body.tema-chiaro .chat-sidebar-header {
+    border-bottom-color: #BFBFBF !important;
+}
+
+body.tema-chiaro .chat-search {
+    background: rgba(0, 0, 0, 0.04) !important;
+    border: 1px solid #BFBFBF !important;
+    color: #000 !important;
+}
+body.tema-chiaro .chat-search:focus {
+    border-color: #0096D6 !important;
+    box-shadow: 0 0 0 0.15rem rgba(0, 150, 214, 0.2) !important;
+    background: rgba(0, 150, 214, 0.04) !important;
+}
+body.tema-chiaro .chat-search::placeholder {
+    color: rgba(0, 0, 0, 0.35) !important;
+}
+
+body.tema-chiaro .chat-conv-item {
+    border-bottom: 1px solid #E0E0E0 !important;
+}
+body.tema-chiaro .chat-conv-item:hover {
+    background: rgba(0, 150, 214, 0.06) !important;
+}
+body.tema-chiaro .chat-conv-item.attiva {
+    background: rgba(0, 150, 214, 0.12) !important;
+}
+
+body.tema-chiaro .chat-avatar {
+    background: #DCDCDC !important;
+}
+
+body.tema-chiaro .chat-main {
+    background: #F0F0F0 !important;
+}
+
+body.tema-chiaro .chat-panel-header {
+    background: #F8F8F8 !important;
+    border-bottom-color: #BFBFBF !important;
+}
+
+body.tema-chiaro .chat-messages::-webkit-scrollbar-thumb {
+    background: #C0C0C0 !important;
+}
+
+body.tema-chiaro .chat-bubble {
+    color: #000 !important;
+}
+body.tema-chiaro .chat-bubble.mia {
+    color: #fff !important;
+}
+body.tema-chiaro .chat-bubble.altrui {
+    background: rgba(0, 0, 0, 0.06) !important;
+    border: 1px solid #D0D0D0 !important;
+}
+
+body.tema-chiaro .chat-input-bar {
+    background: #F8F8F8 !important;
+    border-top-color: #BFBFBF !important;
+}
+
+body.tema-chiaro .chat-textarea {
+    background: rgba(0, 0, 0, 0.04) !important;
+    border: 1px solid #BFBFBF !important;
+    color: #000 !important;
+}
+body.tema-chiaro .chat-textarea:focus {
+    border-color: #0096D6 !important;
+}
+body.tema-chiaro .chat-textarea::placeholder {
+    color: rgba(0, 0, 0, 0.35) !important;
 }
 
 /*Logo in tema chiaro*/

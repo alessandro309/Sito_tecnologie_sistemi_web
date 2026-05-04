@@ -19,6 +19,11 @@ export default defineConfig({
         target: 'ws://127.0.0.1:3001',
         ws: true,
         rewriteWsOrigin: true,
+        configure: (proxy) => {
+          proxy.on('error', (err) => {
+            if (err.code !== 'ECONNRESET') console.error('[ws proxy]', err);
+          });
+        },
       },
     },
   },

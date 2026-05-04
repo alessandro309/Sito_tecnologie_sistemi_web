@@ -38,9 +38,9 @@ const CONSOLE_MENUS = [
   { label: 'PLAYSTATION', marca: 'PlayStation', icon: <i className="bi bi-playstation fs-5" /> },
   { label: 'XBOX',        marca: 'Xbox',        icon: <i className="bi bi-xbox fs-5" /> },
   { label: 'NINTENDO',    marca: 'Nintendo',    icon: <i className="bi bi-nintendo-switch fs-5" /> },
-  { label: 'SEGA',        marca: 'Sega',        icon: <img src="/logo_sega.svg" alt="Sega" style={{ height: 20, filter: 'invert(1)' }} /> },
-  { label: 'COMMODORE',   marca: 'Commodore',   icon: <img src="/logo_commodore.svg" alt="Commodore" style={{ height: 20, filter: 'brightness(0) invert(1)' }} /> },
-  { label: 'ATARI',       marca: 'Atari',       icon: <img src="/logo_atari.svg" alt="Atari" style={{ height: 20, filter: 'invert(1)' }} /> },
+  { label: 'SEGA',        marca: 'Sega',        icon: <img src="/logo_sega.svg"      alt="Sega"      className="logo-console-svg" style={{ height: 20 }} /> },
+  { label: 'COMMODORE',   marca: 'Commodore',   icon: <img src="/logo_commodore.svg" alt="Commodore" className="logo-console-svg" style={{ height: 20 }} /> },
+  { label: 'ATARI',       marca: 'Atari',       icon: <img src="/logo_atari.svg"     alt="Atari"     className="logo-console-svg" style={{ height: 20 }} /> },
   { label: 'ALTRO',       marca: null,          icon: null },
 ];
 
@@ -108,7 +108,7 @@ function NavbarDestra() {
   }
 
   return (
-    <div className="d-flex flex-column flex-lg-row align-items-center gap-2 ms-lg-1 mt-3 mt-lg-0">
+    <div className="d-flex flex-column flex-lg-row align-items-center gap-1 ms-lg-0 mt-3 mt-lg-0">
       {/* ── PULSANTE CHAT (visibile solo se loggato) ── */}
       <Link
         to="/chat"
@@ -179,7 +179,7 @@ export default function Navbar({ children }) {
           </button>
 
           <div className="collapse navbar-collapse miei-menu-mobile">
-            <div className="navbar-nav ms-auto align-items-center gap-3 mt-4 mt-lg-0 pb-3 pb-lg-0">
+            <div className="navbar-nav ms-auto align-items-center gap-1 mt-4 mt-lg-0 pb-3 pb-lg-0">
               <LinkPreferiti />
               <PulsanteTema />
               <NavbarDestra />
