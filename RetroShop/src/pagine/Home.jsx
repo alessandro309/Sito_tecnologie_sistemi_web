@@ -7,33 +7,13 @@ import Footer from '../componenti/Footer';
 
 // Dati dei 4 box categoria nella home
 const CATEGORIE = [
-  {
-    id: 'box_fisse',
-    titolo: 'Console\nFisse',
-    align: 'left',
-    filtro: 'console_fisse',
-  },
-  {
-    id: 'box_portatili',
-    titolo: 'Console\nPortatili',
-    align: 'right',
-    filtro: 'console_portatili',
-  },
-  {
-    id: 'box_accessori',
-    titolo: 'Accessori',
-    align: 'left',
-    filtro: 'accessori',
-  },
-  {
-    id: 'box_giochi',
-    titolo: 'Giochi',
-    align: 'right',
-    filtro: 'giochi',
-  },
+  { id: 'box_fisse',     titolo: 'Console\nFisse',     align: 'left',  filtro: 'console_fisse' },
+  { id: 'box_portatili', titolo: 'Console\nPortatili', align: 'right', filtro: 'console_portatili' },
+  { id: 'box_accessori', titolo: 'Accessori',           align: 'left',  filtro: 'accessori' },
+  { id: 'box_giochi',    titolo: 'Giochi',              align: 'right', filtro: 'giochi' },
 ];
 
-function BoxCategoria({ id, titolo, align, filtro }) {
+function BoxCategoria({ id, titolo, align, filtro, index }) {
   const isRight = align === 'right';
 
   return (
@@ -41,6 +21,7 @@ function BoxCategoria({ id, titolo, align, filtro }) {
       to={`/annunci?tipologia=${filtro}`}
       className="box_categoria rounded-4 d-flex align-items-center text-decoration-none shadow"
       id={id}
+      style={{ animationDelay: `${index * 0.15}s` }}
     >
       <div
         className={`${isRight ? 'ms-auto me-4 me-md-5 text-end' : 'ms-4 ms-md-5'} d-flex flex-column justify-content-center`}
@@ -71,8 +52,8 @@ export default function Home() {
 
       <main>
         <div className="container mt-5 mb-5 d-flex flex-column align-items-center gap-4">
-          {CATEGORIE.map((cat) => (
-            <BoxCategoria key={cat.id} {...cat} />
+          {CATEGORIE.map((cat, i) => (
+            <BoxCategoria key={cat.id} {...cat} index={i} />
           ))}
         </div>
       </main>

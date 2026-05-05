@@ -390,7 +390,7 @@ export default function Profilo() {
                     <i className="bi bi-tags fs-1 mb-3 opacity-50 text-danger"></i>
                     <p className="small text-uppercase mb-3">Non hai ancora pubblicato nessun annuncio</p>
                     <Link to="/crea-annuncio" className="btn bottone_login rounded-1 text-uppercase fw-bold px-4">
-                      <i className="bi bi-plus-lg me-1"></i> Crea il tuo primo annuncio
+                      <i className="bi bi-plus-lg me-1"></i> Pubblica un annuncio
                     </Link>
                   </div>
                 </div>

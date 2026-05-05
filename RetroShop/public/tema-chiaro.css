@@ -306,6 +306,18 @@ body.tema-chiaro .upload-area {
 }
 
 
+/* --- HAMBURGER MENU NAVBAR ------------------------------- */
+/* data-bs-theme="dark" rende l'icona toggler bianca: invisibile su sfondo chiaro */
+
+body.tema-chiaro .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280%2C0%2C0%2C0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+}
+
+body.tema-chiaro .navbar-toggler {
+    border-color: rgba(0, 0, 0, 0.3) !important;
+}
+
+
 /* --- DROPDOWN MENU NAVBAR -------------------------------- */
 /* .dropdown-menu-dark ha background rgba(0,0,0,0.67) hardcoded */
 

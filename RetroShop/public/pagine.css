@@ -52,6 +52,21 @@ body.tema-chiaro .pagination .page-item.disabled .page-link {
 
 /* --- HOME: BOX CATEGORIE --------------------------------- */
 
+@keyframes entrata_box {
+    from { opacity: 0; transform: translateY(35px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes entrata_card {
+    from { opacity: 0; transform: translateY(25px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.card_annuncio_col {
+    animation: entrata_card 0.4s ease;
+    animation-fill-mode: backwards;
+}
+
 .box_categoria {
     width: 100%;
     max-width: 1000px;
@@ -59,6 +74,8 @@ body.tema-chiaro .pagination .page-item.disabled .page-link {
     position: relative; /* Serve come punto di ancoraggio per gli elementi assoluti interni */
     overflow: hidden;   /* Nasconde le parti dell'immagine di sfondo che escono */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: entrata_box 0.5s ease;
+    animation-fill-mode: backwards;
 }
 
 /* Leggero ingrandimento al hover per effetto "vivo" */

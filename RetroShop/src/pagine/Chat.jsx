@@ -78,6 +78,16 @@ export default function Chat() {
   // Evitiamo di aprire/creare due volte la stessa chat se l'effetto si ri-esegue
   const nuovaChatProcessata = useRef(false);
 
+  // Disabilita il bounce/overscroll del browser mobile solo su questa pagina
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    document.body.style.overscrollBehavior = "none";
+    return () => {
+      document.body.style.overflow = "";
+      document.body.style.overscrollBehavior = "";
+    };
+  }, []);
+
   // Teniamo aggiornato il ref ogni volta che cambia la conversazione selezionata
   useEffect(() => {
     selezionataRef.current = selezionata;
@@ -282,8 +292,8 @@ export default function Chat() {
 
   return (
     <>
-      {/* Usiamo 100dvh per occupare tutto lo schermo, con la navbar fissa in cima */}
-      <div style={{ height: "100dvh", display: "flex", flexDirection: "column" }}>
+      {/* position:fixed + inset:0 ancora il container all'esatto viewport visibile su tutti i browser mobile */}
+      <div style={{ position: "fixed", inset: 0, display: "flex", flexDirection: "column", overflow: "hidden" }}>
         <div style={{ flexShrink: 0 }}>
           <Navbar />
         </div>
@@ -491,7 +501,7 @@ export default function Chat() {
                       // Invio per inviare, Shift+Invio per andare a capo
                       if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); invia(); }
                     }}
-                    placeholder={connesso ? "Scrivi un messaggio... (Invio per inviare)" : "In attesa di connessione..."}
+                    placeholder={connesso ? "Scrivi un messaggio..." : "In attesa di connessione..."}
                     disabled={!connesso}
                     rows={1}
                     className="chat-textarea font-monospace"

@@ -123,7 +123,7 @@ export default function CreaAnnuncio() {
             type="text"
             name="nome"
             className="form-control form-control-lg bg-transparent border-0 border-bottom border-light rounded-0 px-0 fw-bold text-white shadow-none"
-            placeholder="Titolo dell'annuncio..."
+            placeholder="Titolo"
             style={{ fontSize: '2rem', caretColor: '#fff' }}
             required
           />

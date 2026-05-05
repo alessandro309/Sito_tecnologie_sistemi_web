@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from '../componenti/Navbar';
-import BarraRicerca from '../componenti/BarraRicerca';
 import ModalLogin from '../componenti/Login';
 import ModalFiltri from '../componenti/Filtri';
 import Footer from '../componenti/Footer';
@@ -46,7 +45,7 @@ export default function PaginaAnnuncio() {
   if (!annuncio) {
     return (
       <>
-        <Navbar><BarraRicerca /></Navbar>
+        <Navbar />
         <div className="container my-5 text-center text-white">
           <div className="spinner-border text-danger" role="status"></div>
           <p className="mt-3 font-monospace">Caricamento annuncio...</p>
@@ -118,7 +117,7 @@ export default function PaginaAnnuncio() {
 
   return (
     <>
-      <Navbar><BarraRicerca /></Navbar>
+      <Navbar />
 
       <main>
         <div className="container my-5">

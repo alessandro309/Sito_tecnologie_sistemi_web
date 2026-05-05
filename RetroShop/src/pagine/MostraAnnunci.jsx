@@ -128,8 +128,8 @@ export default function MostraAnnunci() {
         </div>
       );
     }
-    return annunciPagina.map((a) => (
-      <div key={a.idAnnuncio} className="col-12 col-md-6 col-lg-4 col-xl-3">
+    return annunciPagina.map((a, i) => (
+      <div key={a.idAnnuncio} className="col-12 col-md-6 col-lg-4 col-xl-3 card_annuncio_col" style={{ animationDelay: `${i * 0.05}s` }}>
         <CardAnnuncio
           annuncio={a}
           preferito={preferitiIds.includes(a.idAnnuncio)}

@@ -65,6 +65,17 @@
       "titoloAnnuncio": "GameBoy Advance Sp ",
       "prezzoAnnuncio": 80,
       "creatoIl": "2026-05-04T18:28:40.921Z"
+    },
+    {
+      "id": "08adbcbb-7baa-4275-b730-347a1da555e6",
+      "partecipanti": [
+        "Rick_Roll",
+        "James_Metallica"
+      ],
+      "idAnnuncio": "5",
+      "titoloAnnuncio": "Pokemon Zaffiro (solo cartuccia)",
+      "prezzoAnnuncio": 25,
+      "creatoIl": "2026-05-05T18:48:37.114Z"
     }
   ],
   "messaggi": [
@@ -170,6 +181,46 @@
       "mittente": "Rick_Roll",
       "testo": "Manco per scherzo",
       "ora": "2026-05-04T18:29:27.578Z",
+      "letto": false
+    },
+    {
+      "id": "8ceaa3a5-f190-4203-831d-bbaa89b003e7",
+      "conversazioneId": "08adbcbb-7baa-4275-b730-347a1da555e6",
+      "mittente": "James_Metallica",
+      "testo": "ciao",
+      "ora": "2026-05-05T18:50:34.355Z",
+      "letto": true
+    },
+    {
+      "id": "c9d13a88-6059-42f2-b3ad-35c7890bfb2f",
+      "conversazioneId": "08adbcbb-7baa-4275-b730-347a1da555e6",
+      "mittente": "Rick_Roll",
+      "testo": "Ciao",
+      "ora": "2026-05-05T18:53:09.864Z",
+      "letto": true
+    },
+    {
+      "id": "8448dfae-91ec-4086-8436-54d2b914b62d",
+      "conversazioneId": "08adbcbb-7baa-4275-b730-347a1da555e6",
+      "mittente": "Rick_Roll",
+      "testo": "Sono un grande fan",
+      "ora": "2026-05-05T18:53:16.170Z",
+      "letto": true
+    },
+    {
+      "id": "181a15ab-87a4-426b-a5a9-db1963f01221",
+      "conversazioneId": "08adbcbb-7baa-4275-b730-347a1da555e6",
+      "mittente": "Rick_Roll",
+      "testo": "Me lo regali?",
+      "ora": "2026-05-05T19:00:39.525Z",
+      "letto": true
+    },
+    {
+      "id": "41830580-542a-4cd1-9c9b-6fac16a1df4d",
+      "conversazioneId": "08adbcbb-7baa-4275-b730-347a1da555e6",
+      "mittente": "James_Metallica",
+      "testo": "No",
+      "ora": "2026-05-05T19:24:23.049Z",
       "letto": false
     }
   ]
