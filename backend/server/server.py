@@ -11,33 +11,30 @@ from passlib.context import CryptContext
 from sqlalchemy import or_
 from fastapi import Query
 
-
-from database import database 
+from database import database
 from server import schemi
 
-# 1. Configurazione Cartelle
-BASE_DIR_IMMAGINI = "static/annunci" # cartella per le foto annunci
-BASE_DIR_UTENTI = "static/utenti" # Cartella per le foto profilo
+BASE_DIR_IMMAGINI = "static/annunci"
+BASE_DIR_UTENTI = "static/utenti"
 
 os.makedirs(BASE_DIR_IMMAGINI, exist_ok=True)
 os.makedirs(BASE_DIR_UTENTI, exist_ok=True)
 
-# Crea le tabelle nel database PostgreSQL se non esistono
 database.Base.metadata.create_all(bind=database.engine)
 
-
-#Funzioni che servono per "hashare" e "dehashare" la password
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 
 def ottieni_hash_password(password: str):
     return pwd_context.hash(password)
 
+
 def verifica_password(plain_password: str, hashed_password: str):
     return pwd_context.verify(plain_password, hashed_password)
 
+
 def valida_password(password: str):
-    """Controlla che la password rispetti i requisiti minimi.
-    Non viene applicata agli account già esistenti."""
+    """Verifica i requisiti minimi di complessità della password."""
     errori = []
     if len(password) < 8:
         errori.append("almeno 8 caratteri")
@@ -54,25 +51,23 @@ def valida_password(password: str):
         )
 
 
-#fine funzioni sicurezza
-
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://127.0.0.1:5500", 
+        "http://127.0.0.1:5500",
         "http://localhost:5500",
         "http://127.0.0.1:8000",
         "http://localhost:8000"
-    ], 
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# 2. Montiamo la cartella in modo che sia accessibile dal web
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
 
 def get_db():
     db = database.SessionLocal()
@@ -81,24 +76,17 @@ def get_db():
     finally:
         db.close()
 
-# --- ENDPOINT: REGISTRAZIONE UTENTE (Dati Testuali) ---
+
 @app.post("/utenti/registrazione", response_model=schemi.UtenteResponse)
 def registra_utente(utente: schemi.UtenteCreate, db: Session = Depends(get_db)):
-    db_user_nick = db.query(database.UtenteDB).filter(database.UtenteDB.nickname == utente.nickname).first()
-    if db_user_nick:
+    if db.query(database.UtenteDB).filter(database.UtenteDB.nickname == utente.nickname).first():
         raise HTTPException(status_code=400, detail="Nickname già in uso")
-    
-    db_user_mail = db.query(database.UtenteDB).filter(database.UtenteDB.mail == utente.mail).first()
-    if db_user_mail:
+    if db.query(database.UtenteDB).filter(database.UtenteDB.mail == utente.mail).first():
         raise HTTPException(status_code=400, detail="Email già registrata")
 
-    # Validiamo la password prima di procedere
-    valida_password(dati_utente["password"])
-
-    #criptiamo la password
     dati_utente = utente.model_dump()
+    valida_password(dati_utente["password"])
     dati_utente["password"] = ottieni_hash_password(dati_utente["password"])
-
 
     nuovo_utente = database.UtenteDB(**dati_utente)
     db.add(nuovo_utente)
@@ -106,11 +94,11 @@ def registra_utente(utente: schemi.UtenteCreate, db: Session = Depends(get_db)):
     db.refresh(nuovo_utente)
     return nuovo_utente
 
-# --- ENDPOINT: CARICAMENTO FOTO PROFILO UTENTE ---
+
 @app.post("/utenti/{nickname}/foto", response_model=schemi.UtenteResponse)
 def carica_foto_profilo(
-    nickname: str, 
-    foto: UploadFile = File(...), 
+    nickname: str,
+    foto: UploadFile = File(...),
     db: Session = Depends(get_db)
 ):
     utente = db.query(database.UtenteDB).filter(database.UtenteDB.nickname == nickname).first()
@@ -121,23 +109,18 @@ def carica_foto_profilo(
     os.makedirs(cartella_utente, exist_ok=True)
 
     file_path = os.path.join(cartella_utente, foto.filename)
-    
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(foto.file, buffer)
 
-    percorso_web = f"/static/utenti/{nickname}/{foto.filename}"
-    utente.foto_profilo = percorso_web
-    
+    utente.foto_profilo = f"/static/utenti/{nickname}/{foto.filename}"
     db.commit()
     db.refresh(utente)
-    
     return utente
 
-# --- ENDPOINT: CREAZIONE ANNUNCIO ---
+
 @app.post("/annunci/", response_model=schemi.AnnuncioResponse)
 def crea_annuncio(annuncio: schemi.AnnuncioCreate, db: Session = Depends(get_db)):
-    utente_esistente = db.query(database.UtenteDB).filter(database.UtenteDB.nickname == annuncio.utente).first()
-    if not utente_esistente:
+    if not db.query(database.UtenteDB).filter(database.UtenteDB.nickname == annuncio.utente).first():
         raise HTTPException(status_code=404, detail="Utente non trovato.")
 
     nuovo_annuncio = database.AnnuncioDB(**annuncio.model_dump())
@@ -147,13 +130,12 @@ def crea_annuncio(annuncio: schemi.AnnuncioCreate, db: Session = Depends(get_db)
 
     cartella_annuncio = os.path.join(BASE_DIR_IMMAGINI, str(nuovo_annuncio.idAnnuncio))
     os.makedirs(cartella_annuncio, exist_ok=True)
-
     return nuovo_annuncio
 
-# --- ENDPOINT: CARICAMENTO IMMAGINI ANNUNCIO ---
+
 @app.post("/annunci/{idAnnuncio}/immagini", response_model=schemi.AnnuncioResponse)
 def carica_immagini_annuncio(
-    idAnnuncio: int, 
+    idAnnuncio: int,
     immagini: Annotated[List[UploadFile], File(...)],
     db: Session = Depends(get_db)
 ):
@@ -162,29 +144,24 @@ def carica_immagini_annuncio(
         raise HTTPException(status_code=404, detail="Annuncio non trovato")
 
     cartella_annuncio = os.path.join(BASE_DIR_IMMAGINI, str(idAnnuncio))
-    os.makedirs(cartella_annuncio, exist_ok=True) 
+    os.makedirs(cartella_annuncio, exist_ok=True)
 
     for index, immagine in enumerate(immagini):
         file_path = os.path.join(cartella_annuncio, immagine.filename)
-        
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(immagine.file, buffer)
 
-        percorso_web = f"/static/annunci/{idAnnuncio}/{immagine.filename}"
-
-        nuova_immagine_db = database.ImmagineAnnuncioDB(
-            url_immagine=percorso_web,
+        db.add(database.ImmagineAnnuncioDB(
+            url_immagine=f"/static/annunci/{idAnnuncio}/{immagine.filename}",
             ordine=index,
             annuncio_id=idAnnuncio
-        )
-        db.add(nuova_immagine_db)
+        ))
 
     db.commit()
     db.refresh(annuncio)
-    
     return annuncio
 
-# --- ENDPOINT: LETTURA ANNUNCIO ---
+
 @app.get("/annunci/{idAnnuncio}", response_model=schemi.AnnuncioResponse)
 def get_annuncio(idAnnuncio: int, db: Session = Depends(get_db)):
     annuncio = db.query(database.AnnuncioDB).filter(database.AnnuncioDB.idAnnuncio == idAnnuncio).first()
@@ -195,25 +172,18 @@ def get_annuncio(idAnnuncio: int, db: Session = Depends(get_db)):
 
 @app.get("/utenti/{nickname}", response_model=schemi.UtenteResponse)
 def ottieni_utente(nickname: str, db: Session = Depends(get_db)):
-    #Ricerca con nickname come chiave
     utente = db.query(database.UtenteDB).filter(database.UtenteDB.nickname == nickname).first()
-    
     if not utente:
         raise HTTPException(status_code=404, detail="Utente non trovato")
-    
     return utente
 
 
 @app.post("/login")
 def login(credenziali: schemi.LoginRequest, response: Response, db: Session = Depends(get_db)):
-    # 1. Cerca l'utente
     utente = db.query(database.UtenteDB).filter(database.UtenteDB.nickname == credenziali.nickname).first()
-    
-    # NB: Qui dovresti verificare l'hash della password, per ora simuliamo un check base
     if not utente or not verifica_password(credenziali.password, utente.password):
         raise HTTPException(status_code=401, detail="Credenziali non valide")
 
-    # 2. Crea la sessione (valida ad es. per 7 giorni)
     scadenza = datetime.now(timezone.utc) + timedelta(days=7)
     nuova_sessione = database.SessioneDB(
         nickname_utente=utente.nickname,
@@ -223,33 +193,28 @@ def login(credenziali: schemi.LoginRequest, response: Response, db: Session = De
     db.commit()
     db.refresh(nuova_sessione)
 
-    # 3. Imposta il Cookie sicuro nel browser
+    # httponly impedisce la lettura del cookie da JavaScript (protezione XSS)
     response.set_cookie(
         key="sessione_retroshop",
         value=nuova_sessione.id_sessione,
-        httponly=True,  # Impedisce ad altri JS di leggere il cookie (sicurezza)
+        httponly=True,
         samesite="lax",
         expires=scadenza
     )
-    
     return {"message": "Login effettuato con successo", "utente": utente.nickname}
 
 
 def ottieni_utente_loggato(request: Request, db: Session = Depends(get_db)):
     sessione_id = request.cookies.get("sessione_retroshop")
-    
     if not sessione_id:
         raise HTTPException(status_code=401, detail="Non autenticato")
 
     sessione = db.query(database.SessioneDB).filter(database.SessioneDB.id_sessione == sessione_id).first()
-    
     if not sessione or sessione.data_scadenza < datetime.now():
         raise HTTPException(status_code=401, detail="Sessione scaduta o non valida")
-        
     return sessione.nickname_utente
 
 
-# --- ENDPOINT: MODIFICA DATI PERSONALI UTENTE ---
 @app.patch("/utenti/{nickname}/dati", response_model=schemi.UtenteResponse)
 def aggiorna_dati_utente(
     nickname: str,
@@ -264,13 +229,12 @@ def aggiorna_dati_utente(
     if not utente:
         raise HTTPException(status_code=404, detail="Utente non trovato")
 
-    # Aggiorniamo solo i campi forniti (quelli non None)
     if dati.nome is not None:
         utente.nome = dati.nome
     if dati.cognome is not None:
         utente.cognome = dati.cognome
     if dati.mail is not None:
-        # Verifichiamo che la nuova email non sia già usata da un altro utente
+        # Verifica che la nuova email non sia già usata da un altro utente
         esistente = db.query(database.UtenteDB).filter(
             database.UtenteDB.mail == dati.mail,
             database.UtenteDB.nickname != nickname
@@ -286,7 +250,6 @@ def aggiorna_dati_utente(
     return utente
 
 
-# --- ENDPOINT: MODIFICA PASSWORD UTENTE ---
 @app.patch("/utenti/{nickname}/password", status_code=204)
 def aggiorna_password(
     nickname: str,
@@ -300,17 +263,14 @@ def aggiorna_password(
     utente = db.query(database.UtenteDB).filter(database.UtenteDB.nickname == nickname).first()
     if not utente:
         raise HTTPException(status_code=404, detail="Utente non trovato")
-
     if not verifica_password(dati.password_attuale, utente.password):
         raise HTTPException(status_code=400, detail="Password attuale non corretta")
 
-    # Validiamo la nuova password
     valida_password(dati.nuova_password)
-
     utente.password = ottieni_hash_password(dati.nuova_password)
     db.commit()
 
-# --- ENDPOINT: MODIFICA ANNUNCIO ---
+
 @app.patch("/annunci/{idAnnuncio}", response_model=schemi.AnnuncioResponse)
 def aggiorna_annuncio(
     idAnnuncio: int,
@@ -331,7 +291,7 @@ def aggiorna_annuncio(
     db.refresh(annuncio)
     return annuncio
 
-# --- ENDPOINT: ELIMINAZIONE SINGOLA IMMAGINE ---
+
 @app.delete("/immagini/{immagine_id}", status_code=204)
 def elimina_immagine(
     immagine_id: int,
@@ -354,7 +314,6 @@ def elimina_immagine(
     db.commit()
 
 
-# --- ENDPOINT: ACQUISTO ANNUNCIO ---
 @app.post("/annunci/{idAnnuncio}/acquista", status_code=204)
 def acquista_annuncio(
     idAnnuncio: int,
@@ -373,7 +332,7 @@ def acquista_annuncio(
     annuncio.acquirente = utente_corrente
     db.commit()
 
-# --- ENDPOINT: RIMBORSO ANNUNCIO ---
+
 @app.post("/annunci/{idAnnuncio}/rimborso", status_code=204)
 def rimborsa_annuncio(
     idAnnuncio: int,
@@ -381,11 +340,8 @@ def rimborsa_annuncio(
     db: Session = Depends(get_db)
 ):
     annuncio = db.query(database.AnnuncioDB).filter(database.AnnuncioDB.idAnnuncio == idAnnuncio).first()
-    # Se l'annuncio è stato eliminato, il rimborso viene gestito solo a livello chat
-    if not annuncio:
-        return
-    # Se era già stato rimborsato in precedenza, non c'è nulla da fare
-    if not annuncio.venduto:
+    # Se l'annuncio è stato eliminato, il rimborso viene gestito solo lato chat
+    if not annuncio or not annuncio.venduto:
         return
     if annuncio.acquirente != utente_corrente:
         raise HTTPException(status_code=403, detail="Solo l'acquirente può richiedere il rimborso")
@@ -394,7 +350,7 @@ def rimborsa_annuncio(
     annuncio.acquirente = None
     db.commit()
 
-# --- ENDPOINT: ELIMINAZIONE ANNUNCIO ---
+
 @app.delete("/annunci/{idAnnuncio}", status_code=204)
 def elimina_annuncio(
     idAnnuncio: int,
@@ -414,7 +370,7 @@ def elimina_annuncio(
     db.delete(annuncio)
     db.commit()
 
-# --- ENDPOINT: PREFERITI ---
+
 @app.get("/preferiti", response_model=List[schemi.AnnuncioResponse])
 def get_preferiti(
     utente_corrente: str = Depends(ottieni_utente_loggato),
@@ -425,6 +381,7 @@ def get_preferiti(
         return []
     ids = [p.idAnnuncio for p in preferiti]
     return db.query(database.AnnuncioDB).filter(database.AnnuncioDB.idAnnuncio.in_(ids)).all()
+
 
 @app.post("/preferiti/{idAnnuncio}", status_code=201)
 def aggiungi_preferito(
@@ -443,6 +400,7 @@ def aggiungi_preferito(
         db.commit()
     return {"message": "ok"}
 
+
 @app.delete("/preferiti/{idAnnuncio}", status_code=204)
 def rimuovi_preferito(
     idAnnuncio: int,
@@ -458,16 +416,13 @@ def rimuovi_preferito(
     db.delete(preferito)
     db.commit()
 
+
 @app.post("/logout")
 def logout(request: Request, response: Response, db: Session = Depends(get_db)):
     sessione_id = request.cookies.get("sessione_retroshop")
-    
     if sessione_id:
-        # Elimina la sessione dal database
         db.query(database.SessioneDB).filter(database.SessioneDB.id_sessione == sessione_id).delete()
         db.commit()
-        
-    # Cancella il cookie dal browser
     response.delete_cookie("sessione_retroshop")
     return {"message": "Logout effettuato"}
 
@@ -477,7 +432,6 @@ def controlla_sessione(utente_corrente: str = Depends(ottieni_utente_loggato)):
     return {"nickname": utente_corrente, "loggato": True}
 
 
-# --- ENDPOINT: ELIMINAZIONE ACCOUNT UTENTE ---
 @app.delete("/utenti/{nickname}", status_code=204)
 def elimina_account(
     nickname: str,
@@ -486,7 +440,6 @@ def elimina_account(
     utente_corrente: str = Depends(ottieni_utente_loggato),
     db: Session = Depends(get_db)
 ):
-    # Verifica che l'utente stia eliminando solo il proprio account
     if utente_corrente != nickname:
         raise HTTPException(status_code=403, detail="Non sei autorizzato a eliminare questo account")
 
@@ -494,24 +447,19 @@ def elimina_account(
     if not utente:
         raise HTTPException(status_code=404, detail="Utente non trovato")
 
-    # Elimina la cartella con la foto profilo dal filesystem, se presente
     cartella_utente = os.path.join(BASE_DIR_UTENTI, nickname)
     if os.path.exists(cartella_utente):
         shutil.rmtree(cartella_utente)
 
-    # Elimina le cartelle delle immagini di tutti gli annunci dell'utente
     for annuncio in utente.annunci:
         cartella_annuncio = os.path.join(BASE_DIR_IMMAGINI, str(annuncio.idAnnuncio))
         if os.path.exists(cartella_annuncio):
             shutil.rmtree(cartella_annuncio)
 
-    # Elimina l'utente dal database.
-    # Grazie alle relazioni con ondelete="CASCADE" nel database, vengono eliminati
-    # automaticamente anche: sessioni, preferiti e annunci collegati.
+    # Le relazioni con CASCADE nel database eliminano automaticamente sessioni,
+    # preferiti e annunci collegati all'utente
     db.delete(utente)
     db.commit()
-
-    # Cancella il cookie di sessione dal browser
     response.delete_cookie("sessione_retroshop")
 
 
@@ -551,7 +499,7 @@ def ricerca_annunci(
     if marca:
         query = query.filter(database.AnnuncioDB.piattaforma.ilike(f"%{marca}%"))
 
-    if condizioni and len(condizioni) > 0:
+    if condizioni:
         query = query.filter(database.AnnuncioDB.condizione.in_(condizioni))
 
     if prezzo_min is not None:
@@ -561,7 +509,6 @@ def ricerca_annunci(
 
     if spedizione:
         query = query.filter(database.AnnuncioDB.spedizione == True)
-
     if presenza:
         query = query.filter(database.AnnuncioDB.presenza == True)
 
@@ -570,5 +517,4 @@ def ricerca_annunci(
     elif regione:
         query = query.filter(database.AnnuncioDB.posizione.ilike(f"%{regione}%"))
 
-    annunci_filtrati = query.order_by(database.AnnuncioDB.data_pubblicazione.desc()).all()
-    return annunci_filtrati
+    return query.order_by(database.AnnuncioDB.data_pubblicazione.desc()).all()

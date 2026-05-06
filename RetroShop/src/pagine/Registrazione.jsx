@@ -90,7 +90,7 @@ export default function Registrazione() {
             <Link className="text-white text-decoration-none d-flex align-items-center" to="/">
               <i className="bi bi-arrow-left fs-4 me-2"></i> Torna al negozio
             </Link>
-            <img src="/Arcade_png-removebg-preview.png" alt="Logo" style={{ height: 40 }} />
+            <img src="/Arcade_png-removebg-preview.png" alt="Logo" className="logo-header-interno" />
           </div>
         </nav>
       </header>
@@ -252,7 +252,7 @@ export default function Registrazione() {
                 />
                 {fotoPreview && (
                   <div className="mt-3 text-center">
-                    <img src={fotoPreview} alt="Anteprima" className="rounded-circle border border-secondary shadow" style={{ width: 100, height: 100, objectFit: 'cover' }} />
+                    <img src={fotoPreview} alt="Anteprima" className="foto-preview-registrazione rounded-circle border border-secondary shadow" />
                   </div>
                 )}
               </div>

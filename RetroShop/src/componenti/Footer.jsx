@@ -17,7 +17,7 @@ export default function Footer() {
               <i className="bi bi-instagram fs-5"></i>
             </a>
             <a href="#" className="text-secondary">
-              <i className="bi bi-envelope-fill fs-5"></i>
+              <i className="bi  bi-twitter-x fs-5"></i>
             </a>
           </div>
         </div>

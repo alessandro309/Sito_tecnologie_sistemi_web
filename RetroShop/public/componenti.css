@@ -129,3 +129,36 @@
     color: #fff !important;
     border-color: #dc3545 !important;
 }
+
+
+/* --- AUTOCOMPLETE ZONA (Filtri.jsx) --------------------- */
+/* Lista suggerimenti che appare sotto l'input regione/città */
+
+.suggerimenti-autocomplete {
+    z-index: 1050;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.suggerimento-item {
+    cursor: pointer;
+}
+
+
+/* --- CARD ANNUNCIO: OVERLAY "VENDUTO" ------------------- */
+/* Semitrasparente nero che copre l'immagine delle card già acquistate */
+
+.card-overlay-venduta {
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 5;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+}
+
+/* Badge testuale "Acquistato" sopra la card venduta */
+.badge-acquistato {
+    background: #555;
+    color: #ddd;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+}

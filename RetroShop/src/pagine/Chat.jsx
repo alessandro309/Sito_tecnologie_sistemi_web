@@ -36,10 +36,10 @@ function Avatar({ nickname, foto, size = 48 }) {
   return (
     <div
       className="chat-avatar flex-shrink-0"
-      style={{ width: size, height: size, minWidth: size, fontSize: size * 0.34, overflow: "hidden" }}
+      style={{ width: size, height: size, minWidth: size, fontSize: size * 0.34 }}
     >
       {foto
-        ? <img src={foto} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        ? <img src={foto} alt="" className="chat-avatar-img" />
         : inizialiDa(nickname)
       }
     </div>
@@ -346,8 +346,8 @@ export default function Chat() {
   return (
     <>
       {/* position:fixed + inset:0 ancora il container all'esatto viewport visibile su tutti i browser mobile */}
-      <div style={{ position: "fixed", inset: 0, display: "flex", flexDirection: "column", overflow: "hidden" }}>
-        <div style={{ flexShrink: 0 }}>
+      <div className="chat-container">
+        <div className="flex-shrink-0">
           <Navbar />
         </div>
 
@@ -364,10 +364,7 @@ export default function Chat() {
                   Messaggi
                   {/* Badge con il numero totale di messaggi non letti */}
                   {totNonLetti > 0 && (
-                    <span
-                      className="ms-2 badge"
-                      style={{ background: "#000", border: "2px solid #dc3545", color: "#dc3545", fontSize: 11 }}
-                    >
+                    <span className="ms-2 badge badge-nonletti">
                       {totNonLetti}
                     </span>
                   )}
@@ -378,11 +375,8 @@ export default function Chat() {
                   style={{ fontSize: 11, color: connesso ? "#2ecc71" : "#6c757d" }}
                 >
                   <span
-                    style={{
-                      width: 6, height: 6, borderRadius: "50%",
-                      background: connesso ? "#2ecc71" : "#6c757d",
-                      display: "inline-block",
-                    }}
+                    className="dot-connessione"
+                    style={{ background: connesso ? "#2ecc71" : "#6c757d" }}
                   />
                   {connesso ? "live" : "off"}
                 </span>
@@ -399,7 +393,6 @@ export default function Chat() {
                   onChange={(e) => setRicerca(e.target.value)}
                   placeholder="Cerca..."
                   className="form-control form-control-sm font-monospace chat-search"
-                  style={{ paddingLeft: 30 }}
                 />
               </div>
             </div>
@@ -734,8 +727,8 @@ export default function Chat() {
       {/* Modal richiesta rimborso */}
       {modalRimborso.aperto && (
         <div
-          className="modal d-block"
-          style={{ backgroundColor: 'rgba(0,0,0,0.85)', zIndex: 9999 }}
+          className="modal d-block modal-backdrop-custom"
+          style={{ zIndex: 9999 }}
           onClick={(e) => { if (e.target === e.currentTarget) setModalRimborso({ aperto: false, msg: null, spiegazione: '' }); }}
         >
           <div className="modal-dialog modal-dialog-centered">
@@ -790,184 +783,6 @@ export default function Chat() {
 
       <ModalLogin />
       <ModalFiltri />
-
-      <style>{`
-        .chat-wrapper {
-          flex: 1;
-          min-height: 0;
-          display: flex;
-          overflow: hidden;
-          background: #0a0a0a;
-        }
-
-        .chat-sidebar {
-          width: 360px;
-          min-width: 310px;
-          max-width: 400px;
-          flex-shrink: 0;
-          display: flex;
-          flex-direction: column;
-          background: #000;
-          border-right: 1px solid #1e1e1e;
-        }
-
-        .chat-sidebar-header {
-          padding: 14px 16px 12px;
-          flex-shrink: 0;
-        }
-
-        .chat-search {
-          background: rgba(255,255,255,0.04) !important;
-          border: 1px solid #333 !important;
-          color: #fff !important;
-          border-radius: 4px !important;
-          transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        .chat-search:focus {
-          border-color: var(--colore-accento) !important;
-          box-shadow: 0 0 0 0.15rem rgba(255,17,0,0.2) !important;
-          background: rgba(255,255,255,0.06) !important;
-        }
-        .chat-search::placeholder { color: rgba(255,255,255,0.25) !important; }
-
-        .chat-conv-list {
-          flex: 1;
-          overflow-y: auto;
-          min-height: 0;
-        }
-        .chat-conv-list::-webkit-scrollbar { width: 3px; }
-        .chat-conv-list::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-
-        .chat-conv-item {
-          display: flex;
-          align-items: flex-start;
-          gap: 14px;
-          padding: 16px 18px;
-          cursor: pointer;
-          border-bottom: 1px solid #111;
-          border-left: 3px solid transparent;
-          transition: background 0.15s, border-color 0.15s;
-        }
-        .chat-conv-item:hover {
-          background: rgba(255,17,0,0.05);
-        }
-        .chat-conv-item.attiva {
-          background: rgba(255,17,0,0.08);
-          border-left-color: var(--colore-accento);
-        }
-
-        .chat-avatar {
-          border-radius: 50%;
-          background: #1a1a1a;
-          border: 1.5px solid var(--colore-accento);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-family: monospace;
-          font-weight: bold;
-          color: var(--colore-accento);
-          letter-spacing: 1px;
-        }
-
-        .chat-main {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          min-width: 0;
-          background: #0d0d0d;
-        }
-
-        .chat-panel-header {
-          display: flex;
-          align-items: center;
-          gap: 16px;
-          padding: 16px 24px;
-          background: #000;
-          flex-shrink: 0;
-        }
-
-        .chat-messages {
-          flex: 1;
-          overflow-y: auto;
-          padding: 20px 24px;
-          display: flex;
-          flex-direction: column;
-          min-height: 0;
-        }
-        .chat-messages::-webkit-scrollbar { width: 3px; }
-        .chat-messages::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 4px; }
-
-        .chat-bubble {
-          padding: 11px 16px;
-          font-size: 16px;
-          line-height: 1.5;
-          color: #fff;
-          word-break: break-word;
-        }
-        .chat-bubble.mia {
-          background: var(--colore-accento);
-          border-radius: 14px 14px 4px 14px;
-        }
-        .chat-bubble.altrui {
-          background: rgba(255,255,255,0.04);
-          border: 1px solid #2a2a2a;
-          border-radius: 14px 14px 14px 4px;
-        }
-
-        .chat-input-bar {
-          display: flex;
-          gap: 10px;
-          align-items: flex-end;
-          padding: 12px 16px;
-          background: #000;
-          flex-shrink: 0;
-        }
-        .chat-textarea {
-          flex: 1;
-          background: rgba(255,255,255,0.04);
-          border: 1px solid #333;
-          border-radius: 8px;
-          color: #fff;
-          padding: 10px 14px;
-          font-size: 16px;
-          resize: none;
-          outline: none;
-          line-height: 1.5;
-          max-height: 120px;
-          overflow: auto;
-          transition: border-color 0.2s;
-        }
-        .chat-textarea:focus { border-color: var(--colore-accento); }
-        .chat-textarea::placeholder { color: rgba(255,255,255,0.25); }
-        .chat-textarea:disabled { opacity: 0.35; }
-
-        .chat-send-btn {
-          width: 48px;
-          height: 48px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 8px !important;
-          flex-shrink: 0;
-          transition: background 0.2s, color 0.2s, border-color 0.2s;
-          font-size: 18px;
-        }
-
-        /* Su mobile mostriamo o la sidebar o la chat, mai entrambe */
-        @media (max-width: 767px) {
-          .chat-sidebar {
-            width: 100%;
-            min-width: 100%;
-            max-width: 100%;
-            border-right: none;
-          }
-          .chat-main { width: 100%; }
-          .chat-nascosta-mobile { display: none !important; }
-          .chat-messages { padding: 14px 12px; }
-          .chat-input-bar { padding: 10px 12px; }
-          .chat-panel-header { padding: 10px 12px; }
-        }
-      `}</style>
     </>
   );
 }

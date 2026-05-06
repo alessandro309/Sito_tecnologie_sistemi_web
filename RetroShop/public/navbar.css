@@ -109,8 +109,36 @@
 /* In tema scuro: bianchi; in tema chiaro: neri */
 
 .logo-console-svg {
+    height: 20px;
     filter: brightness(0) invert(1);
 }
+
 body.tema-chiaro .logo-console-svg {
     filter: brightness(0);
+}
+
+
+/* --- LOGO E NOME BRAND ---------------------------------- */
+
+/* Logo arcade: bianco con alone rosso */
+.logo-navbar {
+    height: 54px;
+    filter: brightness(0) invert(1) drop-shadow(0 0 10px rgba(220, 53, 69, 0.9));
+}
+
+/* Testo "RETRO SHOP" affiancato al logo */
+.brand-text {
+    letter-spacing: 3px;
+    font-size: 1.1rem;
+    line-height: 1;
+}
+
+/* Logo più piccolo usato nelle navbar interne (Registrazione, Profilo) */
+.logo-header-interno {
+    height: 40px;
+}
+
+/* Logo nel modal di login */
+.logo-modal {
+    height: 60px;
 }

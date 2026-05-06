@@ -50,7 +50,7 @@ export default function ModalLogin() {
 
           <div className="modal-body px-5 pb-5">
             <div className="text-center mb-4">
-              <img src="/Arcade_png-removebg-preview.png" alt="Logo" style={{ height: 60 }} className="mb-2" />
+              <img src="/Arcade_png-removebg-preview.png" alt="Logo" className="logo-modal mb-2" />
               <h3 className="modal-title font-monospace text-white text-uppercase" id="modalLoginLabel">Accedi</h3>
             </div>
 

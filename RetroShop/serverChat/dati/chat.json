@@ -131,6 +131,17 @@
       "titoloAnnuncio": "Zeb",
       "prezzoAnnuncio": 69,
       "creatoIl": "2026-05-06T16:39:41.853Z"
+    },
+    {
+      "id": "47af7d67-6bc0-4f0b-94fe-b8abd5605db5",
+      "partecipanti": [
+        "James_Metallica",
+        "Shreck"
+      ],
+      "idAnnuncio": "14",
+      "titoloAnnuncio": "Blue",
+      "prezzoAnnuncio": 44.98,
+      "creatoIl": "2026-05-06T19:31:36.936Z"
     }
   ],
   "messaggi": [
@@ -448,6 +459,35 @@
       "ora": "2026-05-06T16:42:36.223Z",
       "letto": true,
       "tipo": "rimborso",
+      "acquirente": "James_Metallica"
+    },
+    {
+      "id": "6cc7cdfc-b3ca-404b-bd42-078611cc4daa",
+      "conversazioneId": "47af7d67-6bc0-4f0b-94fe-b8abd5605db5",
+      "mittente": "sistema",
+      "testo": "Acquisto completato: Blue",
+      "ora": "2026-05-06T19:31:36.944Z",
+      "letto": true,
+      "tipo": "sistema",
+      "acquirente": "James_Metallica",
+      "idAnnuncio": "14",
+      "datiAcquisto": {
+        "nomeAnnuncio": "Blue",
+        "acquirente": "James_Metallica",
+        "venditore": "Shreck",
+        "prezzoArticolo": 44.98,
+        "prezzoSpedizione": 7
+      },
+      "consegnaConfermata": true
+    },
+    {
+      "id": "5e85dafb-7332-4d85-acd8-e8c8e8089c2c",
+      "conversazioneId": "47af7d67-6bc0-4f0b-94fe-b8abd5605db5",
+      "mittente": "sistema",
+      "testo": "James_Metallica ha confermato la ricezione dell'articolo",
+      "ora": "2026-05-06T19:32:07.499Z",
+      "letto": true,
+      "tipo": "consegna",
       "acquirente": "James_Metallica"
     }
   ]

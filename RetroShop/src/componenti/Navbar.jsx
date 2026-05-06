@@ -38,9 +38,9 @@ const CONSOLE_MENUS = [
   { label: 'PLAYSTATION', marca: 'PlayStation', icon: <i className="bi bi-playstation fs-5" /> },
   { label: 'XBOX',        marca: 'Xbox',        icon: <i className="bi bi-xbox fs-5" /> },
   { label: 'NINTENDO',    marca: 'Nintendo',    icon: <i className="bi bi-nintendo-switch fs-5" /> },
-  { label: 'SEGA',        marca: 'Sega',        icon: <img src="/logo_sega.svg"      alt="Sega"      className="logo-console-svg" style={{ height: 20 }} /> },
-  { label: 'COMMODORE',   marca: 'Commodore',   icon: <img src="/logo_commodore.svg" alt="Commodore" className="logo-console-svg" style={{ height: 20 }} /> },
-  { label: 'ATARI',       marca: 'Atari',       icon: <img src="/logo_atari.svg"     alt="Atari"     className="logo-console-svg" style={{ height: 20 }} /> },
+  { label: 'SEGA',        marca: 'Sega',        icon: <img src="/logo_sega.svg"      alt="Sega"      className="logo-console-svg" /> },
+  { label: 'COMMODORE',   marca: 'Commodore',   icon: <img src="/logo_commodore.svg" alt="Commodore" className="logo-console-svg" /> },
+  { label: 'ATARI',       marca: 'Atari',       icon: <img src="/logo_atari.svg"     alt="Atari"     className="logo-console-svg" /> },
   { label: 'ALTRO',       marca: null,          icon: null },
 ];
 
@@ -159,15 +159,8 @@ export default function Navbar({ children }) {
       <nav className="navbar navbar-expand-lg bg-black border-bottom border-secondary" data-bs-theme="dark">
         <div className="container-fluid">
           <Link className="navbar-brand font-monospace text-uppercase d-flex align-items-center gap-2" to="/">
-            <img
-              src="/Arcade_png-removebg-preview.png"
-              alt="Logo Arcade"
-              style={{
-                height: 54,
-                filter: 'brightness(0) invert(1) drop-shadow(0 0 10px rgba(220, 53, 69, 0.9))',
-              }}
-            />
-            <span style={{ letterSpacing: '3px', fontSize: '1.1rem', lineHeight: 1 }}>
+            <img src="/Arcade_png-removebg-preview.png" alt="Logo Arcade" className="logo-navbar" />
+            <span className="brand-text">
               <span className="text-white">RETRO</span>
               <span className="text-danger">SHOP</span>
             </span>

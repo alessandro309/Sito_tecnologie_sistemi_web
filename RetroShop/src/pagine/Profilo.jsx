@@ -23,12 +23,10 @@ export default function Profilo() {
   const [eliminaAccountInCorso, setEliminaAccountInCorso] = useState(false);
   const [erroreEliminaAccount, setErroreEliminaAccount] = useState(null);
 
-  // Dati personali
   const [formDati, setFormDati] = useState({ nome: '', cognome: '', mail: '', citta: '' });
   const [salvaDatiInCorso, setSalvaDatiInCorso] = useState(false);
-  const [feedbackDati, setFeedbackDati] = useState(null); // { tipo: 'ok'|'errore', messaggio }
+  const [feedbackDati, setFeedbackDati] = useState(null);
 
-  // Password
   const [formPassword, setFormPassword] = useState({ password_attuale: '', nuova_password: '', conferma_password: '' });
   const [salvaPasswordInCorso, setSalvaPasswordInCorso] = useState(false);
   const [feedbackPassword, setFeedbackPassword] = useState(null);
@@ -234,30 +232,6 @@ export default function Profilo() {
     ? datiProfilo.provincia ? `${datiProfilo.citta} (${datiProfilo.provincia})` : datiProfilo.citta
     : '—';
 
-  // Classi dipendenti dal tema — sostituiscono i vecchi stili hardcoded nel tag <style>
-  const chiaro = tema === 'light';
-
-  const cls = {
-    profiloHeader: chiaro
-      ? 'profilo-header-light p-4 mb-4 shadow'
-      : 'profilo-header-dark p-4 mb-4 shadow',
-    panel: chiaro
-      ? 'panel-impostazioni-light'
-      : 'panel-impostazioni-dark',
-    statoVuoto: chiaro
-      ? 'stato-vuoto-light'
-      : 'stato-vuoto-dark',
-    avatarBorder: chiaro ? '#0096D6' : '#dc3545',
-    sezioneBorder: chiaro ? '#BFBFBF' : '#333',
-    panelBorder: chiaro ? '#BFBFBF' : '#333',
-    panelBg: chiaro ? '#F0F0F0' : '#000',
-    panelH6: chiaro ? '#555' : '#6c757d',
-    statoVuotoBg: chiaro ? '#E8E8E8' : '#000',
-    statoVuotoBorder: chiaro ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.15)',
-    profiloBg: chiaro ? '#F8F8F8' : '#000',
-    profiloBorder: chiaro ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)',
-  };
-
   return (
     <>
       <header className="mb-5 sticky-top">
@@ -268,15 +242,8 @@ export default function Profilo() {
               <span className="d-none d-sm-inline small text-uppercase fw-bold">Torna al negozio</span>
             </Link>
             <Link to="/" className="navbar-brand font-monospace text-uppercase d-flex align-items-center gap-2">
-              <img
-                src="/Arcade_png-removebg-preview.png"
-                alt="Logo"
-                style={{
-                  height: 54,
-                  filter: 'brightness(0) invert(1) drop-shadow(0 0 10px rgba(220, 53, 69, 0.9))',
-                }}
-              />
-              <span style={{ letterSpacing: '3px', fontSize: '1.1rem', lineHeight: 1 }}>
+              <img src="/Arcade_png-removebg-preview.png" alt="Logo" className="logo-navbar" />
+              <span className="brand-text">
                 <span className="text-white">RETRO</span>
                 <span className="text-danger">SHOP</span>
               </span>
@@ -314,30 +281,13 @@ export default function Profilo() {
 
             {/* Sezione: dati profilo */}
             <section id="sezioneProfilo" className="pb-5 mb-5 border-bottom border-secondary">
-              <div
-                style={{
-                  backgroundColor: cls.profiloBg,
-                  border: `1px solid ${cls.profiloBorder}`,
-                  borderRadius: 20,
-                  transition: 'background-color 0.3s ease, border-color 0.3s ease',
-                }}
-                className="p-4 mb-4 shadow"
-              >
+              <div className="profilo-card p-4 mb-4 shadow">
                 <div className="d-flex align-items-center gap-4 flex-wrap">
-                  <div>
-                    <img
-                      src={fotoProfilo}
-                      alt="Foto Profilo"
-                      className="rounded-circle shadow"
-                      style={{
-                        width: 110,
-                        height: 110,
-                        objectFit: 'cover',
-                        border: `3px solid ${cls.avatarBorder}`,
-                        transition: 'border-color 0.3s ease',
-                      }}
-                    />
-                  </div>
+                  <img
+                    src={fotoProfilo}
+                    alt="Foto Profilo"
+                    className="profilo-avatar rounded-circle shadow"
+                  />
                   <div>
                     <h2 className="fw-bold mb-1 text-uppercase text-white">
                       {datiProfilo ? `${datiProfilo.nome} ${datiProfilo.cognome}` : utente.nickname}
@@ -356,16 +306,8 @@ export default function Profilo() {
 
             {/* Sezione: annunci pubblicati dall'utente */}
             <section id="sezioneMieiAnnunci" className="pb-5 mb-5 border-bottom border-secondary">
-              <div
-                className="d-flex justify-content-between align-items-center"
-                style={{
-                  borderBottom: `1px solid ${cls.sezioneBorder}`,
-                  paddingBottom: '0.6rem',
-                  marginBottom: '1.5rem',
-                  transition: 'border-color 0.3s ease',
-                }}
-              >
-                <h4 className="fw-bold text-uppercase" style={{ fontSize: '0.95rem', letterSpacing: '0.08em', margin: 0 }}>
+              <div className="profilo-sezione-header d-flex justify-content-between align-items-center">
+                <h4 className="profilo-sezione-titolo fw-bold text-uppercase">
                   <i className="bi bi-tags-fill text-danger me-2"></i>
                   I miei annunci
                   <span className="text-danger ms-1">({annunci.length})</span>
@@ -378,14 +320,7 @@ export default function Profilo() {
                   <p className="mt-2 small text-secondary">Caricamento annunci...</p>
                 </div>
               ) : annunci.length === 0 ? (
-                <div
-                  style={{
-                    backgroundColor: cls.statoVuotoBg,
-                    border: `1px dashed ${cls.statoVuotoBorder}`,
-                    borderRadius: 16,
-                    transition: 'background-color 0.3s ease, border-color 0.3s ease',
-                  }}
-                >
+                <div className="profilo-vuoto">
                   <div className="d-flex flex-column justify-content-center align-items-center py-5 text-secondary">
                     <i className="bi bi-tags fs-1 mb-3 opacity-50 text-danger"></i>
                     <p className="small text-uppercase mb-3">Non hai ancora pubblicato nessun annuncio</p>
@@ -407,16 +342,8 @@ export default function Profilo() {
 
             {/* Sezione: annunci salvati nei preferiti */}
             <section id="sezionePreferiti" className="py-5 mb-5 border-bottom border-secondary">
-              <div
-                className="d-flex justify-content-between align-items-center"
-                style={{
-                  borderBottom: `1px solid ${cls.sezioneBorder}`,
-                  paddingBottom: '0.6rem',
-                  marginBottom: '1.5rem',
-                  transition: 'border-color 0.3s ease',
-                }}
-              >
-                <h4 className="fw-bold text-uppercase" style={{ fontSize: '0.95rem', letterSpacing: '0.08em', margin: 0 }}>
+              <div className="profilo-sezione-header d-flex justify-content-between align-items-center">
+                <h4 className="profilo-sezione-titolo fw-bold text-uppercase">
                   <i className="bi bi-floppy-fill text-danger me-2"></i>
                   Annunci Preferiti
                   <span className="text-danger ms-1">({preferiti.length})</span>
@@ -429,14 +356,7 @@ export default function Profilo() {
                   <p className="mt-2 small text-secondary">Caricamento preferiti...</p>
                 </div>
               ) : preferiti.length === 0 ? (
-                <div
-                  style={{
-                    backgroundColor: cls.statoVuotoBg,
-                    border: `1px dashed ${cls.statoVuotoBorder}`,
-                    borderRadius: 16,
-                    transition: 'background-color 0.3s ease, border-color 0.3s ease',
-                  }}
-                >
+                <div className="profilo-vuoto">
                   <div className="d-flex flex-column justify-content-center align-items-center py-5 text-secondary">
                     <i className="bi bi-floppy fs-1 mb-3 opacity-50 text-danger"></i>
                     <p className="small text-uppercase mb-3">Nessun annuncio salvato nei preferiti</p>
@@ -460,31 +380,15 @@ export default function Profilo() {
 
             {/* Sezione: impostazioni account */}
             <section id="sezioneImpostazioni" className="py-5">
-              <div
-                style={{
-                  borderBottom: `1px solid ${cls.sezioneBorder}`,
-                  paddingBottom: '0.6rem',
-                  marginBottom: '1.5rem',
-                  transition: 'border-color 0.3s ease',
-                }}
-              >
-                <h4 className="fw-bold text-uppercase" style={{ fontSize: '0.95rem', letterSpacing: '0.08em', margin: 0 }}>
+              <div className="profilo-sezione-header">
+                <h4 className="profilo-sezione-titolo fw-bold text-uppercase">
                   <i className="bi bi-gear-fill text-danger me-2"></i>Impostazioni Account
                 </h4>
               </div>
 
               {/* Selezione tema */}
-              <div
-                style={{
-                  backgroundColor: cls.panelBg,
-                  border: `1px solid ${cls.panelBorder}`,
-                  borderRadius: 16,
-                  padding: '1.5rem',
-                  marginBottom: '1.25rem',
-                  transition: 'background-color 0.3s ease, border-color 0.3s ease',
-                }}
-              >
-                <h6 style={{ fontSize: '0.7rem', letterSpacing: '0.1em', color: cls.panelH6, marginBottom: '1rem' }} className="fw-bold text-uppercase">
+              <div className="profilo-panel">
+                <h6 className="profilo-panel-label fw-bold text-uppercase">
                   Tema dell'interfaccia
                 </h6>
                 <div className="btn-group w-100 shadow-sm" role="group">
@@ -500,17 +404,8 @@ export default function Profilo() {
               </div>
 
               {/* Informazioni personali */}
-              <div
-                style={{
-                  backgroundColor: cls.panelBg,
-                  border: `1px solid ${cls.panelBorder}`,
-                  borderRadius: 16,
-                  padding: '1.5rem',
-                  marginBottom: '1.25rem',
-                  transition: 'background-color 0.3s ease, border-color 0.3s ease',
-                }}
-              >
-                <h6 style={{ fontSize: '0.7rem', letterSpacing: '0.1em', color: cls.panelH6, marginBottom: '1rem' }} className="fw-bold text-uppercase">
+              <div className="profilo-panel">
+                <h6 className="profilo-panel-label fw-bold text-uppercase">
                   Informazioni Personali
                 </h6>
                 <form onSubmit={handleSalvaDati}>
@@ -579,17 +474,8 @@ export default function Profilo() {
               </div>
 
               {/* Sicurezza password */}
-              <div
-                style={{
-                  backgroundColor: cls.panelBg,
-                  border: `1px solid ${cls.panelBorder}`,
-                  borderRadius: 16,
-                  padding: '1.5rem',
-                  marginBottom: '1.25rem',
-                  transition: 'background-color 0.3s ease, border-color 0.3s ease',
-                }}
-              >
-                <h6 style={{ fontSize: '0.7rem', letterSpacing: '0.1em', color: cls.panelH6, marginBottom: '1rem' }} className="fw-bold text-uppercase">
+              <div className="profilo-panel">
+                <h6 className="profilo-panel-label fw-bold text-uppercase">
                   Sicurezza Password
                 </h6>
                 <form onSubmit={handleAggiornaPassword}>
@@ -664,8 +550,7 @@ export default function Profilo() {
       {/* Modal di conferma eliminazione annuncio */}
       {annuncioInElimina && (
         <div
-          className="modal d-block"
-          style={{ backgroundColor: 'rgba(0,0,0,0.75)' }}
+          className="modal d-block modal-backdrop-custom"
           onClick={(e) => { if (e.target === e.currentTarget && !eliminazioneInCorso) setAnnuncioInElimina(null); }}
         >
           <div className="modal-dialog modal-dialog-centered">
@@ -714,11 +599,11 @@ export default function Profilo() {
           </div>
         </div>
       )}
+
       {/* Modal di conferma eliminazione account */}
       {mostraModalEliminaAccount && (
         <div
-          className="modal d-block"
-          style={{ backgroundColor: 'rgba(0,0,0,0.85)' }}
+          className="modal d-block modal-backdrop-custom"
           onClick={(e) => { if (e.target === e.currentTarget && !eliminaAccountInCorso) setMostraModalEliminaAccount(false); }}
         >
           <div className="modal-dialog modal-dialog-centered">

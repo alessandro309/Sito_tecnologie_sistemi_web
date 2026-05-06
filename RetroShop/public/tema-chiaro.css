@@ -564,3 +564,58 @@ body.tema-chiaro #box_giochi {
         linear-gradient(to left, rgba(220, 220, 220, 0.95) 10%, rgba(0, 150, 214, 0.3) 30%, rgba(0, 0, 0, 0) 60%),
         url('giochi_totali.png') !important;
 }
+
+
+/* --- PROFILO -------------------------------------------- */
+
+body.tema-chiaro .profilo-card {
+    background-color: #F8F8F8 !important;
+    border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+body.tema-chiaro .profilo-panel {
+    background-color: #F0F0F0 !important;
+    border-color: #BFBFBF !important;
+}
+
+body.tema-chiaro .profilo-sezione-header {
+    border-bottom-color: #BFBFBF !important;
+}
+
+body.tema-chiaro .profilo-vuoto {
+    background-color: #E8E8E8 !important;
+    border-color: rgba(0, 0, 0, 0.15) !important;
+}
+
+body.tema-chiaro .profilo-avatar {
+    border-color: #0096D6 !important;
+}
+
+body.tema-chiaro .profilo-panel-label {
+    color: #555 !important;
+}
+
+
+/* --- PAGINA ANNUNCIO ------------------------------------ */
+
+body.tema-chiaro .colore-titoli {
+    color: #0096D6 !important;
+}
+
+body.tema-chiaro .pulsante_verde {
+    background-color: #2dbe5c !important;
+    border-color: #2dbe5c !important;
+}
+
+body.tema-chiaro .pulsante_verde:hover {
+    background-color: transparent !important;
+    color: #2dbe5c !important;
+}
+
+
+/* --- LOGO NAVBAR (tema chiaro già gestito da .navbar-brand img) --- */
+/* Il logo nella navbar interna di Profilo/Registrazione va scurito */
+
+body.tema-chiaro .logo-navbar {
+    filter: brightness(0) drop-shadow(0 0 6px rgba(0, 150, 214, 0.4)) !important;
+}

@@ -1,32 +1,31 @@
 from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, ForeignKey, Date, DateTime, func
 from sqlalchemy.orm import declarative_base, relationship, sessionmaker
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
 import uuid
 
+# Sostituire "biar" con la password del proprio server PostgreSQL locale
 SQLALCHEMY_DATABASE_URL = "postgresql://postgres:biar@localhost:5432/retroshop_db"
-# al posto di "biar" inserire la password del server sql sul vostro pc 
 
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL
-)
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
+
+
 class UtenteDB(Base):
     __tablename__ = "utenti"
 
     nickname = Column(String, primary_key=True, index=True)
     nome = Column(String, nullable=False)
     cognome = Column(String, nullable=False)
-    nascita = Column(Date, nullable=False) # Ora è un tipo Date
+    nascita = Column(Date, nullable=False)
     sesso = Column(String, nullable=True)
     citta = Column(String, nullable=True)
     provincia = Column(String, nullable=True)
     mail = Column(String, unique=True, index=True, nullable=False)
-    password = Column(String, nullable=False) 
-    foto_profilo = Column(String, nullable=True) 
+    password = Column(String, nullable=False)
+    foto_profilo = Column(String, nullable=True)
 
     annunci = relationship("AnnuncioDB", foreign_keys="[AnnuncioDB.utente]", back_populates="proprietario")
+
 
 class AnnuncioDB(Base):
     __tablename__ = "annunci"
@@ -36,7 +35,7 @@ class AnnuncioDB(Base):
     prezzo = Column(Float, nullable=False)
     condizione = Column(String, nullable=False)
     piattaforma = Column(String, nullable=False)
-    modello = Column(String, nullable=False)    
+    modello = Column(String, nullable=False)
     tipologia = Column(String, nullable=False)
     utente = Column(String, ForeignKey("utenti.nickname"))
     portatile = Column(Boolean, nullable=True)
@@ -48,13 +47,15 @@ class AnnuncioDB(Base):
     data_pubblicazione = Column(DateTime, server_default=func.now())
     venduto = Column(Boolean, default=False, nullable=False)
     acquirente = Column(String, ForeignKey("utenti.nickname", ondelete="SET NULL"), nullable=True)
+
     proprietario = relationship("UtenteDB", foreign_keys=[utente], back_populates="annunci")
     immagini = relationship(
-        "ImmagineAnnuncioDB", 
-        back_populates="annuncio", 
+        "ImmagineAnnuncioDB",
+        back_populates="annuncio",
         cascade="all, delete-orphan",
         order_by="ImmagineAnnuncioDB.ordine"
     )
+
 
 class ImmagineAnnuncioDB(Base):
     __tablename__ = "immagini_annuncio"
@@ -66,16 +67,17 @@ class ImmagineAnnuncioDB(Base):
 
     annuncio = relationship("AnnuncioDB", back_populates="immagini")
 
+
 class SessioneDB(Base):
     __tablename__ = "sessioni"
 
-    # Genera automaticamente un ID univoco casuale 
+    # uuid4 garantisce unicità senza collisioni, sicuro da usare come token di sessione
     id_sessione = Column(String, primary_key=True, index=True, default=lambda: str(uuid.uuid4()))
     nickname_utente = Column(String, ForeignKey("utenti.nickname", ondelete="CASCADE"), nullable=False)
     data_scadenza = Column(DateTime, nullable=False)
 
-    # Relazione con l'utente
     utente = relationship("UtenteDB")
+
 
 class PreferitiDB(Base):
     __tablename__ = "preferiti"

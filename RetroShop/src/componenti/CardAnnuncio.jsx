@@ -31,20 +31,9 @@ export default function CardAnnuncio({ annuncio, mostraElimina = false, onElimin
 
         {/* Overlay "Acquistato" — visibile solo se l'annuncio è venduto */}
         {annuncio.venduto && (
-          <div
-            className="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center"
-            style={{
-              background: 'rgba(0,0,0,0.55)',
-              zIndex: 5,
-              borderTopLeftRadius: 20,
-              borderTopRightRadius: 20,
-            }}
-          >
+          <div className="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center card-overlay-venduta">
             <i className="bi bi-check-circle-fill text-secondary mb-2" style={{ fontSize: '2.2rem' }}></i>
-            <span
-              className="font-monospace text-uppercase fw-bold px-3 py-1 rounded-1"
-              style={{ background: '#555', color: '#ddd', fontSize: '0.85rem', letterSpacing: 2 }}
-            >
+            <span className="font-monospace text-uppercase fw-bold px-3 py-1 rounded-1 badge-acquistato">
               Acquistato
             </span>
           </div>
@@ -54,7 +43,7 @@ export default function CardAnnuncio({ annuncio, mostraElimina = false, onElimin
         {mostraElimina ? (
           <button
             className="btn btn-elimina-card position-absolute top-0 end-0 m-2 rounded-circle border-secondary d-flex align-items-center justify-content-center p-0"
-            style={{ width: 40, height: 40, zIndex: 10 }}
+            style={{ zIndex: 10 }}
             onClick={() => onElimina?.(annuncio)}
           >
             <i className="bi bi-trash text-danger fs-5"></i>
@@ -62,7 +51,7 @@ export default function CardAnnuncio({ annuncio, mostraElimina = false, onElimin
         ) : (
           <button
             className="btn btn-salva position-absolute top-0 end-0 m-2 rounded-circle border-secondary d-flex align-items-center justify-content-center p-0"
-            style={{ width: 40, height: 40, zIndex: 10 }}
+            style={{ zIndex: 10 }}
             onClick={() => onTogglePreferito ? onTogglePreferito(annuncio, !preferito) : setSalvato(!salvato)}
           >
             <i className={`bi ${isSalvato ? 'bi-floppy-fill' : 'bi-floppy'} text-danger fs-5`}></i>

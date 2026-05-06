@@ -122,9 +122,8 @@ export default function CreaAnnuncio() {
           <input
             type="text"
             name="nome"
-            className="form-control form-control-lg bg-transparent border-0 border-bottom border-light rounded-0 px-0 fw-bold text-white shadow-none"
+            className="form-control form-control-lg bg-transparent border-0 border-bottom border-light rounded-0 px-0 fw-bold text-white shadow-none titolo-annuncio-input"
             placeholder="Titolo"
-            style={{ fontSize: '2rem', caretColor: '#fff' }}
             required
           />
         </div>
@@ -135,7 +134,7 @@ export default function CreaAnnuncio() {
             {foto.length < MAX_FOTO && (
               <div
                 className="upload-area border border-dark rounded-4 d-flex flex-column align-items-center justify-content-center position-relative"
-                style={{ height: foto.length > 0 ? 180 : 450, backgroundColor: 'rgba(255,255,255,0.02)', transition: 'height 0.3s ease' }}
+                style={{ height: foto.length > 0 ? 180 : 450 }}
               >
                 <div className="text-center p-4">
                   <i className="bi bi-images fs-1 text-secondary mb-3"></i>
@@ -163,13 +162,12 @@ export default function CreaAnnuncio() {
             {foto.length > 0 && (
               <div className="d-flex flex-wrap gap-2 mt-3">
                 {foto.map((f, i) => (
-                  <div key={i} className="position-relative border border-secondary rounded-2 overflow-hidden shadow-sm" style={{ width: 80, height: 80 }}>
-                    <img src={f.url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt={`Anteprima ${i + 1}`} />
+                  <div key={i} className="foto-mini-wrapper position-relative border border-secondary rounded-2 overflow-hidden shadow-sm">
+                    <img src={f.url} className="foto-mini" alt={`Anteprima ${i + 1}`} />
                     <button
                       type="button"
                       onClick={() => rimuoviFoto(i)}
-                      className="position-absolute top-0 end-0 btn btn-danger btn-sm p-0 d-flex align-items-center justify-content-center"
-                      style={{ width: 20, height: 20, fontSize: 10, lineHeight: 1 }}
+                      className="position-absolute top-0 end-0 btn btn-danger btn-sm p-0 d-flex align-items-center justify-content-center btn-rimuovi-foto"
                       title="Rimuovi foto"
                     >
                       <i className="bi bi-x"></i>

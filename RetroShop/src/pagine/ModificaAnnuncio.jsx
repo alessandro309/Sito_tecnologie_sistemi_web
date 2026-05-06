@@ -173,9 +173,8 @@ export default function ModificaAnnuncio() {
           <div className="mb-4">
             <input
               type="text"
-              className="form-control form-control-lg bg-transparent border-0 border-bottom border-light rounded-0 px-0 fw-bold text-white shadow-none"
+              className="form-control form-control-lg bg-transparent border-0 border-bottom border-light rounded-0 px-0 fw-bold text-white shadow-none titolo-annuncio-input"
               placeholder="Titolo dell'annuncio..."
-              style={{ fontSize: '2rem', caretColor: '#fff' }}
               value={nome}
               onChange={e => setNome(e.target.value)}
               required
@@ -193,13 +192,12 @@ export default function ModificaAnnuncio() {
                   <div className="d-flex flex-wrap gap-2">
                     {immaginiEsistenti.map(img =>
                       !immaginiDaRimuovere.has(img.id) ? (
-                        <div key={img.id} className="position-relative border border-secondary rounded-2 overflow-hidden shadow-sm" style={{ width: 80, height: 80 }}>
-                          <img src={`${BASE}${img.url_immagine}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="" />
+                        <div key={img.id} className="foto-mini-wrapper position-relative border border-secondary rounded-2 overflow-hidden shadow-sm">
+                          <img src={`${BASE}${img.url_immagine}`} className="foto-mini" alt="" />
                           <button
                             type="button"
                             onClick={() => toggleRimozione(img.id)}
-                            className="position-absolute top-0 end-0 btn btn-danger btn-sm p-0 d-flex align-items-center justify-content-center"
-                            style={{ width: 20, height: 20, fontSize: 10 }}
+                            className="position-absolute top-0 end-0 btn btn-danger btn-sm p-0 d-flex align-items-center justify-content-center btn-rimuovi-foto"
                           >
                             <i className="bi bi-x"></i>
                           </button>
@@ -214,7 +212,7 @@ export default function ModificaAnnuncio() {
               {totaleFoto < MAX_FOTO && (
                 <div
                   className="upload-area border border-dark rounded-4 d-flex flex-column align-items-center justify-content-center position-relative"
-                  style={{ height: totaleFoto > 0 ? 180 : 450, backgroundColor: 'rgba(255,255,255,0.02)', transition: 'height 0.3s ease' }}
+                  style={{ height: totaleFoto > 0 ? 180 : 450 }}
                 >
                   <div className="text-center p-4">
                     <i className="bi bi-images fs-1 text-secondary mb-3"></i>
@@ -240,13 +238,12 @@ export default function ModificaAnnuncio() {
                   <p className="small text-secondary text-uppercase mb-2">Nuove foto da aggiungere</p>
                   <div className="d-flex flex-wrap gap-2">
                     {nuoveFoto.map((f, i) => (
-                      <div key={i} className="position-relative border border-info rounded-2 overflow-hidden shadow-sm" style={{ width: 80, height: 80 }}>
-                        <img src={f.url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt={`Nuova ${i + 1}`} />
+                      <div key={i} className="foto-mini-wrapper position-relative border border-info rounded-2 overflow-hidden shadow-sm">
+                        <img src={f.url} className="foto-mini" alt={`Nuova ${i + 1}`} />
                         <button
                           type="button"
                           onClick={() => rimuoviNuovaFoto(i)}
-                          className="position-absolute top-0 end-0 btn btn-danger btn-sm p-0 d-flex align-items-center justify-content-center"
-                          style={{ width: 20, height: 20, fontSize: 10 }}
+                          className="position-absolute top-0 end-0 btn btn-danger btn-sm p-0 d-flex align-items-center justify-content-center btn-rimuovi-foto"
                         >
                           <i className="bi bi-x"></i>
                         </button>

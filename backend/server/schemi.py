@@ -2,26 +2,28 @@ from pydantic import BaseModel
 from typing import Optional, List
 from datetime import date, datetime
 
-# --- SCHEMI UTENTE ---
+
 class UtenteBase(BaseModel):
     nome: str
     cognome: str
     nickname: str
-    nascita: date # Ora è di tipo date
+    nascita: date
     sesso: Optional[str] = None
     citta: Optional[str] = None
     provincia: Optional[str] = None
     mail: str
-    foto_profilo: Optional[str] = None # Nuova colonna
+    foto_profilo: Optional[str] = None
+
 
 class UtenteCreate(UtenteBase):
-    password: str 
+    password: str
+
 
 class UtenteResponse(UtenteBase):
     class Config:
         from_attributes = True
 
-# --- SCHEMI IMMAGINI ---
+
 class ImmagineResponse(BaseModel):
     id: int
     url_immagine: str
@@ -30,7 +32,7 @@ class ImmagineResponse(BaseModel):
     class Config:
         from_attributes = True
 
-# --- SCHEMI ANNUNCIO ---
+
 class AnnuncioBase(BaseModel):
     nome: str
     prezzo: float
@@ -46,8 +48,10 @@ class AnnuncioBase(BaseModel):
     posizione: str
     descrizione: str
 
+
 class AnnuncioCreate(AnnuncioBase):
     pass
+
 
 class AnnuncioResponse(AnnuncioBase):
     idAnnuncio: int
@@ -64,7 +68,6 @@ class LoginRequest(BaseModel):
     nickname: str
     password: str
 
-# --- SCHEMI MODIFICA ACCOUNT ---
 
 class AggiornaDatiUtente(BaseModel):
     nome: Optional[str] = None
@@ -72,9 +75,11 @@ class AggiornaDatiUtente(BaseModel):
     mail: Optional[str] = None
     citta: Optional[str] = None
 
+
 class AggiornaPassword(BaseModel):
     password_attuale: str
     nuova_password: str
+
 
 class AggiornaAnnuncio(BaseModel):
     nome: str
