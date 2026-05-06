@@ -16,6 +16,10 @@ export default function PaginaAnnuncio() {
   const [fotoProfilo, setFotoProfilo] = useState(null);
   const [indiceImmagine, setIndiceImmagine] = useState(0);
   const [salvato, setSalvato] = useState(false);
+  const [mostraModalAcquisto, setMostraModalAcquisto] = useState(false);
+  const [acquistoInCorso, setAcquistoInCorso] = useState(false);
+  const [acquistoCompletato, setAcquistoCompletato] = useState(false);
+  const [erroreAcquisto, setErroreAcquisto] = useState(null);
 
   // Controlla se l'annuncio è già nei preferiti dell'utente loggato
   useEffect(() => {
@@ -31,6 +35,7 @@ export default function PaginaAnnuncio() {
       .then((r) => r.json())
       .then(async (dati) => {
         setAnnuncio(dati);
+        setAcquistoCompletato(dati.venduto ?? false);
         try {
           const utenteResp = await api.utente(dati.utente);
           if (utenteResp.ok) {
@@ -93,6 +98,24 @@ export default function PaginaAnnuncio() {
         prezzoAnnuncio: annuncio.prezzo,
       },
     });
+  }
+
+  async function handleConfermaAcquisto() {
+    setAcquistoInCorso(true);
+    setErroreAcquisto(null);
+    try {
+      const res = await api.acquistaAnnuncio(annuncio.idAnnuncio);
+      if (!res.ok && res.status !== 204) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || "Errore durante l'acquisto");
+      }
+      setAcquistoCompletato(true);
+      setMostraModalAcquisto(false);
+    } catch (e) {
+      setErroreAcquisto(e.message);
+    } finally {
+      setAcquistoInCorso(false);
+    }
   }
 
   const isProprietario = utente?.nickname === annuncio.utente;
@@ -170,12 +193,8 @@ export default function PaginaAnnuncio() {
                   </div>
 
                   <div className="d-flex gap-3 mt-2">
-                    <button className="btn pulsante_verde font-monospace px-4 py-2 rounded-2 shadow-sm d-flex align-items-center justify-content-center flex-grow-1">
-                      <i className="bi bi-cart-fill me-2"></i>Acquista
-                    </button>
-
-                    {/* ── PULSANTE CONTATTA ── */}
                     {isProprietario ? (
+                      // Proprietario: solo Modifica a tutta larghezza
                       <button
                         className="btn pulsante_arancione font-monospace px-4 py-2 rounded-2 shadow-sm d-flex align-items-center justify-content-center flex-grow-1"
                         onClick={() => navigate(`/annunci/${id}/modifica`)}
@@ -183,13 +202,25 @@ export default function PaginaAnnuncio() {
                         <i className="bi bi-pencil-fill me-2"></i>Modifica
                       </button>
                     ) : (
-                      <button
-                        className="btn pulsante_arancione font-monospace px-4 py-2 rounded-2 shadow-sm d-flex align-items-center justify-content-center flex-grow-1"
-                        onClick={apriChat}
-                        title={!utente ? 'Accedi per contattare il venditore' : `Contatta ${annuncio.utente}`}
-                      >
-                        <i className="bi bi-chat-dots-fill me-2"></i>Contatta
-                      </button>
+                      // Visitatore: Acquista + Contatta
+                      <>
+                        <button
+                          className="btn pulsante_verde font-monospace px-4 py-2 rounded-2 shadow-sm d-flex align-items-center justify-content-center flex-grow-1"
+                          onClick={() => { setErroreAcquisto(null); setMostraModalAcquisto(true); }}
+                          disabled={acquistoCompletato}
+                          style={acquistoCompletato ? { opacity: 0.5, cursor: 'default' } : {}}
+                        >
+                          <i className={`bi bi-${acquistoCompletato ? 'check-circle-fill' : 'cart-fill'} me-2`}></i>
+                          {acquistoCompletato ? 'Acquistato' : 'Acquista'}
+                        </button>
+                        <button
+                          className="btn pulsante_arancione font-monospace px-4 py-2 rounded-2 shadow-sm d-flex align-items-center justify-content-center flex-grow-1"
+                          onClick={apriChat}
+                          title={!utente ? 'Accedi per contattare il venditore' : `Contatta ${annuncio.utente}`}
+                        >
+                          <i className="bi bi-chat-dots-fill me-2"></i>Contatta
+                        </button>
+                      </>
                     )}
                   </div>
                 </div>
@@ -248,6 +279,63 @@ export default function PaginaAnnuncio() {
       </main>
 
       <Footer />
+      {/* Modal conferma acquisto */}
+      {mostraModalAcquisto && (
+        <div
+          className="modal d-block"
+          style={{ backgroundColor: 'rgba(0,0,0,0.8)' }}
+          onClick={(e) => { if (e.target === e.currentTarget && !acquistoInCorso) setMostraModalAcquisto(false); }}
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content bg-black border border-secondary text-white font-monospace shadow-lg">
+              <div className="modal-header border-secondary">
+                <h5 className="modal-title text-uppercase fs-6 fw-bold">
+                  <i className="bi bi-cart-fill text-success me-2"></i>Conferma Acquisto
+                </h5>
+                <button
+                  className="btn-close btn-close-white"
+                  onClick={() => setMostraModalAcquisto(false)}
+                  disabled={acquistoInCorso}
+                />
+              </div>
+              <div className="modal-body">
+                <p className="small mb-1">
+                  Stai per acquistare <strong>"{annuncio.nome}"</strong> a <strong className="text-success">€ {annuncio.prezzo.toFixed(2)}</strong>.
+                </p>
+                <p className="small text-secondary mb-0">
+                  Il venditore vedrà l'annuncio segnato come venduto. Vuoi procedere?
+                </p>
+                {erroreAcquisto && (
+                  <p className="small text-danger mt-3 mb-0">
+                    <i className="bi bi-exclamation-triangle me-1"></i>{erroreAcquisto}
+                  </p>
+                )}
+              </div>
+              <div className="modal-footer border-secondary">
+                <button
+                  className="btn btn-outline-secondary rounded-1 text-uppercase fw-bold px-3 small"
+                  onClick={() => setMostraModalAcquisto(false)}
+                  disabled={acquistoInCorso}
+                >
+                  Annulla
+                </button>
+                <button
+                  className="btn btn-success rounded-1 text-uppercase fw-bold px-3 small"
+                  onClick={handleConfermaAcquisto}
+                  disabled={acquistoInCorso}
+                >
+                  {acquistoInCorso
+                    ? <span className="spinner-border spinner-border-sm" role="status" />
+                    : <><i className="bi bi-cart-check me-1"></i>Sì, acquista</>
+                  }
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+
       <ModalLogin />
       <ModalFiltri />
 

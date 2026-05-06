@@ -17,6 +17,18 @@ export default function Registrazione() {
   const [caricamento, setCaricamento] = useState(false);
   const [errore, setErrore] = useState('');
 
+  // Regole password — ogni regola ha un testo e una funzione di verifica
+  const REGOLE_PASSWORD = [
+    { id: 'lunghezza',  testo: 'Almeno 8 caratteri',           check: (p) => p.length >= 8 },
+    { id: 'maiuscola',  testo: 'Almeno una lettera maiuscola',  check: (p) => /[A-Z]/.test(p) },
+    { id: 'numero',     testo: 'Almeno un numero',              check: (p) => /[0-9]/.test(p) },
+    { id: 'speciale',   testo: 'Almeno un carattere speciale',  check: (p) => /[^A-Za-z0-9]/.test(p) },
+  ];
+
+  const regolaOk = (id) => REGOLE_PASSWORD.find((r) => r.id === id)?.check(form.password) ?? false;
+  const passwordValida = REGOLE_PASSWORD.every((r) => r.check(form.password));
+  const forza = REGOLE_PASSWORD.filter((r) => r.check(form.password)).length; // 0-4
+
   const oggiMeno18 = (() => {
     const d = new Date();
     return `${d.getFullYear() - 18}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -42,6 +54,7 @@ export default function Registrazione() {
     setErrore('');
 
     if (form.email !== form.confermaEmail) return setErrore('Le email non corrispondono!');
+    if (!passwordValida) return setErrore('La password non rispetta tutti i requisiti richiesti.');
     if (form.password !== form.confermaPassword) return setErrore('Le password non corrispondono!');
 
     setCaricamento(true);
@@ -145,7 +158,7 @@ export default function Registrazione() {
               </div>
             </div>
 
-            <div className="row g-3 mb-4 align-items-center">
+            <div className="row g-3 mb-4">
               <div className="col-md-4">
                 <label className="form-label small text-secondary mb-1">Password*</label>
                 <div className="input-group">
@@ -158,19 +171,73 @@ export default function Registrazione() {
               <div className="col-md-4">
                 <label className="form-label small text-secondary mb-1">Conferma password*</label>
                 <div className="input-group">
-                  <input type={mostraConferma ? 'text' : 'password'} className="form-control" value={form.confermaPassword} onChange={aggiorna('confermaPassword')} required />
+                  <input
+                    type={mostraConferma ? 'text' : 'password'}
+                    className={`form-control ${form.confermaPassword && (form.password === form.confermaPassword ? 'border-success' : 'border-danger')}`}
+                    value={form.confermaPassword}
+                    onChange={aggiorna('confermaPassword')}
+                    required
+                  />
                   <button type="button" className="btn btn-outline-secondary border-secondary text-white bg-transparent" onClick={() => setMostraConferma(!mostraConferma)}>
                     <i className={`bi bi-eye${mostraConferma ? '-slash' : ''}`}></i>
                   </button>
                 </div>
+                {form.confermaPassword && form.password !== form.confermaPassword && (
+                  <small className="text-danger"><i className="bi bi-x-circle me-1"></i>Le password non coincidono</small>
+                )}
+                {form.confermaPassword && form.password === form.confermaPassword && (
+                  <small className="text-success"><i className="bi bi-check-circle me-1"></i>Le password coincidono</small>
+                )}
               </div>
               <div className="col-md-4">
-                <div className="text-secondary small mt-3 mt-md-0 pt-md-3">
-                  <i className="bi bi-shield-lock text-danger"></i> Regole consigliate:<br />
-                  <span style={{ fontSize: '0.8rem' }}>Minimo 8 caratteri, una lettera maiuscola e un numero.</span>
-                </div>
+                {/* Barra di forza password */}
+                {form.password && (
+                  <div className="mt-md-4 pt-md-1">
+                    <div className="d-flex gap-1 mb-2">
+                      {[1,2,3,4].map((livello) => (
+                        <div
+                          key={livello}
+                          style={{
+                            flex: 1, height: 5, borderRadius: 3,
+                            backgroundColor: forza >= livello
+                              ? livello <= 1 ? '#dc3545'
+                              : livello <= 2 ? '#fd7e14'
+                              : livello <= 3 ? '#ffc107'
+                              : '#198754'
+                              : '#333',
+                            transition: 'background-color 0.3s',
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <small className="text-secondary" style={{ fontSize: '0.75rem' }}>
+                      {forza === 0 && 'Inserisci una password'}
+                      {forza === 1 && <span className="text-danger">Molto debole</span>}
+                      {forza === 2 && <span style={{ color: '#fd7e14' }}>Debole</span>}
+                      {forza === 3 && <span className="text-warning">Discreta</span>}
+                      {forza === 4 && <span className="text-success">Ottima</span>}
+                    </small>
+                  </div>
+                )}
               </div>
             </div>
+
+            {/* Requisiti password in tempo reale */}
+            {form.password && (
+              <div className="mb-4 p-3 rounded-2 border border-secondary" style={{ background: 'rgba(255,255,255,0.03)' }}>
+                <p className="small text-secondary mb-2"><i className="bi bi-shield-lock me-1 text-danger"></i>Requisiti password:</p>
+                <div className="row g-1">
+                  {REGOLE_PASSWORD.map((r) => (
+                    <div key={r.id} className="col-6">
+                      <small style={{ fontSize: '0.8rem' }} className={r.check(form.password) ? 'text-success' : 'text-secondary'}>
+                        <i className={`bi bi-${r.check(form.password) ? 'check-circle-fill' : 'circle'} me-1`}></i>
+                        {r.testo}
+                      </small>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             <div className="row g-3 mb-4">
               <div className="col-12">

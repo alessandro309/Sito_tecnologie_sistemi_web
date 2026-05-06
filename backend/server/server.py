@@ -1,4 +1,5 @@
 import os
+import re
 import shutil
 from fastapi import FastAPI, HTTPException, Depends, UploadFile, File, Request, Response
 from typing import Annotated, List, Optional
@@ -33,6 +34,26 @@ def ottieni_hash_password(password: str):
 
 def verifica_password(plain_password: str, hashed_password: str):
     return pwd_context.verify(plain_password, hashed_password)
+
+def valida_password(password: str):
+    """Controlla che la password rispetti i requisiti minimi.
+    Non viene applicata agli account già esistenti."""
+    errori = []
+    if len(password) < 8:
+        errori.append("almeno 8 caratteri")
+    if not re.search(r'[A-Z]', password):
+        errori.append("almeno una lettera maiuscola")
+    if not re.search(r'[0-9]', password):
+        errori.append("almeno un numero")
+    if not re.search(r'[^A-Za-z0-9]', password):
+        errori.append("almeno un carattere speciale")
+    if errori:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Password non valida. Requisiti mancanti: {', '.join(errori)}."
+        )
+
+
 #fine funzioni sicurezza
 
 app = FastAPI()
@@ -70,6 +91,9 @@ def registra_utente(utente: schemi.UtenteCreate, db: Session = Depends(get_db)):
     db_user_mail = db.query(database.UtenteDB).filter(database.UtenteDB.mail == utente.mail).first()
     if db_user_mail:
         raise HTTPException(status_code=400, detail="Email già registrata")
+
+    # Validiamo la password prima di procedere
+    valida_password(dati_utente["password"])
 
     #criptiamo la password
     dati_utente = utente.model_dump()
@@ -280,6 +304,9 @@ def aggiorna_password(
     if not verifica_password(dati.password_attuale, utente.password):
         raise HTTPException(status_code=400, detail="Password attuale non corretta")
 
+    # Validiamo la nuova password
+    valida_password(dati.nuova_password)
+
     utente.password = ottieni_hash_password(dati.nuova_password)
     db.commit()
 
@@ -324,6 +351,25 @@ def elimina_immagine(
         os.remove(file_path)
 
     db.delete(immagine)
+    db.commit()
+
+
+# --- ENDPOINT: ACQUISTO ANNUNCIO ---
+@app.post("/annunci/{idAnnuncio}/acquista", status_code=204)
+def acquista_annuncio(
+    idAnnuncio: int,
+    utente_corrente: str = Depends(ottieni_utente_loggato),
+    db: Session = Depends(get_db)
+):
+    annuncio = db.query(database.AnnuncioDB).filter(database.AnnuncioDB.idAnnuncio == idAnnuncio).first()
+    if not annuncio:
+        raise HTTPException(status_code=404, detail="Annuncio non trovato")
+    if annuncio.utente == utente_corrente:
+        raise HTTPException(status_code=400, detail="Non puoi acquistare il tuo stesso annuncio")
+    if annuncio.venduto:
+        raise HTTPException(status_code=400, detail="Annuncio già venduto")
+
+    annuncio.venduto = True
     db.commit()
 
 # --- ENDPOINT: ELIMINAZIONE ANNUNCIO ---

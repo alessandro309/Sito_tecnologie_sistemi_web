@@ -51,7 +51,8 @@ class AnnuncioCreate(AnnuncioBase):
 
 class AnnuncioResponse(AnnuncioBase):
     idAnnuncio: int
-    data_pubblicazione: datetime # Restituisce la data di pubblicazione
+    data_pubblicazione: datetime
+    venduto: bool = False
     immagini: List[ImmagineResponse] = []
 
     class Config:

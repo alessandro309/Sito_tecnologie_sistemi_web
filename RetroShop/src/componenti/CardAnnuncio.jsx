@@ -22,12 +22,33 @@ export default function CardAnnuncio({ annuncio, mostraElimina = false, onElimin
   });
 
   return (
-    <div className="card card-annuncio bg-black border-secondary h-100 text-white shadow overflow-hidden">
+    <div className="card card-annuncio bg-black border-secondary h-100 text-white shadow overflow-hidden" style={annuncio.venduto ? { filter: 'grayscale(60%)', opacity: 0.8 } : {}}>
 
       <div className="position-relative">
         <Link to={`/annunci/${annuncio.idAnnuncio}`}>
           <img src={immagineUrl} className="card-img-top img-annuncio" alt={annuncio.nome} />
         </Link>
+
+        {/* Overlay "Acquistato" — visibile solo se l'annuncio è venduto */}
+        {annuncio.venduto && (
+          <div
+            className="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center"
+            style={{
+              background: 'rgba(0,0,0,0.55)',
+              zIndex: 5,
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+            }}
+          >
+            <i className="bi bi-check-circle-fill text-secondary mb-2" style={{ fontSize: '2.2rem' }}></i>
+            <span
+              className="font-monospace text-uppercase fw-bold px-3 py-1 rounded-1"
+              style={{ background: '#555', color: '#ddd', fontSize: '0.85rem', letterSpacing: 2 }}
+            >
+              Acquistato
+            </span>
+          </div>
+        )}
 
         {/* Bottone rosso in alto a destra: cestino se siamo nel profilo, cuore se siamo nella ricerca */}
         {mostraElimina ? (

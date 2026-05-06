@@ -46,6 +46,7 @@ class AnnuncioDB(Base):
     posizione = Column(String, nullable=False)
     descrizione = Column(String, nullable=False)
     data_pubblicazione = Column(DateTime, server_default=func.now())
+    venduto = Column(Boolean, default=False, nullable=False)
     proprietario = relationship("UtenteDB", back_populates="annunci")
     immagini = relationship(
         "ImmagineAnnuncioDB", 

@@ -65,6 +65,9 @@ const api = {
     return apiFetch(`${BASE}/annunci/${idAnnuncio}/immagini`, { method: 'POST', body: fd });
   },
 
+  acquistaAnnuncio: (idAnnuncio) =>
+    apiFetch(`${BASE}/annunci/${idAnnuncio}/acquista`, { method: 'POST' }),
+
   eliminaAnnuncio: (idAnnuncio) =>
     apiFetch(`${BASE}/annunci/${idAnnuncio}`, { method: 'DELETE' }),
 
