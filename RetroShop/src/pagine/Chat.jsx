@@ -66,6 +66,9 @@ export default function Chat() {
   const [mostraSidebar, setMostraSidebar] = useState(true); // su mobile mostriamo o sidebar o chat
 
   const [fotoAnnunci, setFotoAnnunci] = useState({});
+  const [rimborsoInCorso, setRimborsoInCorso] = useState(null); // idAnnuncio in elaborazione
+  const [consegnaInCorso, setConsegnaInCorso] = useState(null); // idAnnuncio in elaborazione
+  const [modalRimborso, setModalRimborso] = useState({ aperto: false, msg: null, spiegazione: '' });
 
   const wsRef = useRef(null);      // riferimento alla connessione WebSocket
   const endRef = useRef(null);     // elemento in fondo alla lista messaggi per lo scroll automatico
@@ -137,7 +140,8 @@ export default function Chat() {
   useEffect(() => {
     if (!utente) return;
 
-    const ws = new WebSocket(`ws://${window.location.host}/ws`);
+    const proto = window.location.protocol === "https:" ? "wss:" : "ws:";
+    const ws = new WebSocket(`${proto}//${window.location.host}/ws`);
     wsRef.current = ws;
 
     ws.onopen = () => {
@@ -239,6 +243,55 @@ export default function Chat() {
       JSON.stringify({ tipo: "messaggio", conversazioneId: selezionata.id, testo: testo.trim() })
     );
     setTesto("");
+  }
+
+  async function handleRimborso(msg, spiegazione) {
+    setModalRimborso({ aperto: false, msg: null, spiegazione: '' });
+    setRimborsoInCorso(msg.idAnnuncio);
+    try {
+      const res = await api.rimborsaAnnuncio(msg.idAnnuncio);
+      // 404 = annuncio eliminato: il rimborso DB non è necessario, procediamo comunque
+      if (!res.ok && res.status !== 204 && res.status !== 404) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || 'Errore rimborso');
+      }
+      await api.aggiornaMessaggioChat(msg.id, { rimborsato: true });
+      setMessaggi((prev) =>
+        prev.map((m) => (m.id === msg.id ? { ...m, rimborsato: true } : m))
+      );
+      await api.inviaMessaggioAcquisto({
+        conversazioneId: msg.conversazioneId,
+        mittente: 'sistema',
+        testo: spiegazione.trim(),
+        tipo: 'rimborso',
+        acquirente: utente.nickname,
+      });
+    } catch (e) {
+      alert(e.message);
+    } finally {
+      setRimborsoInCorso(null);
+    }
+  }
+
+  async function handleConfermaRicezione(msg) {
+    setConsegnaInCorso(msg.idAnnuncio);
+    try {
+      await api.aggiornaMessaggioChat(msg.id, { consegnaConfermata: true });
+      setMessaggi((prev) =>
+        prev.map((m) => (m.id === msg.id ? { ...m, consegnaConfermata: true } : m))
+      );
+      await api.inviaMessaggioAcquisto({
+        conversazioneId: msg.conversazioneId,
+        mittente: 'sistema',
+        testo: `${utente.nickname} ha confermato la ricezione dell'articolo`,
+        tipo: 'consegna',
+        acquirente: utente.nickname,
+      });
+    } catch (e) {
+      alert(e.message);
+    } finally {
+      setConsegnaInCorso(null);
+    }
   }
 
   // Filtra le conversazioni in base al testo cercato nella sidebar
@@ -466,6 +519,157 @@ export default function Chat() {
                     </p>
                   ) : (
                     messaggi.map((msg) => {
+                      if (msg.tipo === 'rimborso') {
+                        const sonoAcquirente = msg.acquirente === utente.nickname;
+                        return (
+                          <div key={msg.id} className="d-flex justify-content-center mb-3">
+                            <div
+                              className="font-monospace text-center px-3 py-2 rounded-3"
+                              style={{
+                                background: sonoAcquirente ? 'rgba(255,17,0,0.05)' : 'rgba(255,17,0,0.12)',
+                                border: `1px solid ${sonoAcquirente ? 'rgba(255,17,0,0.3)' : 'rgba(255,17,0,0.7)'}`,
+                                color: sonoAcquirente ? 'rgb(255,130,130)' : 'rgb(255,80,80)',
+                                fontSize: 13,
+                                maxWidth: '85%',
+                              }}
+                            >
+                              <div className="fw-bold mb-1">
+                                <i className="bi bi-arrow-counterclockwise me-2" />
+                                {sonoAcquirente ? 'Hai richiesto un rimborso' : `${msg.acquirente} ha richiesto un rimborso`}
+                              </div>
+                              <div style={{ whiteSpace: 'pre-wrap', textAlign: 'left', background: 'rgba(0,0,0,0.2)', borderRadius: 6, padding: '6px 10px', marginTop: 4 }}>
+                                {msg.testo}
+                              </div>
+                              <div className="text-secondary mt-1" style={{ fontSize: 11 }}>
+                                {formattaOra(msg.ora)}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      }
+
+                      if (msg.tipo === 'consegna') {
+                        const sonoAcquirente = msg.acquirente === utente.nickname;
+                        return (
+                          <div key={msg.id} className="d-flex justify-content-center mb-3">
+                            <div
+                              className="font-monospace text-center px-3 py-2 rounded-3"
+                              style={{
+                                background: 'rgba(3,235,72,0.07)',
+                                border: '1px solid rgba(3,235,72,0.3)',
+                                color: 'rgb(100,220,100)',
+                                fontSize: 13,
+                                maxWidth: '85%',
+                              }}
+                            >
+                              <div className="fw-bold mb-1">
+                                <i className="bi bi-check-circle-fill me-2" style={{ color: 'rgb(3,235,72)' }} />
+                                {sonoAcquirente ? 'Hai confermato la ricezione' : `${msg.acquirente} ha confermato la ricezione`}
+                              </div>
+                              <div className="text-secondary mt-1" style={{ fontSize: 11 }}>
+                                {formattaOra(msg.ora)}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      }
+
+                      if (msg.tipo === 'sistema') {
+                        const d = msg.datiAcquisto;
+                        const azioniDisponibili = msg.acquirente === utente.nickname && msg.idAnnuncio && !msg.rimborsato && !msg.consegnaConfermata;
+                        const rimborsoAttivo = rimborsoInCorso === msg.idAnnuncio;
+                        const consegnaAttiva = consegnaInCorso === msg.idAnnuncio;
+                        return (
+                          <div key={msg.id} className="d-flex justify-content-center mb-4">
+                            <div className="font-monospace rounded-3 overflow-hidden" style={{ maxWidth: '88%', minWidth: 260, border: '1px solid rgba(3,235,72,0.3)', background: '#080808' }}>
+
+                              {/* Header */}
+                              <div className="d-flex align-items-center gap-2 px-3 py-2" style={{ background: 'rgba(3,235,72,0.13)', borderBottom: '1px solid rgba(3,235,72,0.2)' }}>
+                                <i className="bi bi-bag-check-fill" style={{ color: 'rgb(3,235,72)', fontSize: 15 }} />
+                                <span className="fw-bold text-uppercase" style={{ color: 'rgb(3,235,72)', fontSize: 11, letterSpacing: 1 }}>Acquisto completato</span>
+                              </div>
+
+                              {/* Dettagli */}
+                              {d ? (
+                                <div className="px-3 pt-2 pb-1" style={{ fontSize: 13 }}>
+                                  {[
+                                    ['Articolo',   <span className="fw-bold text-white">{d.nomeAnnuncio}</span>],
+                                    ['Acquirente', d.acquirente],
+                                    ['Venditore',  d.venditore],
+                                    ['Prezzo',     `€ ${d.prezzoArticolo.toFixed(2)}`],
+                                    ['Spedizione', `€ ${d.prezzoSpedizione.toFixed(2)}`],
+                                  ].map(([label, val]) => (
+                                    <div key={label} className="d-flex justify-content-between gap-3 mb-1">
+                                      <span className="text-secondary">{label}</span>
+                                      <span className="text-end" style={{ color: '#ccc' }}>{val}</span>
+                                    </div>
+                                  ))}
+                                  <div className="d-flex justify-content-between gap-3 pt-1 mt-1" style={{ borderTop: '1px solid rgba(3,235,72,0.18)' }}>
+                                    <span className="fw-bold" style={{ color: 'rgb(3,235,72)' }}>Totale</span>
+                                    <span className="fw-bold" style={{ color: 'rgb(3,235,72)' }}>€ {(d.prezzoArticolo + d.prezzoSpedizione).toFixed(2)}</span>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className="px-3 py-2 text-center" style={{ fontSize: 13, color: 'rgb(3,235,72)' }}>
+                                  {msg.testo}
+                                </div>
+                              )}
+
+                              {/* Footer: timestamp + azioni acquirente */}
+                              <div className="d-flex justify-content-between align-items-center gap-2 px-3 py-2" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                                <span className="text-secondary" style={{ fontSize: 11 }}>{formattaOra(msg.ora)}</span>
+                                {azioniDisponibili && (
+                                  <div className="d-flex gap-2">
+                                    <button
+                                      className="btn btn-sm font-monospace d-flex align-items-center gap-1"
+                                      style={{
+                                        background: 'rgba(3,235,72,0.12)',
+                                        border: '1px solid rgba(3,235,72,0.5)',
+                                        color: 'rgb(100,220,100)',
+                                        fontSize: 11,
+                                        padding: '4px 12px',
+                                        borderRadius: 6,
+                                        transition: 'all 0.2s',
+                                      }}
+                                      onClick={() => handleConfermaRicezione(msg)}
+                                      disabled={consegnaAttiva || rimborsoAttivo}
+                                      onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(3,235,72,0.25)'; e.currentTarget.style.color = 'rgb(3,235,72)'; }}
+                                      onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(3,235,72,0.12)'; e.currentTarget.style.color = 'rgb(100,220,100)'; }}
+                                    >
+                                      {consegnaAttiva
+                                        ? <><span className="spinner-border" style={{ width: 10, height: 10, borderWidth: 2 }} />Elaborazione...</>
+                                        : <><i className="bi bi-check-circle" />Ricevuto</>
+                                      }
+                                    </button>
+                                    <button
+                                      className="btn btn-sm font-monospace d-flex align-items-center gap-1"
+                                      style={{
+                                        background: 'rgba(220,53,69,0.12)',
+                                        border: '1px solid rgba(220,53,69,0.5)',
+                                        color: '#f08080',
+                                        fontSize: 11,
+                                        padding: '4px 12px',
+                                        borderRadius: 6,
+                                        transition: 'all 0.2s',
+                                      }}
+                                      onClick={() => setModalRimborso({ aperto: true, msg, spiegazione: '' })}
+                                      disabled={rimborsoAttivo || consegnaAttiva}
+                                      onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(220,53,69,0.25)'; e.currentTarget.style.color = '#ff8080'; }}
+                                      onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(220,53,69,0.12)'; e.currentTarget.style.color = '#f08080'; }}
+                                    >
+                                      {rimborsoAttivo
+                                        ? <><span className="spinner-border" style={{ width: 10, height: 10, borderWidth: 2 }} />Elaborazione...</>
+                                        : <><i className="bi bi-arrow-counterclockwise" />Rimborso</>
+                                      }
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+
+                            </div>
+                          </div>
+                        );
+                      }
                       const mio = msg.mittente === utente.nickname;
                       return (
                         <div
@@ -526,6 +730,63 @@ export default function Chat() {
 
         </div>
       </div>
+
+      {/* Modal richiesta rimborso */}
+      {modalRimborso.aperto && (
+        <div
+          className="modal d-block"
+          style={{ backgroundColor: 'rgba(0,0,0,0.85)', zIndex: 9999 }}
+          onClick={(e) => { if (e.target === e.currentTarget) setModalRimborso({ aperto: false, msg: null, spiegazione: '' }); }}
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content bg-black border border-danger text-white font-monospace shadow-lg">
+
+              <div className="modal-header border-danger">
+                <h5 className="modal-title text-uppercase fs-6 fw-bold">
+                  <i className="bi bi-arrow-counterclockwise me-2 text-danger" />
+                  Richiesta di rimborso
+                </h5>
+                <button
+                  className="btn-close btn-close-white"
+                  onClick={() => setModalRimborso({ aperto: false, msg: null, spiegazione: '' })}
+                />
+              </div>
+
+              <div className="modal-body">
+                <p className="text-secondary small mb-2">
+                  Spiega il motivo per cui vuoi richiedere il rimborso. Il venditore potrà leggere la tua spiegazione.
+                </p>
+                <textarea
+                  className="form-control bg-dark border-secondary text-white font-monospace"
+                  rows={5}
+                  placeholder="Es: il prodotto non corrisponde alla descrizione, è arrivato danneggiato..."
+                  value={modalRimborso.spiegazione}
+                  onChange={(e) => setModalRimborso((s) => ({ ...s, spiegazione: e.target.value }))}
+                  style={{ resize: 'none', fontSize: 14 }}
+                  autoFocus
+                />
+              </div>
+
+              <div className="modal-footer border-secondary">
+                <button
+                  className="btn btn-outline-secondary rounded-1 text-uppercase fw-bold px-3 small"
+                  onClick={() => setModalRimborso({ aperto: false, msg: null, spiegazione: '' })}
+                >
+                  Annulla
+                </button>
+                <button
+                  className="btn btn-danger rounded-1 text-uppercase fw-bold px-3 small"
+                  onClick={() => handleRimborso(modalRimborso.msg, modalRimborso.spiegazione)}
+                  disabled={!modalRimborso.spiegazione.trim()}
+                >
+                  <i className="bi bi-send-fill me-1" />Invia richiesta
+                </button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      )}
 
       <ModalLogin />
       <ModalFiltri />

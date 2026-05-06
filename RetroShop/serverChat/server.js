@@ -101,6 +101,50 @@ app.get("/api/chat/messaggi", (req, res) => {
   res.json(db.messaggi.filter((m) => m.conversazioneId === conversazioneId));
 });
 
+// Invia un messaggio tramite REST (per messaggi di sistema, es. conferma acquisto)
+app.post("/api/chat/messaggi", (req, res) => {
+  const { conversazioneId, mittente, testo, tipo, acquirente, idAnnuncio, datiAcquisto } = req.body;
+  if (!conversazioneId || !mittente || !testo)
+    return res.status(400).json({ errore: "Dati mancanti" });
+
+  const conv = db.conversazioni.find((c) => c.id === conversazioneId);
+  if (!conv) return res.status(404).json({ errore: "Conversazione non trovata" });
+
+  const nuovoMsg = {
+    id: uuidv4(),
+    conversazioneId,
+    mittente,
+    testo: String(testo).trim(),
+    ora: new Date().toISOString(),
+    letto: false,
+    ...(tipo ? { tipo } : {}),
+    ...(acquirente ? { acquirente } : {}),
+    ...(idAnnuncio ? { idAnnuncio: String(idAnnuncio) } : {}),
+    ...(datiAcquisto ? { datiAcquisto } : {}),
+  };
+
+  db.messaggi.push(nuovoMsg);
+  salvaDati();
+
+  const payload = JSON.stringify({ tipo: "messaggio", messaggio: nuovoMsg });
+  conv.partecipanti.forEach((p) => {
+    clienti.get(p)?.forEach((client) => {
+      if (client.readyState === 1) client.send(payload);
+    });
+  });
+
+  res.status(201).json(nuovoMsg);
+});
+
+// Aggiorna un campo di un messaggio (es. rimborsato: true)
+app.patch("/api/chat/messaggi/:id", (req, res) => {
+  const msg = db.messaggi.find((m) => m.id === req.params.id);
+  if (!msg) return res.status(404).json({ errore: "Messaggio non trovato" });
+  Object.assign(msg, req.body);
+  salvaDati();
+  res.json(msg);
+});
+
 // ── WebSocket ─────────────────────────────────────────────────────────────────
 
 const server = http.createServer(app);

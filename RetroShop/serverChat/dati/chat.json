@@ -76,6 +76,61 @@
       "titoloAnnuncio": "Pokemon Zaffiro (solo cartuccia)",
       "prezzoAnnuncio": 25,
       "creatoIl": "2026-05-05T18:48:37.114Z"
+    },
+    {
+      "id": "c40dc0ca-92e1-40e2-92ce-011e6cb9e634",
+      "partecipanti": [
+        "James_Metallica",
+        "Shreck"
+      ],
+      "idAnnuncio": "9",
+      "titoloAnnuncio": "Crash Bandicoot PS1",
+      "prezzoAnnuncio": 20,
+      "creatoIl": "2026-05-06T15:56:56.120Z"
+    },
+    {
+      "id": "e4cb5a20-4c91-4b35-801f-6bde551cdaf5",
+      "partecipanti": [
+        "James_Metallica",
+        "Shreck"
+      ],
+      "idAnnuncio": "10",
+      "titoloAnnuncio": "Crash Bandicoot PS1",
+      "prezzoAnnuncio": 1,
+      "creatoIl": "2026-05-06T16:02:20.202Z"
+    },
+    {
+      "id": "e54e3cb2-feb9-4079-998a-c5ab277dac47",
+      "partecipanti": [
+        "James_Metallica",
+        "Shreck"
+      ],
+      "idAnnuncio": "11",
+      "titoloAnnuncio": "Crash Bandicoot PS1",
+      "prezzoAnnuncio": 1,
+      "creatoIl": "2026-05-06T16:11:24.579Z"
+    },
+    {
+      "id": "37207b06-563a-4ce2-88aa-06e25990d114",
+      "partecipanti": [
+        "James_Metallica",
+        "Shreck"
+      ],
+      "idAnnuncio": "12",
+      "titoloAnnuncio": "Cristinel",
+      "prezzoAnnuncio": 654,
+      "creatoIl": "2026-05-06T16:12:59.322Z"
+    },
+    {
+      "id": "624754ff-5c36-4537-a3b3-fd5060ed856c",
+      "partecipanti": [
+        "James_Metallica",
+        "Shreck"
+      ],
+      "idAnnuncio": "13",
+      "titoloAnnuncio": "Zeb",
+      "prezzoAnnuncio": 69,
+      "creatoIl": "2026-05-06T16:39:41.853Z"
     }
   ],
   "messaggi": [
@@ -165,7 +220,7 @@
       "mittente": "Zeb89",
       "testo": "Test",
       "ora": "2026-05-04T18:21:26.729Z",
-      "letto": false
+      "letto": true
     },
     {
       "id": "9414cd4a-ed2e-4281-9733-05909083e667",
@@ -221,7 +276,179 @@
       "mittente": "James_Metallica",
       "testo": "No",
       "ora": "2026-05-05T19:24:23.049Z",
-      "letto": false
+      "letto": true
+    },
+    {
+      "id": "5e059f65-9580-468d-b469-0b27814532c2",
+      "conversazioneId": "08adbcbb-7baa-4275-b730-347a1da555e6",
+      "mittente": "James_Metallica",
+      "testo": "Suca",
+      "ora": "2026-05-06T07:44:32.922Z",
+      "letto": true
+    },
+    {
+      "id": "c9beb8f9-2103-4673-99ac-5f9b9d830a31",
+      "conversazioneId": "e4cb5a20-4c91-4b35-801f-6bde551cdaf5",
+      "mittente": "sistema",
+      "testo": "Acquisto completato! James_Metallica ha acquistato \"Crash Bandicoot PS1\" per € 1.00",
+      "ora": "2026-05-06T16:02:20.208Z",
+      "letto": true,
+      "tipo": "sistema"
+    },
+    {
+      "id": "52b7c5e1-8839-4eea-8c6f-63c77eb9b996",
+      "conversazioneId": "e54e3cb2-feb9-4079-998a-c5ab277dac47",
+      "mittente": "sistema",
+      "testo": "Acquisto completato! James_Metallica ha acquistato \"Crash Bandicoot PS1\" per € 1.00",
+      "ora": "2026-05-06T16:11:24.586Z",
+      "letto": true,
+      "tipo": "sistema"
+    },
+    {
+      "id": "8c6ac36e-154d-48cf-9979-6a7cac2e092e",
+      "conversazioneId": "37207b06-563a-4ce2-88aa-06e25990d114",
+      "mittente": "sistema",
+      "testo": "Acquisto completato! James_Metallica ha acquistato \"Cristinel\" per € 654.00",
+      "ora": "2026-05-06T16:12:59.328Z",
+      "letto": true,
+      "tipo": "sistema",
+      "acquirente": "James_Metallica",
+      "idAnnuncio": "12",
+      "rimborsato": true
+    },
+    {
+      "id": "3d5d3d78-95dd-4866-b18e-6da4e0e92f59",
+      "conversazioneId": "37207b06-563a-4ce2-88aa-06e25990d114",
+      "mittente": "sistema",
+      "testo": "Rimborso completato! James_Metallica ha ricevuto il rimborso per \"Cristinel\".",
+      "ora": "2026-05-06T16:13:03.590Z",
+      "letto": true,
+      "tipo": "sistema"
+    },
+    {
+      "id": "258824dd-cad3-4f76-b56d-e667a63211a4",
+      "conversazioneId": "37207b06-563a-4ce2-88aa-06e25990d114",
+      "mittente": "sistema",
+      "testo": "Acquisto completato! James_Metallica ha acquistato \"Cristinel\" per € 654.00",
+      "ora": "2026-05-06T16:20:19.226Z",
+      "letto": true,
+      "tipo": "sistema",
+      "acquirente": "James_Metallica",
+      "idAnnuncio": "12",
+      "rimborsato": true
+    },
+    {
+      "id": "e4f2d190-e454-4480-94c2-3f6e2b43446e",
+      "conversazioneId": "37207b06-563a-4ce2-88aa-06e25990d114",
+      "mittente": "sistema",
+      "testo": "Il prodotto fa schifo",
+      "ora": "2026-05-06T16:20:51.431Z",
+      "letto": true,
+      "tipo": "rimborso",
+      "acquirente": "James_Metallica"
+    },
+    {
+      "id": "6cf22f7b-48ee-43c9-94b6-594e58a59361",
+      "conversazioneId": "37207b06-563a-4ce2-88aa-06e25990d114",
+      "mittente": "sistema",
+      "testo": "Acquisto completato: Cristinel",
+      "ora": "2026-05-06T16:26:06.228Z",
+      "letto": true,
+      "tipo": "sistema",
+      "acquirente": "James_Metallica",
+      "idAnnuncio": "12",
+      "datiAcquisto": {
+        "nomeAnnuncio": "Cristinel",
+        "acquirente": "James_Metallica",
+        "venditore": "Shreck",
+        "prezzoArticolo": 654,
+        "prezzoSpedizione": 77
+      },
+      "rimborsato": true
+    },
+    {
+      "id": "4b8de9bb-1daa-4851-8a3e-3434e7320a87",
+      "conversazioneId": "37207b06-563a-4ce2-88aa-06e25990d114",
+      "mittente": "sistema",
+      "testo": "ggggg",
+      "ora": "2026-05-06T16:26:27.887Z",
+      "letto": true,
+      "tipo": "rimborso",
+      "acquirente": "James_Metallica"
+    },
+    {
+      "id": "657b0aad-2790-4e5d-a6d2-2c59e1e1f9d2",
+      "conversazioneId": "37207b06-563a-4ce2-88aa-06e25990d114",
+      "mittente": "Shreck",
+      "testo": "Ma ti vuoi decidere?",
+      "ora": "2026-05-06T16:27:37.374Z",
+      "letto": true
+    },
+    {
+      "id": "25bfe486-5c6a-41fc-8993-e5b5e6d616ca",
+      "conversazioneId": "37207b06-563a-4ce2-88aa-06e25990d114",
+      "mittente": "Shreck",
+      "testo": "fsfsdf",
+      "ora": "2026-05-06T16:27:59.811Z",
+      "letto": true
+    },
+    {
+      "id": "0e50a176-6e69-4c64-bf5d-1bca14312311",
+      "conversazioneId": "37207b06-563a-4ce2-88aa-06e25990d114",
+      "mittente": "sistema",
+      "testo": "Acquisto completato: Cristinel",
+      "ora": "2026-05-06T16:30:26.445Z",
+      "letto": true,
+      "tipo": "sistema",
+      "acquirente": "James_Metallica",
+      "idAnnuncio": "12",
+      "datiAcquisto": {
+        "nomeAnnuncio": "Cristinel",
+        "acquirente": "James_Metallica",
+        "venditore": "Shreck",
+        "prezzoArticolo": 654,
+        "prezzoSpedizione": 77
+      },
+      "rimborsato": true
+    },
+    {
+      "id": "435bd2bb-c895-4a15-8d80-44c680b2b514",
+      "conversazioneId": "624754ff-5c36-4537-a3b3-fd5060ed856c",
+      "mittente": "sistema",
+      "testo": "Acquisto completato: Zeb",
+      "ora": "2026-05-06T16:39:41.860Z",
+      "letto": true,
+      "tipo": "sistema",
+      "acquirente": "James_Metallica",
+      "idAnnuncio": "13",
+      "datiAcquisto": {
+        "nomeAnnuncio": "Zeb",
+        "acquirente": "James_Metallica",
+        "venditore": "Shreck",
+        "prezzoArticolo": 69,
+        "prezzoSpedizione": 65
+      },
+      "consegnaConfermata": true
+    },
+    {
+      "id": "7f11e636-6c79-43fe-a39b-c1dea0558ba4",
+      "conversazioneId": "624754ff-5c36-4537-a3b3-fd5060ed856c",
+      "mittente": "sistema",
+      "testo": "James_Metallica ha confermato la ricezione dell'articolo",
+      "ora": "2026-05-06T16:39:57.313Z",
+      "letto": true,
+      "tipo": "consegna",
+      "acquirente": "James_Metallica"
+    },
+    {
+      "id": "134e6435-2bfa-4962-af76-5a3d6d1c09a5",
+      "conversazioneId": "37207b06-563a-4ce2-88aa-06e25990d114",
+      "mittente": "sistema",
+      "testo": "Il prodotto fa schifo",
+      "ora": "2026-05-06T16:42:36.223Z",
+      "letto": true,
+      "tipo": "rimborso",
+      "acquirente": "James_Metallica"
     }
   ]
 }

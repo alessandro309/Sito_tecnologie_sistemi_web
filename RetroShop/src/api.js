@@ -110,6 +110,32 @@ const api = {
   rimuoviPreferito: (idAnnuncio) =>
     apiFetch(`${BASE}/preferiti/${idAnnuncio}`, { method: 'DELETE' }),
 
+  // --- Chat ---
+
+  creaConversazioneChat: (dati) =>
+    fetch('/api/chat/conversazioni', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dati),
+    }),
+
+  inviaMessaggioAcquisto: (dati) =>
+    fetch('/api/chat/messaggi', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dati),
+    }),
+
+  aggiornaMessaggioChat: (id, dati) =>
+    fetch(`/api/chat/messaggi/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dati),
+    }),
+
+  rimborsaAnnuncio: (idAnnuncio) =>
+    apiFetch(`${BASE}/annunci/${idAnnuncio}/rimborso`, { method: 'POST' }),
+
 };
 
 export { api, BASE };

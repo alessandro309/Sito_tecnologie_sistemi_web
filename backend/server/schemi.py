@@ -53,6 +53,7 @@ class AnnuncioResponse(AnnuncioBase):
     idAnnuncio: int
     data_pubblicazione: datetime
     venduto: bool = False
+    acquirente: Optional[str] = None
     immagini: List[ImmagineResponse] = []
 
     class Config:

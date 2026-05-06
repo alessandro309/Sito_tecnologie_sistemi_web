@@ -26,7 +26,7 @@ class UtenteDB(Base):
     password = Column(String, nullable=False) 
     foto_profilo = Column(String, nullable=True) 
 
-    annunci = relationship("AnnuncioDB", back_populates="proprietario")
+    annunci = relationship("AnnuncioDB", foreign_keys="[AnnuncioDB.utente]", back_populates="proprietario")
 
 class AnnuncioDB(Base):
     __tablename__ = "annunci"
@@ -47,7 +47,8 @@ class AnnuncioDB(Base):
     descrizione = Column(String, nullable=False)
     data_pubblicazione = Column(DateTime, server_default=func.now())
     venduto = Column(Boolean, default=False, nullable=False)
-    proprietario = relationship("UtenteDB", back_populates="annunci")
+    acquirente = Column(String, ForeignKey("utenti.nickname", ondelete="SET NULL"), nullable=True)
+    proprietario = relationship("UtenteDB", foreign_keys=[utente], back_populates="annunci")
     immagini = relationship(
         "ImmagineAnnuncioDB", 
         back_populates="annuncio", 

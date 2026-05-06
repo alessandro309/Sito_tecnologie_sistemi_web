@@ -20,6 +20,7 @@ export default function PaginaAnnuncio() {
   const [acquistoInCorso, setAcquistoInCorso] = useState(false);
   const [acquistoCompletato, setAcquistoCompletato] = useState(false);
   const [erroreAcquisto, setErroreAcquisto] = useState(null);
+  const [datiCarta, setDatiCarta] = useState({ numero: '', intestatario: '', scadenza: '', cvv: '' });
 
   // Controlla se l'annuncio è già nei preferiti dell'utente loggato
   useEffect(() => {
@@ -100,6 +101,13 @@ export default function PaginaAnnuncio() {
     });
   }
 
+  function chiudiModalPagamento() {
+    if (acquistoInCorso) return;
+    setMostraModalAcquisto(false);
+    setErroreAcquisto(null);
+    setDatiCarta({ numero: '', intestatario: '', scadenza: '', cvv: '' });
+  }
+
   async function handleConfermaAcquisto() {
     setAcquistoInCorso(true);
     setErroreAcquisto(null);
@@ -110,7 +118,37 @@ export default function PaginaAnnuncio() {
         throw new Error(err.detail || "Errore durante l'acquisto");
       }
       setAcquistoCompletato(true);
-      setMostraModalAcquisto(false);
+      chiudiModalPagamento();
+
+      // Invia messaggio di sistema in chat tra acquirente e venditore
+      try {
+        const convRes = await api.creaConversazioneChat({
+          mittente: utente.nickname,
+          destinatario: annuncio.utente,
+          idAnnuncio: String(annuncio.idAnnuncio),
+          titoloAnnuncio: annuncio.nome,
+          prezzoAnnuncio: annuncio.prezzo,
+        });
+        if (convRes.ok) {
+          const conv = await convRes.json();
+          const prezzoSpedizione = annuncio.prezzo_spedizione ?? 0;
+          await api.inviaMessaggioAcquisto({
+            conversazioneId: conv.id,
+            mittente: 'sistema',
+            testo: `Acquisto completato: ${annuncio.nome}`,
+            tipo: 'sistema',
+            acquirente: utente.nickname,
+            idAnnuncio: String(annuncio.idAnnuncio),
+            datiAcquisto: {
+              nomeAnnuncio: annuncio.nome,
+              acquirente: utente.nickname,
+              venditore: annuncio.utente,
+              prezzoArticolo: annuncio.prezzo,
+              prezzoSpedizione,
+            },
+          });
+        }
+      } catch { /* Il messaggio chat è non critico */ }
     } catch (e) {
       setErroreAcquisto(e.message);
     } finally {
@@ -207,8 +245,9 @@ export default function PaginaAnnuncio() {
                         <button
                           className="btn pulsante_verde font-monospace px-4 py-2 rounded-2 shadow-sm d-flex align-items-center justify-content-center flex-grow-1"
                           onClick={() => { setErroreAcquisto(null); setMostraModalAcquisto(true); }}
-                          disabled={acquistoCompletato}
-                          style={acquistoCompletato ? { opacity: 0.5, cursor: 'default' } : {}}
+                          disabled={acquistoCompletato || !annuncio.spedizione}
+                          style={(acquistoCompletato || !annuncio.spedizione) ? { opacity: 0.5, cursor: 'default' } : {}}
+                          title={!annuncio.spedizione ? 'Acquisto disponibile solo per annunci con spedizione' : undefined}
                         >
                           <i className={`bi bi-${acquistoCompletato ? 'check-circle-fill' : 'cart-fill'} me-2`}></i>
                           {acquistoCompletato ? 'Acquistato' : 'Acquista'}
@@ -279,61 +318,168 @@ export default function PaginaAnnuncio() {
       </main>
 
       <Footer />
-      {/* Modal conferma acquisto */}
-      {mostraModalAcquisto && (
-        <div
-          className="modal d-block"
-          style={{ backgroundColor: 'rgba(0,0,0,0.8)' }}
-          onClick={(e) => { if (e.target === e.currentTarget && !acquistoInCorso) setMostraModalAcquisto(false); }}
-        >
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content bg-black border border-secondary text-white font-monospace shadow-lg">
-              <div className="modal-header border-secondary">
-                <h5 className="modal-title text-uppercase fs-6 fw-bold">
-                  <i className="bi bi-cart-fill text-success me-2"></i>Conferma Acquisto
-                </h5>
-                <button
-                  className="btn-close btn-close-white"
-                  onClick={() => setMostraModalAcquisto(false)}
-                  disabled={acquistoInCorso}
-                />
-              </div>
-              <div className="modal-body">
-                <p className="small mb-1">
-                  Stai per acquistare <strong>"{annuncio.nome}"</strong> a <strong className="text-success">€ {annuncio.prezzo.toFixed(2)}</strong>.
-                </p>
-                <p className="small text-secondary mb-0">
-                  Il venditore vedrà l'annuncio segnato come venduto. Vuoi procedere?
-                </p>
-                {erroreAcquisto && (
-                  <p className="small text-danger mt-3 mb-0">
-                    <i className="bi bi-exclamation-triangle me-1"></i>{erroreAcquisto}
+      {/* Modal pagamento */}
+      {mostraModalAcquisto && (() => {
+        const prezzoTotale = annuncio.prezzo + (annuncio.prezzo_spedizione ?? 0);
+        const cartaValida =
+          datiCarta.numero.replace(/\s/g, '').length === 16 &&
+          datiCarta.intestatario.trim().length > 0 &&
+          datiCarta.scadenza.length === 5 &&
+          datiCarta.cvv.length === 3;
+
+        return (
+          <div
+            className="modal d-block"
+            style={{ backgroundColor: 'rgba(0,0,0,0.85)' }}
+            onClick={(e) => { if (e.target === e.currentTarget) chiudiModalPagamento(); }}
+          >
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content bg-black border border-secondary text-white font-monospace shadow-lg">
+
+                {/* Header */}
+                <div className="modal-header border-secondary">
+                  <h5 className="modal-title text-uppercase fs-6 fw-bold">
+                    <i className="bi bi-credit-card-fill me-2" style={{ color: 'rgb(3,235,72)' }}></i>
+                    Pagamento
+                  </h5>
+                  <button className="btn-close btn-close-white" onClick={chiudiModalPagamento} disabled={acquistoInCorso} />
+                </div>
+
+                {/* Riepilogo ordine */}
+                <div className="px-3 py-2" style={{ background: 'rgba(3,235,72,0.07)', borderBottom: '1px solid rgba(3,235,72,0.18)' }}>
+                  <div className="d-flex justify-content-between align-items-center small mb-1">
+                    <span className="text-secondary">Articolo</span>
+                    <span className="fw-bold">{annuncio.nome}</span>
+                  </div>
+                  <div className="d-flex justify-content-between align-items-center small mb-1">
+                    <span className="text-secondary">Prezzo</span>
+                    <span>€ {annuncio.prezzo.toFixed(2)}</span>
+                  </div>
+                  <div className="d-flex justify-content-between align-items-center small mb-2">
+                    <span className="text-secondary">Spedizione</span>
+                    <span>€ {(annuncio.prezzo_spedizione ?? 0).toFixed(2)}</span>
+                  </div>
+                  <div className="d-flex justify-content-between align-items-center" style={{ borderTop: '1px solid rgba(3,235,72,0.18)', paddingTop: 6 }}>
+                    <span className="text-secondary small">Totale</span>
+                    <span className="fw-bold fs-5" style={{ color: 'rgb(3,235,72)' }}>€ {prezzoTotale.toFixed(2)}</span>
+                  </div>
+                </div>
+
+                {/* Form carta */}
+                <div className="modal-body">
+
+                  {/* Numero carta */}
+                  <div className="mb-3">
+                    <label className="form-label small text-secondary mb-1">Numero Carta</label>
+                    <div className="input-group">
+                      <span className="input-group-text bg-dark border-secondary text-secondary">
+                        <i className="bi bi-credit-card"></i>
+                      </span>
+                      <input
+                        type="text"
+                        className="form-control bg-dark border-secondary text-white font-monospace carta-input"
+                        placeholder="0000 0000 0000 0000"
+                        maxLength={19}
+                        value={datiCarta.numero}
+                        onChange={(e) => {
+                          let v = e.target.value.replace(/\D/g, '').slice(0, 16);
+                          v = v.match(/.{1,4}/g)?.join(' ') ?? v;
+                          setDatiCarta(d => ({ ...d, numero: v }));
+                        }}
+                        disabled={acquistoInCorso}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Intestatario */}
+                  <div className="mb-3">
+                    <label className="form-label small text-secondary text mb-1">Intestatario</label>
+                    <input
+                      type="text"
+                      className="form-control bg-dark border-secondary text-white font-monospace carta-input"
+                      placeholder="Nome Cognome"
+                      value={datiCarta.intestatario}
+                      onChange={(e) => setDatiCarta(d => ({ ...d, intestatario: e.target.value }))}
+                      disabled={acquistoInCorso}
+                    />
+                  </div>
+
+                  {/* Scadenza + CVV */}
+                  <div className="row g-3 mb-3">
+                    <div className="col-6">
+                      <label className="form-label small text-secondary text-uppercase mb-1">Scadenza</label>
+                      <input
+                        type="text"
+                        className="form-control bg-dark border-secondary text-white font-monospace carta-input"
+                        placeholder="MM/AA"
+                        maxLength={5}
+                        value={datiCarta.scadenza}
+                        onChange={(e) => {
+                          let v = e.target.value.replace(/\D/g, '').slice(0, 4);
+                          if (v.length >= 3) v = v.slice(0, 2) + '/' + v.slice(2);
+                          setDatiCarta(d => ({ ...d, scadenza: v }));
+                        }}
+                        disabled={acquistoInCorso}
+                      />
+                    </div>
+                    <div className="col-6">
+                      <label className="form-label small text-secondary text-uppercase mb-1">CVV</label>
+                      <input
+                        type="password"
+                        className="form-control bg-dark border-secondary text-white font-monospace carta-input"
+                        placeholder="•••"
+                        maxLength={3}
+                        value={datiCarta.cvv}
+                        onChange={(e) => setDatiCarta(d => ({ ...d, cvv: e.target.value.replace(/\D/g, '').slice(0, 3) }))}
+                        disabled={acquistoInCorso}
+                      />
+                    </div>
+                  </div>
+
+                  {erroreAcquisto && (
+                    <p className="small text-danger mb-2">
+                      <i className="bi bi-exclamation-triangle me-1"></i>{erroreAcquisto}
+                    </p>
+                  )}
+
+                  <p className="text-center text-secondary small mb-0" style={{ fontSize: '0.75rem' }}>
+                    <i className="bi bi-lock-fill me-1"></i>Transazione fittizia, non abbiamo budget per Visa/Mastercard
                   </p>
-                )}
-              </div>
-              <div className="modal-footer border-secondary">
-                <button
-                  className="btn btn-outline-secondary rounded-1 text-uppercase fw-bold px-3 small"
-                  onClick={() => setMostraModalAcquisto(false)}
-                  disabled={acquistoInCorso}
-                >
-                  Annulla
-                </button>
-                <button
-                  className="btn btn-success rounded-1 text-uppercase fw-bold px-3 small"
-                  onClick={handleConfermaAcquisto}
-                  disabled={acquistoInCorso}
-                >
-                  {acquistoInCorso
-                    ? <span className="spinner-border spinner-border-sm" role="status" />
-                    : <><i className="bi bi-cart-check me-1"></i>Sì, acquista</>
-                  }
-                </button>
+                </div>
+
+                {/* Footer */}
+                <div className="modal-footer border-secondary">
+                  <button
+                    className="btn btn-outline-secondary rounded-1 text-uppercase fw-bold px-3 small"
+                    onClick={chiudiModalPagamento}
+                    disabled={acquistoInCorso}
+                  >
+                    Annulla
+                  </button>
+                  <button
+                    className="btn rounded-1 text-uppercase fw-bold px-3 small"
+                    style={{
+                      backgroundColor: cartaValida ? 'rgb(3,235,72)' : 'rgba(3,235,72,0.3)',
+                      color: 'white',
+                      border: '2px solid rgb(3,235,72)',
+                      transition: 'all 0.2s ease',
+                      cursor: cartaValida && !acquistoInCorso ? 'pointer' : 'default',
+                    }}
+                    onClick={handleConfermaAcquisto}
+                    disabled={acquistoInCorso || !cartaValida}
+                  >
+                    {acquistoInCorso
+                      ? <><span className="spinner-border spinner-border-sm me-2" role="status" />Elaborazione...</>
+                      : <><i className="bi bi-lock-fill me-1"></i>Paga € {prezzoTotale.toFixed(2)}</>
+                    }
+                  </button>
+                </div>
+
               </div>
             </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
 
       <ModalLogin />
@@ -363,6 +509,8 @@ export default function PaginaAnnuncio() {
         .colore-titoli { color: rgb(220,80,80); }
         .colore_descrizione { color: rgb(200,200,210); }
         .box_citta_descrizione { background-color: rgba(0,0,0,0.5); padding: 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); }
+        .carta-input:focus { border-color: rgb(3,235,72) !important; box-shadow: 0 0 0 0.2rem rgba(3,235,72,0.15) !important; background-color: #1a1a1a !important; color: white !important; }
+        .carta-input::placeholder { color: #555; }
       `}</style>
     </>
   );

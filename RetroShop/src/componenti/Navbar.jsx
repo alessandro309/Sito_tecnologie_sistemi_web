@@ -91,7 +91,6 @@ function LinkPreferiti() {
 // Parte destra della navbar (Accedi oppure utente loggato)
 function NavbarDestra() {
   const { utente, logout } = useAuth();
-
   if (!utente) {
     return (
       <a

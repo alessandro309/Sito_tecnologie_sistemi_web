@@ -370,6 +370,28 @@ def acquista_annuncio(
         raise HTTPException(status_code=400, detail="Annuncio già venduto")
 
     annuncio.venduto = True
+    annuncio.acquirente = utente_corrente
+    db.commit()
+
+# --- ENDPOINT: RIMBORSO ANNUNCIO ---
+@app.post("/annunci/{idAnnuncio}/rimborso", status_code=204)
+def rimborsa_annuncio(
+    idAnnuncio: int,
+    utente_corrente: str = Depends(ottieni_utente_loggato),
+    db: Session = Depends(get_db)
+):
+    annuncio = db.query(database.AnnuncioDB).filter(database.AnnuncioDB.idAnnuncio == idAnnuncio).first()
+    # Se l'annuncio è stato eliminato, il rimborso viene gestito solo a livello chat
+    if not annuncio:
+        return
+    # Se era già stato rimborsato in precedenza, non c'è nulla da fare
+    if not annuncio.venduto:
+        return
+    if annuncio.acquirente != utente_corrente:
+        raise HTTPException(status_code=403, detail="Solo l'acquirente può richiedere il rimborso")
+
+    annuncio.venduto = False
+    annuncio.acquirente = None
     db.commit()
 
 # --- ENDPOINT: ELIMINAZIONE ANNUNCIO ---

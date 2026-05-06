@@ -5,6 +5,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 5500,
+    allowedHosts: ['obvious-unfixable-travesty.ngrok-free.dev'],
     proxy: {
       '/utente':   'http://127.0.0.1:8000',
       '/utenti':   'http://127.0.0.1:8000',
