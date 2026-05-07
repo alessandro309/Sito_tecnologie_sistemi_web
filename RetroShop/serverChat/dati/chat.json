@@ -142,6 +142,28 @@
       "titoloAnnuncio": "Blue",
       "prezzoAnnuncio": 44.98,
       "creatoIl": "2026-05-06T19:31:36.936Z"
+    },
+    {
+      "id": "afae1d64-f6a7-4be6-84f1-e5f26802a243",
+      "partecipanti": [
+        "TonyPitony",
+        "Alex_Rob"
+      ],
+      "idAnnuncio": "21",
+      "titoloAnnuncio": "Playstation 1",
+      "prezzoAnnuncio": 50,
+      "creatoIl": "2026-05-07T16:51:57.775Z"
+    },
+    {
+      "id": "6776a738-385b-4e62-b102-35d3083a0bd2",
+      "partecipanti": [
+        "Alex_Rob",
+        "TonyPitony"
+      ],
+      "idAnnuncio": "22",
+      "titoloAnnuncio": "Adventure Time + Jojo's Bizarre Adventure",
+      "prezzoAnnuncio": 16.79,
+      "creatoIl": "2026-05-07T16:59:32.297Z"
     }
   ],
   "messaggi": [
@@ -489,6 +511,59 @@
       "letto": true,
       "tipo": "consegna",
       "acquirente": "James_Metallica"
+    },
+    {
+      "id": "7798a6ba-be26-447d-89c4-24dd2ae91de7",
+      "conversazioneId": "afae1d64-f6a7-4be6-84f1-e5f26802a243",
+      "mittente": "TonyPitony",
+      "testo": "Ho il cazzo grattacielo scoppia come Chardonnay",
+      "ora": "2026-05-07T16:52:26.300Z",
+      "letto": true
+    },
+    {
+      "id": "71043949-b5fe-4536-9f89-a865cc9a3258",
+      "conversazioneId": "6776a738-385b-4e62-b102-35d3083a0bd2",
+      "mittente": "sistema",
+      "testo": "Acquisto completato: Adventure Time + Jojo's Bizarre Adventure",
+      "ora": "2026-05-07T16:59:32.315Z",
+      "letto": true,
+      "tipo": "sistema",
+      "acquirente": "Alex_Rob",
+      "idAnnuncio": "22",
+      "datiAcquisto": {
+        "nomeAnnuncio": "Adventure Time + Jojo's Bizarre Adventure",
+        "acquirente": "Alex_Rob",
+        "venditore": "TonyPitony",
+        "prezzoArticolo": 16.79,
+        "prezzoSpedizione": 4
+      },
+      "consegnaConfermata": true
+    },
+    {
+      "id": "865f8ec4-23c2-4b34-bcc8-270f3c8658cc",
+      "conversazioneId": "6776a738-385b-4e62-b102-35d3083a0bd2",
+      "mittente": "TonyPitony",
+      "testo": "Godo",
+      "ora": "2026-05-07T17:00:02.391Z",
+      "letto": true
+    },
+    {
+      "id": "8866034d-93f7-4ef5-bc94-dad29b54f2ce",
+      "conversazioneId": "6776a738-385b-4e62-b102-35d3083a0bd2",
+      "mittente": "sistema",
+      "testo": "Alex_Rob ha confermato la ricezione dell'articolo",
+      "ora": "2026-05-07T17:01:01.543Z",
+      "letto": true,
+      "tipo": "consegna",
+      "acquirente": "Alex_Rob"
+    },
+    {
+      "id": "9b13b3a5-c03f-4069-84f5-0bdb31c5ba55",
+      "conversazioneId": "afae1d64-f6a7-4be6-84f1-e5f26802a243",
+      "mittente": "Alex_Rob",
+      "testo": "Grande Tony",
+      "ora": "2026-05-07T18:25:06.261Z",
+      "letto": false
     }
   ]
 }

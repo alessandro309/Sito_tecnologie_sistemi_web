@@ -175,6 +175,15 @@ export default function PaginaAnnuncio() {
     <>
       <Navbar />
 
+      <div className="container mt-3 mb-0">
+        <button
+          onClick={() => navigate(-1)}
+          className="btn btn-link text-white text-decoration-none font-monospace small p-0 opacity-75"
+        >
+          <i className="bi bi-arrow-left me-1"></i>Torna allo shop
+        </button>
+      </div>
+
       <main>
         <div className="container my-5">
           <div className="row">
@@ -294,7 +303,7 @@ export default function PaginaAnnuncio() {
 
               <div className="p-2">
                 <h5 className="font-monospace text-uppercase colore_descrizione mb-3">Descrizione</h5>
-                <p className="font-monospace text-light lh-base small">
+                <p className="font-monospace text-light lh-base small" style={{whiteSpace: "pre-wrap"}}>
                   {annuncio.descrizione}
                 </p>
               </div>

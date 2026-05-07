@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { api, BASE } from '../api';
@@ -26,6 +26,9 @@ export default function Profilo() {
   const [formDati, setFormDati] = useState({ nome: '', cognome: '', mail: '', citta: '' });
   const [salvaDatiInCorso, setSalvaDatiInCorso] = useState(false);
   const [feedbackDati, setFeedbackDati] = useState(null);
+
+  const inputFotoRef = useRef(null);
+  const [caricandoFoto, setCaricandoFoto] = useState(false);
 
   const [formPassword, setFormPassword] = useState({ password_attuale: '', nuova_password: '', conferma_password: '' });
   const [salvaPasswordInCorso, setSalvaPasswordInCorso] = useState(false);
@@ -202,6 +205,21 @@ export default function Profilo() {
     }
   }
 
+  async function handleCambiaFoto(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    setCaricandoFoto(true);
+    try {
+      const res = await api.uploadFotoProfilo(utente.nickname, file);
+      if (!res.ok) throw new Error();
+      const utenteRes = await api.utente(utente.nickname);
+      if (utenteRes.ok) setDatiProfilo(await utenteRes.json());
+    } catch { /* silenzioso */ } finally {
+      setCaricandoFoto(false);
+      e.target.value = '';
+    }
+  }
+
   async function handleConfermaEliminaAccount() {
     setEliminaAccountInCorso(true);
     setErroreEliminaAccount(null);
@@ -283,11 +301,35 @@ export default function Profilo() {
             <section id="sezioneProfilo" className="pb-5 mb-5 border-bottom border-secondary">
               <div className="profilo-card p-4 mb-4 shadow">
                 <div className="d-flex align-items-center gap-4 flex-wrap">
-                  <img
-                    src={fotoProfilo}
-                    alt="Foto Profilo"
-                    className="profilo-avatar rounded-circle shadow"
-                  />
+                  <div className="position-relative" style={{ width: 110, height: 110 }}>
+                    <img
+                      src={fotoProfilo}
+                      alt="Foto Profilo"
+                      className="profilo-avatar rounded-circle shadow"
+                      style={{ cursor: 'pointer', opacity: caricandoFoto ? 0.5 : 1 }}
+                      onClick={() => inputFotoRef.current?.click()}
+                    />
+                    <button
+                      type="button"
+                      className="position-absolute bottom-0 end-0 rounded-circle border-0 d-flex align-items-center justify-content-center p-0"
+                      style={{ width: 28, height: 28, background: '#dc3545', cursor: 'pointer' }}
+                      onClick={() => inputFotoRef.current?.click()}
+                      disabled={caricandoFoto}
+                      title="Cambia foto profilo"
+                    >
+                      {caricandoFoto
+                        ? <span className="spinner-border spinner-border-sm text-white" style={{ width: 14, height: 14 }} />
+                        : <i className="bi bi-camera-fill text-white lh-1" style={{ fontSize: '0.75rem' }}></i>
+                      }
+                    </button>
+                    <input
+                      type="file"
+                      accept="image/png, image/jpeg, image/webp"
+                      ref={inputFotoRef}
+                      className="d-none"
+                      onChange={handleCambiaFoto}
+                    />
+                  </div>
                   <div>
                     <h2 className="fw-bold mb-1 text-uppercase text-white">
                       {datiProfilo ? `${datiProfilo.nome} ${datiProfilo.cognome}` : utente.nickname}

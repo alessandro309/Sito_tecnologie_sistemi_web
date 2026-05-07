@@ -1,9 +1,11 @@
 import { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../api';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Registrazione() {
   const navigate = useNavigate();
+  const { setUtente } = useAuth();
 
   const [form, setForm] = useState({
     nome: '', cognome: '', nickname: '', dataNascita: '',
@@ -74,8 +76,14 @@ export default function Registrazione() {
 
       if (foto) await api.uploadFotoProfilo(datiUtente.nickname, foto);
 
-      // Successo: vai al profilo dopo 1.5s
-      setTimeout(() => navigate('/profilo'), 1500);
+      // Login automatico dopo la registrazione
+      const loginRisp = await api.login({ nickname: datiUtente.nickname, password: form.password });
+      if (loginRisp.ok) {
+        const me = await api.utenteMe();
+        const datiMe = await me.json();
+        setUtente(datiMe.loggato ? datiMe : null);
+      }
+      navigate('/profilo');
     } catch (err) {
       setErrore(err.message);
       setCaricamento(false);

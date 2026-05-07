@@ -16,7 +16,7 @@ export default function Footer() {
             <a href="https://www.instagram.com/_retro_shop_official_/" className="text-secondary me-3">
               <i className="bi bi-instagram fs-5"></i>
             </a>
-            <a href="#" className="text-secondary">
+            <a href="https://x.com/i/status/2050394845437718603" className="text-secondary">
               <i className="bi  bi-twitter-x fs-5"></i>
             </a>
           </div>

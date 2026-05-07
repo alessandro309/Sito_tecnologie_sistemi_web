@@ -33,6 +33,7 @@ export default function MostraAnnunci() {
   const [caricamento, setCaricamento] = useState(true);
   const [errore, setErrore] = useState(false);
   const [pagina, setPagina] = useState(1);
+  const [ordinamento, setOrdinamento] = useState('');
   // Teniamo la lista degli id dei preferiti per sapere quali card evidenziare
   const [preferitiIds, setPreferitiIds] = useState([]);
 
@@ -100,8 +101,12 @@ export default function MostraAnnunci() {
       });
   }, [searchParams]);
 
-  const totPagine = Math.ceil(annunci.length / PER_PAGINA);
-  const annunciPagina = annunci.slice((pagina - 1) * PER_PAGINA, pagina * PER_PAGINA);
+  const annunciOrdinati = ordinamento
+    ? [...annunci].sort((a, b) => ordinamento === 'asc' ? a.prezzo - b.prezzo : b.prezzo - a.prezzo)
+    : annunci;
+
+  const totPagine = Math.ceil(annunciOrdinati.length / PER_PAGINA);
+  const annunciPagina = annunciOrdinati.slice((pagina - 1) * PER_PAGINA, pagina * PER_PAGINA);
 
   function cambiaPagina(n) {
     setPagina(n);
@@ -146,15 +151,31 @@ export default function MostraAnnunci() {
       </Navbar>
 
       <main className="container mb-5">
-        <div className="d-flex justify-content-between align-items-end mb-4 border-bottom border-secondary pb-2">
+        <div className="d-flex justify-content-between align-items-end mb-4 border-bottom border-secondary pb-2 flex-wrap gap-2">
           <h2 className="font-monospace text-uppercase text-white fw-bold m-0">Risultati della ricerca</h2>
-          <span className="text-secondary font-monospace small">
-            {caricamento
-              ? 'Ricerca in corso...'
-              : totPagine > 1
-                ? `${annunci.length} annunci · pagina ${pagina} di ${totPagine}`
-                : `Trovati ${annunci.length} annunci`}
-          </span>
+          <div className="d-flex align-items-center gap-3">
+            <div className="input-group input-group-sm select-ordina rounded-3 overflow-hidden" style={{ width: 'auto' }}>
+              <span className="input-group-text border-0 text-secondary select-ordina-addon">
+                <i className="bi bi-sort-down-alt"></i>
+              </span>
+              <select
+                className="form-select form-select-sm border-0 text-white shadow-none font-monospace select-ordina-select"
+                value={ordinamento}
+                onChange={(e) => { setOrdinamento(e.target.value); setPagina(1); }}
+              >
+                <option value=""    style={{ background: '#2a2828', color: '#fff' }}>Ordine predefinito</option>
+                <option value="asc" style={{ background: '#2a2828', color: '#fff' }}>Prezzo ↑ crescente</option>
+                <option value="desc"style={{ background: '#2a2828', color: '#fff' }}>Prezzo ↓ decrescente</option>
+              </select>
+            </div>
+            <span className="text-white font-monospace small text-nowrap opacity-75">
+              {caricamento
+                ? 'Ricerca in corso...'
+                : totPagine > 1
+                  ? `${annunci.length} annunci · pagina ${pagina} di ${totPagine}`
+                  : `Trovati ${annunci.length} annunci`}
+            </span>
+          </div>
         </div>
 
         <div className="row g-4">
@@ -163,7 +184,7 @@ export default function MostraAnnunci() {
 
         {totPagine > 1 && !caricamento && !errore && (
           <nav className="mt-5 d-flex justify-content-center" aria-label="Paginazione risultati">
-            <ul className="pagination font-monospace">
+            <ul className="pagination font-monospace gap-1">
               <li className={`page-item ${pagina === 1 ? 'disabled' : ''}`}>
                 <button className="page-link" onClick={() => cambiaPagina(pagina - 1)}>‹</button>
               </li>

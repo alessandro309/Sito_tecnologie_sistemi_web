@@ -46,7 +46,7 @@ export default function CardAnnuncio({ annuncio, mostraElimina = false, onElimin
             style={{ zIndex: 10 }}
             onClick={() => onElimina?.(annuncio)}
           >
-            <i className="bi bi-trash text-danger fs-5"></i>
+            <i className="bi bi-trash text-danger fs-5 lh-1"></i>
           </button>
         ) : (
           <button

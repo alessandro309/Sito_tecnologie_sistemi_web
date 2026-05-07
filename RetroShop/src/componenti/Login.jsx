@@ -8,6 +8,7 @@ export default function ModalLogin() {
   const { setUtente } = useAuth();
   const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
+  const [mostraPassword, setMostraPassword] = useState(false);
   const [caricamento, setCaricamento] = useState(false);
   const [errore, setErrore] = useState('');
 
@@ -69,15 +70,25 @@ export default function ModalLogin() {
               </div>
               <div className="mb-4">
                 <label htmlFor="loginPassword" className="form-label font-monospace text-secondary small">PASSWORD</label>
-                <input
-                  type="password"
-                  className="form-control bg-transparent border-secondary text-white shadow-none font-monospace"
-                  id="loginPassword"
-                  placeholder="********"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
+                <div className="input-group">
+                  <input
+                    type={mostraPassword ? 'text' : 'password'}
+                    className="form-control bg-transparent border-secondary text-white shadow-none font-monospace"
+                    id="loginPassword"
+                    placeholder="********"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-outline-secondary border-secondary text-white"
+                    onClick={() => setMostraPassword((p) => !p)}
+                    tabIndex={-1}
+                  >
+                    <i className={`bi bi-eye${mostraPassword ? '-slash' : ''}`}></i>
+                  </button>
+                </div>
               </div>
 
               {/* Messaggio di errore (credenziali sbagliate, server down, ecc.) */}
