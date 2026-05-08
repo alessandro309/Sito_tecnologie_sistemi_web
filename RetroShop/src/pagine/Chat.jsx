@@ -574,17 +574,17 @@ export default function Chat() {
                         const consegnaAttiva = consegnaInCorso === msg.idAnnuncio;
                         return (
                           <div key={msg.id} className="d-flex justify-content-center mb-4">
-                            <div className="font-monospace rounded-3 overflow-hidden" style={{ maxWidth: '88%', minWidth: 260, border: '1px solid rgba(3,235,72,0.3)', background: '#080808' }}>
+                            <div className="font-monospace rounded-3 overflow-hidden" style={{ maxWidth: '92%', minWidth: 320, border: '1px solid rgba(3,235,72,0.35)', background: '#080808' }}>
 
                               {/* Header */}
-                              <div className="d-flex align-items-center gap-2 px-3 py-2" style={{ background: 'rgba(3,235,72,0.13)', borderBottom: '1px solid rgba(3,235,72,0.2)' }}>
-                                <i className="bi bi-bag-check-fill" style={{ color: 'rgb(3,235,72)', fontSize: 15 }} />
-                                <span className="fw-bold text-uppercase" style={{ color: 'rgb(3,235,72)', fontSize: 11, letterSpacing: 1 }}>Acquisto completato</span>
+                              <div className="d-flex align-items-center gap-2 px-4 py-3" style={{ background: 'rgba(3,235,72,0.13)', borderBottom: '1px solid rgba(3,235,72,0.2)' }}>
+                                <i className="bi bi-bag-check-fill" style={{ color: 'rgb(3,235,72)', fontSize: 20 }} />
+                                <span className="fw-bold text-uppercase" style={{ color: 'rgb(3,235,72)', fontSize: 14, letterSpacing: 1 }}>Acquisto completato</span>
                               </div>
 
                               {/* Dettagli */}
                               {d ? (
-                                <div className="px-3 pt-2 pb-1" style={{ fontSize: 13 }}>
+                                <div className="px-4 pt-3 pb-2" style={{ fontSize: 15 }}>
                                   {[
                                     ['Articolo',   <span className="fw-bold text-white">{d.nomeAnnuncio}</span>],
                                     ['Acquirente', d.acquirente],
@@ -592,25 +592,25 @@ export default function Chat() {
                                     ['Prezzo',     `€ ${d.prezzoArticolo.toFixed(2)}`],
                                     ['Spedizione', `€ ${d.prezzoSpedizione.toFixed(2)}`],
                                   ].map(([label, val]) => (
-                                    <div key={label} className="d-flex justify-content-between gap-3 mb-1">
+                                    <div key={label} className="d-flex justify-content-between gap-3 mb-2">
                                       <span className="text-secondary">{label}</span>
                                       <span className="text-end" style={{ color: '#ccc' }}>{val}</span>
                                     </div>
                                   ))}
-                                  <div className="d-flex justify-content-between gap-3 pt-1 mt-1" style={{ borderTop: '1px solid rgba(3,235,72,0.18)' }}>
+                                  <div className="d-flex justify-content-between gap-3 pt-2 mt-2" style={{ borderTop: '1px solid rgba(3,235,72,0.25)', fontSize: 17 }}>
                                     <span className="fw-bold" style={{ color: 'rgb(3,235,72)' }}>Totale</span>
                                     <span className="fw-bold" style={{ color: 'rgb(3,235,72)' }}>€ {(d.prezzoArticolo + d.prezzoSpedizione).toFixed(2)}</span>
                                   </div>
                                 </div>
                               ) : (
-                                <div className="px-3 py-2 text-center" style={{ fontSize: 13, color: 'rgb(3,235,72)' }}>
+                                <div className="px-4 py-3 text-center" style={{ fontSize: 15, color: 'rgb(3,235,72)' }}>
                                   {msg.testo}
                                 </div>
                               )}
 
                               {/* Footer: timestamp + azioni acquirente */}
-                              <div className="d-flex justify-content-between align-items-center gap-2 px-3 py-2" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                                <span className="text-secondary" style={{ fontSize: 11 }}>{formattaOra(msg.ora)}</span>
+                              <div className="d-flex justify-content-between align-items-center gap-2 px-4 py-3" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                                <span className="text-secondary" style={{ fontSize: 12 }}>{formattaOra(msg.ora)}</span>
                                 {azioniDisponibili && (
                                   <div className="d-flex gap-2">
                                     <button
@@ -619,8 +619,8 @@ export default function Chat() {
                                         background: 'rgba(3,235,72,0.12)',
                                         border: '1px solid rgba(3,235,72,0.5)',
                                         color: 'rgb(100,220,100)',
-                                        fontSize: 11,
-                                        padding: '4px 12px',
+                                        fontSize: 13,
+                                        padding: '6px 16px',
                                         borderRadius: 6,
                                         transition: 'all 0.2s',
                                       }}
@@ -630,7 +630,7 @@ export default function Chat() {
                                       onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(3,235,72,0.12)'; e.currentTarget.style.color = 'rgb(100,220,100)'; }}
                                     >
                                       {consegnaAttiva
-                                        ? <><span className="spinner-border" style={{ width: 10, height: 10, borderWidth: 2 }} />Elaborazione...</>
+                                        ? <><span className="spinner-border" style={{ width: 12, height: 12, borderWidth: 2 }} />Elaborazione...</>
                                         : <><i className="bi bi-check-circle" />Ricevuto</>
                                       }
                                     </button>
@@ -640,8 +640,8 @@ export default function Chat() {
                                         background: 'rgba(220,53,69,0.12)',
                                         border: '1px solid rgba(220,53,69,0.5)',
                                         color: '#f08080',
-                                        fontSize: 11,
-                                        padding: '4px 12px',
+                                        fontSize: 13,
+                                        padding: '6px 16px',
                                         borderRadius: 6,
                                         transition: 'all 0.2s',
                                       }}
@@ -651,7 +651,7 @@ export default function Chat() {
                                       onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(220,53,69,0.12)'; e.currentTarget.style.color = '#f08080'; }}
                                     >
                                       {rimborsoAttivo
-                                        ? <><span className="spinner-border" style={{ width: 10, height: 10, borderWidth: 2 }} />Elaborazione...</>
+                                        ? <><span className="spinner-border" style={{ width: 12, height: 12, borderWidth: 2 }} />Elaborazione...</>
                                         : <><i className="bi bi-arrow-counterclockwise" />Rimborso</>
                                       }
                                     </button>

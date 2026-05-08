@@ -81,6 +81,10 @@ class AggiornaPassword(BaseModel):
     nuova_password: str
 
 
+class EliminaAccount(BaseModel):
+    password: str
+
+
 class AggiornaAnnuncio(BaseModel):
     nome: str
     prezzo: float

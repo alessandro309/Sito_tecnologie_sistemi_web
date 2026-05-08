@@ -22,6 +22,8 @@ export default function Profilo() {
   const [mostraModalEliminaAccount, setMostraModalEliminaAccount] = useState(false);
   const [eliminaAccountInCorso, setEliminaAccountInCorso] = useState(false);
   const [erroreEliminaAccount, setErroreEliminaAccount] = useState(null);
+  const [passwordEliminaAccount, setPasswordEliminaAccount] = useState('');
+  const [mostraPasswordEliminaAccount, setMostraPasswordEliminaAccount] = useState(false);
 
   const [formDati, setFormDati] = useState({ nome: '', cognome: '', mail: '', citta: '' });
   const [salvaDatiInCorso, setSalvaDatiInCorso] = useState(false);
@@ -231,10 +233,14 @@ export default function Profilo() {
   }
 
   async function handleConfermaEliminaAccount() {
+    if (!passwordEliminaAccount) {
+      setErroreEliminaAccount('Inserisci la password per confermare');
+      return;
+    }
     setEliminaAccountInCorso(true);
     setErroreEliminaAccount(null);
     try {
-      const res = await api.eliminaAccount(utente.nickname);
+      const res = await api.eliminaAccount(utente.nickname, passwordEliminaAccount);
       if (!res.ok && res.status !== 204) {
         const err = await res.json().catch(() => ({}));
         throw new Error(err.detail || "Errore durante l'eliminazione dell'account");
@@ -586,7 +592,7 @@ export default function Profilo() {
                 </div>
                 <button
                   className="btn btn-sm btn-outline-danger text-uppercase fw-bold px-3 rounded-1 ms-3 text-nowrap"
-                  onClick={() => { setErroreEliminaAccount(null); setMostraModalEliminaAccount(true); }}
+                  onClick={() => { setErroreEliminaAccount(null); setPasswordEliminaAccount(''); setMostraPasswordEliminaAccount(false); setMostraModalEliminaAccount(true); }}
                 >
                   <i className="bi bi-person-x me-1"></i>Elimina Account
                 </button>
@@ -656,7 +662,7 @@ export default function Profilo() {
       {mostraModalEliminaAccount && (
         <div
           className="modal d-block modal-backdrop-custom"
-          onClick={(e) => { if (e.target === e.currentTarget && !eliminaAccountInCorso) setMostraModalEliminaAccount(false); }}
+          onClick={(e) => { if (e.target === e.currentTarget && !eliminaAccountInCorso) { setMostraModalEliminaAccount(false); setPasswordEliminaAccount(''); } }}
         >
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content bg-black border border-danger text-white font-monospace shadow-lg">
@@ -666,7 +672,7 @@ export default function Profilo() {
                 </h5>
                 <button
                   className="btn-close btn-close-white"
-                  onClick={() => setMostraModalEliminaAccount(false)}
+                  onClick={() => { setMostraModalEliminaAccount(false); setPasswordEliminaAccount(''); }}
                   disabled={eliminaAccountInCorso}
                 />
               </div>
@@ -674,9 +680,30 @@ export default function Profilo() {
                 <p className="small mb-2">
                   Stai per eliminare definitivamente l'account <strong className="text-danger">@{utente.nickname}</strong>.
                 </p>
-                <p className="small text-secondary mb-0">
+                <p className="small text-secondary mb-3">
                   Verranno cancellati tutti i tuoi annunci, i preferiti e la foto profilo. <strong>Non potrai recuperarli.</strong>
                 </p>
+                <label className="form-label small text-secondary mb-1">Conferma con la tua password</label>
+                <div className="input-group">
+                  <input
+                    type={mostraPasswordEliminaAccount ? 'text' : 'password'}
+                    className="form-control bg-transparent text-white border-secondary rounded-start-1"
+                    placeholder="Password"
+                    value={passwordEliminaAccount}
+                    onChange={(e) => setPasswordEliminaAccount(e.target.value)}
+                    disabled={eliminaAccountInCorso}
+                    autoComplete="current-password"
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-outline-secondary rounded-end-1"
+                    onClick={() => setMostraPasswordEliminaAccount((p) => !p)}
+                    tabIndex={-1}
+                    disabled={eliminaAccountInCorso}
+                  >
+                    <i className={`bi bi-eye${mostraPasswordEliminaAccount ? '-slash' : ''}`}></i>
+                  </button>
+                </div>
                 {erroreEliminaAccount && (
                   <p className="small text-danger mt-3 mb-0">
                     <i className="bi bi-exclamation-triangle me-1"></i>{erroreEliminaAccount}
@@ -686,7 +713,7 @@ export default function Profilo() {
               <div className="modal-footer border-secondary">
                 <button
                   className="btn btn-outline-secondary rounded-1 text-uppercase fw-bold px-3 small"
-                  onClick={() => setMostraModalEliminaAccount(false)}
+                  onClick={() => { setMostraModalEliminaAccount(false); setPasswordEliminaAccount(''); }}
                   disabled={eliminaAccountInCorso}
                 >
                   Annulla

@@ -15,14 +15,14 @@ export default function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/"                element={<Home />} />
-          <Route path="/registrazione"   element={<Registrazione />} />
-          <Route path="/annunci"         element={<MostraAnnunci />} />
-          <Route path="/annunci/:id"     element={<PaginaAnnuncio />} />
-          <Route path="/crea-annuncio"          element={<CreaAnnuncio />} />
-          <Route path="/annunci/:id/modifica"  element={<ModificaAnnuncio />} />
-          <Route path="/profilo"         element={<Profilo />} />
-           <Route path="/chat"           element={<Chat />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/registrazione" element={<Registrazione />} />
+          <Route path="/annunci" element={<MostraAnnunci />} />
+          <Route path="/annunci/:id" element={<PaginaAnnuncio />} />
+          <Route path="/crea-annuncio" element={<CreaAnnuncio />} />
+          <Route path="/annunci/:id/modifica" element={<ModificaAnnuncio />} />
+          <Route path="/profilo" element={<Profilo />} />
+           <Route path="/chat" element={<Chat />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

@@ -10,6 +10,7 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 
+# Tabella degli utenti registrati — il nickname fa da chiave primaria invece dell'ID
 class UtenteDB(Base):
     __tablename__ = "utenti"
 
@@ -24,9 +25,11 @@ class UtenteDB(Base):
     password = Column(String, nullable=False)
     foto_profilo = Column(String, nullable=True)
 
+    # Quando si cancella un utente, vengono eliminati automaticamente anche tutti i suoi annunci
     annunci = relationship("AnnuncioDB", foreign_keys="[AnnuncioDB.utente]", back_populates="proprietario", cascade="all, delete-orphan")
 
 
+# Tabella degli annunci pubblicati dagli utenti
 class AnnuncioDB(Base):
     __tablename__ = "annunci"
 
@@ -46,9 +49,11 @@ class AnnuncioDB(Base):
     descrizione = Column(String, nullable=False)
     data_pubblicazione = Column(DateTime, server_default=func.now())
     venduto = Column(Boolean, default=False, nullable=False)
+    # Se l'acquirente cancella il suo account, questo campo diventa NULL invece di bloccare tutto
     acquirente = Column(String, ForeignKey("utenti.nickname", ondelete="SET NULL"), nullable=True)
 
     proprietario = relationship("UtenteDB", foreign_keys=[utente], back_populates="annunci")
+    # Le immagini vengono restituite già ordinate e cancellate insieme all'annuncio
     immagini = relationship(
         "ImmagineAnnuncioDB",
         back_populates="annuncio",
@@ -57,17 +62,20 @@ class AnnuncioDB(Base):
     )
 
 
+# Tabella delle immagini collegate a un annuncio
 class ImmagineAnnuncioDB(Base):
     __tablename__ = "immagini_annuncio"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     url_immagine = Column(String, nullable=False)
+    # Serve a mantenere l'ordine con cui le immagini sono state caricate
     ordine = Column(Integer, default=0)
     annuncio_id = Column(Integer, ForeignKey("annunci.idAnnuncio"))
 
     annuncio = relationship("AnnuncioDB", back_populates="immagini")
 
 
+# Tabella delle sessioni attive — ogni login crea una riga qui
 class SessioneDB(Base):
     __tablename__ = "sessioni"
 
@@ -79,6 +87,7 @@ class SessioneDB(Base):
     utente = relationship("UtenteDB")
 
 
+# Tabella dei preferiti — coppia (utente, annuncio) come chiave primaria per evitare duplicati
 class PreferitiDB(Base):
     __tablename__ = "preferiti"
 
