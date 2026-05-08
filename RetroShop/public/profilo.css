@@ -76,12 +76,13 @@
 }
 
 .sidebar-profilo .list-group-item:hover {
-    background-color: rgba(220, 53, 69, 0.1);
-    color: #dc3545;
+    background-color: rgba(255, 17, 0, 0.1);
+    color: rgb(255, 17, 0);
 }
 
 .sidebar-profilo .list-group-item.active {
-    background-color: #dc3545 !important;
-    color: #fff !important;
-    border-color: #dc3545 !important;
+    background-color: transparent !important;
+    color: rgb(255, 17, 0) !important;
+    border-color: #333 !important;
+    border-left: 3px solid rgb(255, 17, 0) !important;
 }

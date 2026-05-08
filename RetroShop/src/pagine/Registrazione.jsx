@@ -77,13 +77,13 @@ export default function Registrazione() {
       if (foto) await api.uploadFotoProfilo(datiUtente.nickname, foto);
 
       // Login automatico dopo la registrazione
-      const loginRisp = await api.login({ nickname: datiUtente.nickname, password: form.password });
-      if (loginRisp.ok) {
-        const me = await api.utenteMe();
-        const datiMe = await me.json();
-        setUtente(datiMe.loggato ? datiMe : null);
-      }
-      navigate('/profilo');
+      // const loginRisp = await api.login({ nickname: datiUtente.nickname, password: form.password });
+      // if (loginRisp.ok) {
+      //   const me = await api.utenteMe();
+      //   const datiMe = await me.json();
+      //   setUtente(datiMe.loggato ? datiMe : null);
+      // }
+      navigate('/');
     } catch (err) {
       setErrore(err.message);
       setCaricamento(false);

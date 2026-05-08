@@ -24,7 +24,7 @@ class UtenteDB(Base):
     password = Column(String, nullable=False)
     foto_profilo = Column(String, nullable=True)
 
-    annunci = relationship("AnnuncioDB", foreign_keys="[AnnuncioDB.utente]", back_populates="proprietario")
+    annunci = relationship("AnnuncioDB", foreign_keys="[AnnuncioDB.utente]", back_populates="proprietario", cascade="all, delete-orphan")
 
 
 class AnnuncioDB(Base):

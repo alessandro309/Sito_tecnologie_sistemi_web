@@ -2,10 +2,32 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const CITTA = [
-  'Roma', 'Milano', 'Napoli', 'Torino', 'Palermo', 'Genova', 'Bologna',
-  'Firenze', 'Bari', 'Catania', 'Venezia', 'Verona', 'Messina', 'Padova',
-  'Trieste', 'Brescia', 'Parma', 'Taranto', 'Prato', 'Modena', 'Rovigo',
-  'Rimini', 'Reggio Emilia', 'Perugia', 'Livorno', 'Ravenna', 'Cagliari',
+  'Agrigento', 'Alessandria', 'Ancona', 'Andria', 'Aosta', 'Arezzo',
+  'Ascoli Piceno', 'Asti', 'Avellino',
+  'Bari', 'Barletta', 'Belluno', 'Benevento', 'Bergamo', 'Biella',
+  'Bologna', 'Bolzano', 'Brescia', 'Brindisi', 'Busto Arsizio',
+  'Cagliari', 'Caltanissetta', 'Campobasso', 'Caserta', 'Catania',
+  'Catanzaro', 'Cesena', 'Chieti', 'Como', 'Cosenza', 'Cremona',
+  'Crotone', 'Cuneo',
+  'Enna',
+  'Ferrara', 'Firenze', 'Foggia', 'Forlì', 'Frosinone',
+  'Genova', 'Gorizia', 'Grosseto',
+  'Imperia', 'Isernia',
+  "L'Aquila", 'La Spezia', 'Latina', 'Lecce', 'Lecco', 'Livorno',
+  'Lodi', 'Lucca',
+  'Macerata', 'Mantova', 'Massa', 'Matera', 'Messina', 'Milano',
+  'Modena', 'Monza',
+  'Napoli', 'Novara', 'Nuoro',
+  'Oristano',
+  'Padova', 'Palermo', 'Parma', 'Pavia', 'Perugia', 'Pesaro',
+  'Pescara', 'Piacenza', 'Pisa', 'Pistoia', 'Pordenone', 'Potenza', 'Prato',
+  'Ragusa', 'Ravenna', 'Reggio Calabria', 'Reggio Emilia', 'Rieti',
+  'Rimini', 'Roma', 'Rovigo',
+  'Salerno', 'Sassari', 'Savona', 'Siena', 'Siracusa', 'Sondrio',
+  'Taranto', 'Terni', 'Torino', 'Trapani', 'Trento', 'Treviso', 'Trieste',
+  'Udine',
+  'Varese', 'Venezia', 'Verbania', 'Vercelli', 'Verona', 'Vibo Valentia',
+  'Vicenza', 'Viterbo',
 ];
 
 export default function BarraRicerca() {

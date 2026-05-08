@@ -35,6 +35,8 @@ export default function Profilo() {
   const [feedbackPassword, setFeedbackPassword] = useState(null);
   const [mostraPassword, setMostraPassword] = useState({ attuale: false, nuova: false, conferma: false });
 
+  const [sezioneAttiva, setSezioneAttiva] = useState('sezioneProfilo');
+
   // Manda via gli utenti non loggati
   useEffect(() => {
     if (!loading && !utente) navigate('/');
@@ -48,17 +50,25 @@ export default function Profilo() {
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, [location.hash, loading]);
 
-  // Attiva il Bootstrap ScrollSpy per evidenziare la voce attiva nella sidebar
+  // Evidenzia la voce attiva nella sidebar in base alla sezione visibile.
+  // Dipende da loading/utente perché il DOM delle sezioni esiste solo dopo il render completo.
   useEffect(() => {
-    document.body.setAttribute('data-bs-spy', 'scroll');
-    document.body.setAttribute('data-bs-target', '#scroll-spy-nav');
-    document.body.setAttribute('data-bs-offset', '120');
-    return () => {
-      document.body.removeAttribute('data-bs-spy');
-      document.body.removeAttribute('data-bs-target');
-      document.body.removeAttribute('data-bs-offset');
-    };
-  }, []);
+    if (loading || !utente) return;
+    const ids = ['sezioneProfilo', 'sezioneMieiAnnunci', 'sezionePreferiti', 'sezioneImpostazioni'];
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setSezioneAttiva(entry.target.id);
+        });
+      },
+      { rootMargin: '-20% 0px -70% 0px' }
+    );
+    ids.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, [loading, utente]);
 
   // Carica i dati del profilo, gli annunci pubblicati e i preferiti
   useEffect(() => {
@@ -287,7 +297,7 @@ export default function Profilo() {
                   { href: '#sezionePreferiti',    icon: 'floppy-fill', label: 'Annunci salvati' },
                   { href: '#sezioneImpostazioni', icon: 'gear-fill',   label: 'Impostazioni' },
                 ].map((item) => (
-                  <a key={item.href} href={item.href} className="list-group-item list-group-item-action fw-bold text-uppercase py-3">
+                  <a key={item.href} href={item.href} className={`list-group-item list-group-item-action fw-bold text-uppercase py-3${sezioneAttiva === item.href.slice(1) ? ' active' : ''}`}>
                     <i className={`bi bi-${item.icon} me-2`}></i>{item.label}
                   </a>
                 ))}

@@ -107,13 +107,13 @@ function NavbarDestra() {
   }
 
   return (
-    <div className="d-flex flex-column flex-lg-row align-items-center gap-1 ms-lg-0 mt-3 mt-lg-0">
+    <div className="d-flex flex-column flex-lg-row align-items-center gap-1 ms-lg-0 w-100 w-lg-auto">
       {/* ── PULSANTE CHAT (visibile solo se loggato) ── */}
       <Link
         to="/chat"
         className="btn bottone_login font-monospace text-uppercase rounded-1 bg-transparent border-0 p-0 m-0 d-flex align-items-center justify-content-center w-100 w-lg-auto px-4 py-2 text-nowrap"
       >
-        <i className="bi bi-chat-dots-fill me-2 fs-5"></i>
+        <i className="bi bi-chat-dots-fill fs-5"></i>
       </Link>
 
       <Link

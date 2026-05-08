@@ -1,10 +1,39 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api';
 import { useAuth } from '../contexts/AuthContext';
 import Navbar from '../componenti/Navbar';
 import ModalLogin from '../componenti/Login';
 import Footer from '../componenti/Footer';
+
+const CITTA = [
+  'Agrigento', 'Alessandria', 'Ancona', 'Andria', 'Aosta', 'Arezzo',
+  'Ascoli Piceno', 'Asti', 'Avellino',
+  'Bari', 'Barletta', 'Belluno', 'Benevento', 'Bergamo', 'Biella',
+  'Bologna', 'Bolzano', 'Brescia', 'Brindisi', 'Busto Arsizio',
+  'Cagliari', 'Caltanissetta', 'Campobasso', 'Caserta', 'Catania',
+  'Catanzaro', 'Cesena', 'Chieti', 'Como', 'Cosenza', 'Cremona',
+  'Crotone', 'Cuneo',
+  'Enna',
+  'Ferrara', 'Firenze', 'Foggia', 'Forlì', 'Frosinone',
+  'Genova', 'Gorizia', 'Grosseto',
+  'Imperia', 'Isernia',
+  "L'Aquila", 'La Spezia', 'Latina', 'Lecce', 'Lecco', 'Livorno',
+  'Lodi', 'Lucca',
+  'Macerata', 'Mantova', 'Massa', 'Matera', 'Messina', 'Milano',
+  'Modena', 'Monza',
+  'Napoli', 'Novara', 'Nuoro',
+  'Oristano',
+  'Padova', 'Palermo', 'Parma', 'Pavia', 'Perugia', 'Pesaro',
+  'Pescara', 'Piacenza', 'Pisa', 'Pistoia', 'Pordenone', 'Potenza', 'Prato',
+  'Ragusa', 'Ravenna', 'Reggio Calabria', 'Reggio Emilia', 'Rieti',
+  'Rimini', 'Roma', 'Rovigo',
+  'Salerno', 'Sassari', 'Savona', 'Siena', 'Siracusa', 'Sondrio',
+  'Taranto', 'Terni', 'Torino', 'Trapani', 'Trento', 'Treviso', 'Trieste',
+  'Udine',
+  'Varese', 'Venezia', 'Verbania', 'Vercelli', 'Verona', 'Vibo Valentia',
+  'Vicenza', 'Viterbo',
+];
 
 // Dizionario che dà tutte le console "caricabili" in base al marchio scelto
 const MODELLI_PER_PIATTAFORMA = {
@@ -37,6 +66,10 @@ export default function CreaAnnuncio() {
   const [spedizione, setSpedizione] = useState(false);
   const [presenza, setPresenza] = useState(true);
   const [tipologiaBase, setTipologiaBase] = useState('');
+  const [posizione, setPosizione] = useState('');
+  const [suggerimentiCitta, setSuggerimentiCitta] = useState([]);
+  const [cittaAperta, setCittaAperta] = useState(false);
+  const cittaRef = useRef(null);
 
   const portatile = tipologiaBase === 'console' && modello
     ? CONSOLE_PORTATILI.has(modello)
@@ -45,6 +78,29 @@ export default function CreaAnnuncio() {
   useEffect(() => {
     if (!loading && !utente) navigate('/');
   }, [utente, loading, navigate]);
+
+  useEffect(() => {
+    function handleClickFuori(e) {
+      if (cittaRef.current && !cittaRef.current.contains(e.target)) setCittaAperta(false);
+    }
+    document.addEventListener('mousedown', handleClickFuori);
+    return () => document.removeEventListener('mousedown', handleClickFuori);
+  }, []);
+
+  function handlePosizioneInput(e) {
+    const testo = e.target.value;
+    setPosizione(testo);
+    if (!testo) { setSuggerimentiCitta([]); setCittaAperta(false); return; }
+    const trovati = CITTA.filter((c) => c.toLowerCase().startsWith(testo.toLowerCase()));
+    setSuggerimentiCitta(trovati);
+    setCittaAperta(trovati.length > 0);
+  }
+
+  function selezionaCitta(nome) {
+    setPosizione(nome);
+    setSuggerimentiCitta([]);
+    setCittaAperta(false);
+  }
 
   function handleFoto(e) {
     const nuovi = Array.from(e.target.files);
@@ -84,7 +140,7 @@ export default function CreaAnnuncio() {
       spedizione:       fd.get('spedizione') === 'on',
       prezzo_spedizione: fd.get('spedizione') === 'on' ? parseFloat(fd.get('prezzo_spedizione') || 0) : 0,
       presenza:         presenza,
-      posizione:        fd.get('posizione'),
+      posizione:        posizione,
       descrizione:      fd.get('descrizione'),
     };
 
@@ -249,7 +305,31 @@ export default function CreaAnnuncio() {
 
               <div className="mb-4">
                 <label className="small text-secondary text-uppercase mb-2">Luogo e Consegna</label>
-                <input type="text" name="posizione" className="form-control bg-transparent border-secondary text-white shadow-none mb-3" placeholder="Località (es. Milano)" required />
+                <div className="position-relative mb-3" ref={cittaRef}>
+                  <input
+                    type="text"
+                    name="posizione"
+                    className="form-control bg-transparent border-secondary text-white shadow-none"
+                    placeholder="Località (es. Milano)"
+                    value={posizione}
+                    onChange={handlePosizioneInput}
+                    autoComplete="off"
+                    required
+                  />
+                  {cittaAperta && (
+                    <ul className="list-group position-absolute w-100 shadow-lg suggerimenti-autocomplete" style={{ top: '100%', zIndex: 1051 }}>
+                      {suggerimentiCitta.map((nome) => (
+                        <li
+                          key={nome}
+                          className="list-group-item list-group-item-action bg-black text-white border-secondary suggerimento-item"
+                          onMouseDown={() => selezionaCitta(nome)}
+                        >
+                          {nome}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
                 <div className="form-check form-switch p-0 d-flex align-items-center justify-content-between mb-3">
                   <label className="form-check-label text-white" htmlFor="presenzaSwitch">Consegna a mano</label>
                   <input
