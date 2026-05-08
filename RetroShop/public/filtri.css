@@ -1,0 +1,136 @@
+/* FILTRI — modal filtri, range slider prezzo, mappa, autocomplete */
+
+
+/* --- MODAL FILTRI --- */
+
+#modalFiltri .form-control,
+#modalFiltri .form-select {
+    background-color: transparent !important;
+    border: 1px solid #6c757d;
+    color: white !important;
+    box-shadow: none !important;
+    border-radius: 4px;
+}
+
+#modalFiltri .form-control:focus,
+#modalFiltri .form-select:focus {
+    border-color: #dc3545;
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* sfondo forzato: le <option> ereditano bianco dal browser */
+#modalFiltri option {
+    background-color: #000;
+    color: white;
+}
+
+#modalFiltri .form-check-input:checked {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+#modalFiltri .form-check-input:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+}
+
+#badgeFiltri {
+    background-color: #000 !important;
+    color: #dc3545 !important;
+    border: 2px solid #dc3545 !important;
+    font-size: 0.9rem !important;
+    padding: 0.35em 0.65em !important;
+    transform: translateY(2px);
+    font-weight: bold;
+}
+
+
+/* --- RANGE SLIDER DOPPIO --- */
+/* due input[range] sovrapposti; pointer-events disabilitati sulla barra,
+   riattivati solo sul thumb per non bloccare i click sulla mappa */
+
+.range-slider-container {
+    height: 6px;
+    background-color: #3b3b3b;
+    border-radius: 5px;
+    position: relative;
+    width: 100%;
+}
+
+/* striscia colorata tra i due thumb — posizionata via JS */
+.slider-track {
+    height: 100%;
+    background-color: #dc3545;
+    position: absolute;
+    border-radius: 5px;
+    top: 0;
+    z-index: 1;
+}
+
+.double-slider {
+    position: absolute;
+    width: 100%;
+    height: 6px;
+    top: -2px;
+    background: none;
+    pointer-events: none;
+    -webkit-appearance: none;
+    appearance: none;
+    z-index: 2;
+}
+
+.double-slider::-webkit-slider-thumb {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background-color: #000;
+    border: 3px solid #dc3545;
+    pointer-events: auto;
+    -webkit-appearance: none;
+    cursor: pointer;
+}
+
+.double-slider::-moz-range-thumb {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background-color: #000;
+    border: 3px solid #dc3545;
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+
+/* --- MAPPA CON MIRINO --- */
+
+#mappaContainer {
+    z-index: 1;
+}
+
+/* pointer-events: none — senza, il cerchio bloccherebbe il drag della mappa */
+.mappa-mirino {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+    border: 2px dashed #dc3545;
+    background-color: rgba(220, 53, 69, 0.15);
+    border-radius: 50%;
+    z-index: 2;
+    pointer-events: none;
+}
+
+
+/* --- AUTOCOMPLETE ZONA --- */
+
+.suggerimenti-autocomplete {
+    z-index: 1050;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.suggerimento-item {
+    cursor: pointer;
+}

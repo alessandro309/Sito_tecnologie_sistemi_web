@@ -14,12 +14,12 @@ export default function ModalFiltri() {
   const location = useLocation();
   const modalRef = useRef(null);
 
-  const [tipologia,  setTipologia]  = useState('');
-  const [marca,      setMarca]      = useState('');
+  const [tipologia, setTipologia] = useState('');
+  const [marca, setMarca] = useState('');
   const [condizioni, setCondizioni] = useState([]);
-  const [prezzoMin,  setPrezzoMin]  = useState('');
-  const [prezzoMax,  setPrezzoMax]  = useState('');
-  const [spedizione,    setSpedizione]    = useState(false);
+  const [prezzoMin, setPrezzoMin] = useState('');
+  const [prezzoMax, setPrezzoMax] = useState('');
+  const [spedizione, setSpedizione] = useState(false);
   const [consegnaAMano, setConsegnaAMano] = useState(false);
 
   // Conta i filtri attivi per aggiornare il badge nella barra di ricerca
@@ -69,13 +69,13 @@ export default function ModalFiltri() {
     ['tipologia', 'marca', 'condizioni', 'prezzo_min', 'prezzo_max', 'spedizione', 'presenza']
       .forEach((k) => params.delete(k));
 
-    if (tipologia)   params.set('tipologia',  tipologia);
-    if (marca)       params.set('marca',       marca);
+    if (tipologia) params.set('tipologia',  tipologia);
+    if (marca) params.set('marca', marca);
     condizioni.forEach((c) => params.append('condizioni', c));
     if (prezzoMin !== '') params.set('prezzo_min', prezzoMin);
     if (prezzoMax !== '') params.set('prezzo_max', prezzoMax);
-    if (spedizione)   params.set('spedizione', 'true');
-    if (consegnaAMano) params.set('presenza',  'true');
+    if (spedizione) params.set('spedizione', 'true');
+    if (consegnaAMano) params.set('presenza', 'true');
 
     // Chiude il modal Bootstrap
     const el = document.getElementById('modalFiltri');
@@ -152,6 +152,7 @@ export default function ModalFiltri() {
                   <option value="sega">Sega</option>
                   <option value="commodore">Commodore</option>
                   <option value="atari">Atari</option>
+                  <option value="Altro">Altro</option>
                 </select>
               </div>
 

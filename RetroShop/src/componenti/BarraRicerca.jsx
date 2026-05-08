@@ -37,7 +37,11 @@ export default function BarraRicerca() {
   function handleCittaInput(e) {
     const testo = e.target.value;
     setCitta(testo);
-    if (!testo) { setSuggerimenti([]); setAperto(false); return; }
+    if (!testo) { 
+      setSuggerimenti([]); 
+      setAperto(false); 
+      return; 
+    }
     const trovati = CITTA.filter((c) => c.toLowerCase().startsWith(testo.toLowerCase()));
     setSuggerimenti(trovati);
     setAperto(trovati.length > 0);

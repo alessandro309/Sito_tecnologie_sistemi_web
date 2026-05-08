@@ -1,0 +1,91 @@
+/* HOME — box categorie e menu navigazione */
+
+
+/* --- MENU NAVIGAZIONE CATEGORIE --- */
+
+.colore_menu {
+    background-color: rgba(0, 0, 0, 0.67);
+}
+
+
+/* --- BOX CATEGORIE --- */
+
+@keyframes entrata_box {
+    from { opacity: 0; transform: translateY(35px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.box_categoria {
+    width: 100%;
+    max-width: 1000px;
+    height: 230px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: entrata_box 0.5s ease;
+    animation-fill-mode: backwards;
+}
+
+.box_categoria:hover {
+    transform: scale(1.02);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8) !important;
+}
+
+.titolo_box {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 1), 0 0 20px rgba(255, 17, 0, 0.6);
+    letter-spacing: 2px;
+}
+
+.box_categoria .scopri_di_piu i {
+    transition: transform 0.3s ease;
+}
+.box_categoria:hover .scopri_di_piu i {
+    transform: translateX(8px);
+}
+
+/* gradiente da sinistra: testo a sx, immagine a dx */
+#box_fisse {
+    background-image:
+        linear-gradient(to right, rgba(20,20,20,0.95) 10%, rgba(255,17,0,0.3) 30%, rgba(0,0,0,0) 60%),
+        url('Home_console.png');
+    background-position: right center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-color: #000;
+    border: 1px solid rgba(255, 17, 0, 0.2);
+}
+
+/* gradiente da destra: testo a dx, immagine a sx */
+#box_portatili {
+    background-image:
+        linear-gradient(to left, rgba(20,20,20,0.95) 10%, rgba(255,17,0,0.3) 30%, rgba(0,0,0,0) 60%),
+        url('Portatili.png');
+    background-position: left center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-color: #000;
+    border: 1px solid rgba(255, 17, 0, 0.2);
+}
+
+#box_accessori {
+    background-image:
+        linear-gradient(to right, rgba(20,20,20,0.95) 10%, rgba(255,17,0,0.3) 40%, rgba(0,0,0,0) 70%),
+        url('controller.png');
+    background-position: right center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-color: #000;
+    border: 1px solid rgba(255, 17, 0, 0.2);
+}
+
+/* background-size doppio: "100% 100%" per il gradiente, "50%" per l'immagine verticale */
+#box_giochi {
+    background-image:
+        linear-gradient(to left, rgba(20,20,20,0.95) 10%, rgba(255,17,0,0.3) 30%, rgba(0,0,0,0) 60%),
+        url('giochi_totali.png');
+    background-position: left center;
+    background-size: 100% 100%, 50%;
+    background-repeat: no-repeat;
+    background-color: #000;
+    border: 1px solid rgba(255, 17, 0, 0.2);
+}

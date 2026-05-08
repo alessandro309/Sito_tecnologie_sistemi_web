@@ -41,7 +41,7 @@ const CONSOLE_MENUS = [
   { label: 'SEGA',        marca: 'Sega',        icon: <img src="/logo_sega.svg"      alt="Sega"      className="logo-console-svg" /> },
   { label: 'COMMODORE',   marca: 'Commodore',   icon: <img src="/logo_commodore.svg" alt="Commodore" className="logo-console-svg" /> },
   { label: 'ATARI',       marca: 'Atari',       icon: <img src="/logo_atari.svg"     alt="Atari"     className="logo-console-svg" /> },
-  { label: 'ALTRO',       marca: null,          icon: null },
+  { label: 'ALTRO',       marca: 'Altro',       icon: null },
 ];
 
 // Voce della barra console: Link diretto agli annunci filtrati per marca

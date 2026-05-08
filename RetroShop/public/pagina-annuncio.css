@@ -1,0 +1,158 @@
+/* PAGINA ANNUNCIO — carousel immagini, pulsanti, modal pagamento */
+
+
+/* --- CAROUSEL IMMAGINI --- */
+
+.container-immagine-principale {
+    height: 450px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #1a1a1a;
+    border-radius: 0.375rem;
+    overflow: hidden;
+    position: relative;
+}
+
+.container-immagine-principale img {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+.thumbnail-img {
+    width: 90px;
+    height: 90px;
+    flex-shrink: 0;
+    object-fit: cover;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.thumbnail-img:hover { opacity: 0.8; }
+
+.thumbnail-img.attiva {
+    opacity: 1;
+    border-color: #dc3545;
+}
+
+.scrollbar-nascosta::-webkit-scrollbar { height: 6px; }
+.scrollbar-nascosta::-webkit-scrollbar-thumb {
+    background-color: #6c757d;
+    border-radius: 10px;
+}
+
+/* frecce prev/next: appaiono sull'hover del contenitore */
+.btn-navigazione {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.container-immagine-principale:hover .btn-navigazione {
+    opacity: 1;
+    visibility: visible;
+}
+
+.btn-navigazione:hover {
+    background-color: rgba(255, 17, 0, 0.5);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.btn-navigazione.prev { left: 15px; }
+.btn-navigazione.next { right: 15px; }
+
+
+/* --- PULSANTI AZIONE --- */
+
+.pulsante_verde {
+    background-color: rgb(3, 235, 72);
+    color: white;
+    border: 2px solid rgb(3, 235, 72);
+    transition: all 0.3s ease;
+}
+
+.pulsante_verde:hover {
+    background-color: transparent;
+    border-color: rgb(3, 235, 72);
+    color: rgb(3, 235, 72);
+}
+
+.pulsante_arancione {
+    background-color: rgb(255, 17, 0);
+    color: white;
+    border: 2px solid rgb(255, 17, 0);
+    transition: all 0.3s ease;
+}
+
+.pulsante_arancione:hover {
+    background-color: transparent;
+    border-color: rgb(255, 17, 0);
+    color: rgb(255, 17, 0);
+}
+
+
+/* --- DETTAGLI ANNUNCIO --- */
+
+.colore-titoli { color: rgb(220, 80, 80); }
+.colore_descrizione { color: rgb(200, 200, 210); }
+
+.foto-venditore {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+}
+
+
+/* --- MODAL PAGAMENTO --- */
+
+.carta-input:focus {
+    border-color: rgb(3, 235, 72) !important;
+    box-shadow: 0 0 0 0.2rem rgba(3, 235, 72, 0.15) !important;
+    background-color: #1a1a1a !important;
+    color: white !important;
+}
+
+.carta-input::placeholder { color: #555; }
+
+.riepilogo-acquisto {
+    padding: 0.5rem 1rem;
+    background: rgba(3, 235, 72, 0.07);
+    border-bottom: 1px solid rgba(3, 235, 72, 0.18);
+}
+
+/* backdrop per modal React (non Bootstrap) */
+.modal-backdrop-custom {
+    background-color: rgba(0, 0, 0, 0.85);
+}
+
+.btn-paga {
+    color: white;
+    border: 2px solid rgb(3, 235, 72);
+    transition: all 0.2s ease;
+    background-color: rgba(3, 235, 72, 0.3);
+    cursor: default;
+}
+
+.btn-paga.valida {
+    background-color: rgb(3, 235, 72);
+    cursor: pointer;
+}

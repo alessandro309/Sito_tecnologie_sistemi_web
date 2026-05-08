@@ -1,0 +1,79 @@
+/* CREA / MODIFICA ANNUNCIO — form pubblicazione e upload foto */
+
+
+/* --- PANNELLO DATI ANNUNCIO --- */
+
+.box_citta_descrizione {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    color: white !important;
+}
+
+.box_citta_descrizione.form-control:focus {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    color: white !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.1) !important;
+}
+
+
+/* --- FORM PUBBLICAZIONE --- */
+
+#formPubblicazione .form-select {
+    background-color: rgba(0, 0, 0, 0.6) !important;
+    color: white !important;
+}
+
+/* sfondo forzato: le <option> ereditano bianco dal browser */
+#formPubblicazione option {
+    background-color: #111;
+    color: white;
+}
+
+#formPubblicazione .form-control:focus,
+#formPubblicazione .form-select:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.15) !important;
+}
+
+/* nasconde frecce spin degli input numerici */
+#formPubblicazione input[type=number]::-webkit-inner-spin-button,
+#formPubblicazione input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+#formPubblicazione input[type=number] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+
+/* --- EDITOR ANNUNCIO --- */
+
+.titolo-annuncio-input {
+    font-size: 2rem;
+    caret-color: #fff;
+}
+
+.upload-area {
+    background-color: rgba(255, 255, 255, 0.02);
+    transition: height 0.3s ease;
+    cursor: pointer;
+}
+
+.foto-mini-wrapper {
+    width: 160px;
+    height: 160px;
+}
+
+.foto-mini {
+    width: 160px;
+    height: 160px;
+    object-fit: cover;
+}
+
+.btn-rimuovi-foto {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+    line-height: 1;
+}
