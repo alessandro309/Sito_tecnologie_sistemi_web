@@ -306,9 +306,6 @@ body.tema-chiaro .dropdown-menu-dark .dropdown-item:focus {
     color: #F8F8F8 !important;
 }
 
-body.tema-chiaro .dropdown-submenu .submenu-retro {
-    background-color: rgba(200, 200, 200, 0.6) !important;
-}
 
 body.tema-chiaro .logo-navbar {
     filter: brightness(0) drop-shadow(0 0 6px rgba(0, 150, 214, 0.4)) !important;

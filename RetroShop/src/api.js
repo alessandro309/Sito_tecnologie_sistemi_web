@@ -1,5 +1,3 @@
-// URL base del backend - lasciamo vuoto così le richieste vanno allo stesso host
-// (il proxy di Vite in dev reindirizza /api e /utente al server Python)
 const BASE = '';
 
 // Wrapper su fetch che include sempre i cookie di sessione

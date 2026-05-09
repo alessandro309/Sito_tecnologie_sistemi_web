@@ -7,10 +7,10 @@ import Footer from '../componenti/Footer';
 
 // Dati dei 4 box categoria nella home
 const CATEGORIE = [
-  { id: 'box_fisse',     titolo: 'Console\nFisse',     align: 'left',  filtro: 'console_fisse' },
-  { id: 'box_portatili', titolo: 'Console\nPortatili', align: 'right', filtro: 'console_portatili' },
-  { id: 'box_accessori', titolo: 'Accessori',           align: 'left',  filtro: 'accessori' },
-  { id: 'box_giochi',    titolo: 'Giochi',              align: 'right', filtro: 'giochi' },
+  {id:'box_fisse', titolo:'Console\nFisse', align:'left',  filtro:'console_fisse'},
+  {id:'box_portatili', titolo:'Console\nPortatili', align:'right', filtro:'console_portatili'},
+  {id:'box_accessori', titolo:'Accessori', align: 'left',  filtro:'accessori'},
+  {id:'box_giochi', titolo:'Giochi', align:'right', filtro:'giochi'},
 ];
 
 function BoxCategoria({ id, titolo, align, filtro, index }) {

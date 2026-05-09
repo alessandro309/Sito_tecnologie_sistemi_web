@@ -1,6 +1,5 @@
 /* HOME — box categorie e menu navigazione */
 
-
 /* --- MENU NAVIGAZIONE CATEGORIE --- */
 
 .colore_menu {
@@ -11,8 +10,8 @@
 /* --- BOX CATEGORIE --- */
 
 @keyframes entrata_box {
-    from { opacity: 0; transform: translateY(35px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from {opacity: 0; transform: translateY(35px);}
+    to {opacity: 1; transform: translateY(0);}
 }
 
 .box_categoria {
@@ -43,7 +42,6 @@
     transform: translateX(8px);
 }
 
-/* gradiente da sinistra: testo a sx, immagine a dx */
 #box_fisse {
     background-image:
         linear-gradient(to right, rgba(20,20,20,0.95) 10%, rgba(255,17,0,0.3) 30%, rgba(0,0,0,0) 60%),
@@ -55,7 +53,6 @@
     border: 1px solid rgba(255, 17, 0, 0.2);
 }
 
-/* gradiente da destra: testo a dx, immagine a sx */
 #box_portatili {
     background-image:
         linear-gradient(to left, rgba(20,20,20,0.95) 10%, rgba(255,17,0,0.3) 30%, rgba(0,0,0,0) 60%),
@@ -78,7 +75,6 @@
     border: 1px solid rgba(255, 17, 0, 0.2);
 }
 
-/* background-size doppio: "100% 100%" per il gradiente, "50%" per l'immagine verticale */
 #box_giochi {
     background-image:
         linear-gradient(to left, rgba(20,20,20,0.95) 10%, rgba(255,17,0,0.3) 30%, rgba(0,0,0,0) 60%),

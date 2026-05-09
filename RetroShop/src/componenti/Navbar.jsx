@@ -35,17 +35,17 @@ function PulsanteTema() {
 
 // Struttura dati dei menu console — evita 400 righe di JSX ripetuto
 const CONSOLE_MENUS = [
-  { label: 'PLAYSTATION', marca: 'PlayStation', icon: <i className="bi bi-playstation fs-5" /> },
-  { label: 'XBOX',        marca: 'Xbox',        icon: <i className="bi bi-xbox fs-5" /> },
-  { label: 'NINTENDO',    marca: 'Nintendo',    icon: <i className="bi bi-nintendo-switch fs-5" /> },
-  { label: 'SEGA',        marca: 'Sega',        icon: <img src="/logo_sega.svg"      alt="Sega"      className="logo-console-svg" /> },
-  { label: 'COMMODORE',   marca: 'Commodore',   icon: <img src="/logo_commodore.svg" alt="Commodore" className="logo-console-svg" /> },
-  { label: 'ATARI',       marca: 'Atari',       icon: <img src="/logo_atari.svg"     alt="Atari"     className="logo-console-svg" /> },
-  { label: 'ALTRO',       marca: 'Altro',       icon: null },
+  {label: 'PLAYSTATION', marca: 'PlayStation', icon: <i className="bi bi-playstation fs-5" />},
+  {label: 'XBOX', marca: 'Xbox', icon: <i className="bi bi-xbox fs-5" />},
+  {label: 'NINTENDO', marca: 'Nintendo', icon: <i className="bi bi-nintendo-switch fs-5" />},
+  {label: 'SEGA', marca: 'Sega', icon: <img src="/logo_sega.svg" alt="Sega" className="logo-console-svg" />},
+  {label: 'COMMODORE', marca: 'Commodore', icon: <img src="/logo_commodore.svg" alt="Commodore" className="logo-console-svg" />},
+  {label: 'ATARI', marca: 'Atari', icon: <img src="/logo_atari.svg" alt="Atari" className="logo-console-svg" />},
+  {label: 'ALTRO', marca: 'Altro', icon: null },
 ];
 
 // Voce della barra console: Link diretto agli annunci filtrati per marca
-function ConsoleLink({ menu }) {
+function ConsoleLink({menu}) {
   // "ALTRO" non ha una marca specifica: porta a tutti gli annunci
   const to = menu.marca ? `/annunci?marca=${encodeURIComponent(menu.marca)}` : '/annunci';
 
@@ -63,8 +63,9 @@ function ConsoleLink({ menu }) {
 }
 
 function LinkPreferiti() {
-  const { utente } = useAuth();
+  const {utente} = useAuth();
   const navigate = useNavigate();
+  const [hovered, setHovered] = useState(false);
 
   function handleClick(e) {
     e.preventDefault();
@@ -81,8 +82,10 @@ function LinkPreferiti() {
       href="#"
       className="nav-link font-monospace d-flex text-white align-items-center link-preferiti"
       onClick={handleClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
-      <i className="bi bi-floppy text-danger me-2 fs-5"></i>
+      <i className={`bi ${hovered ? 'bi-floppy-fill' : 'bi-floppy'} text-danger me-2 fs-5`}></i>
       Preferiti
     </a>
   );
@@ -90,7 +93,7 @@ function LinkPreferiti() {
 
 // Parte destra della navbar (Accedi oppure utente loggato)
 function NavbarDestra() {
-  const { utente, logout } = useAuth();
+  const {utente, logout} = useAuth();
   if (!utente) {
     return (
       <a

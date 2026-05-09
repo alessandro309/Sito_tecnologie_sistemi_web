@@ -1,12 +1,5 @@
 /* NAVBAR — barra di navigazione superiore */
 
-
-/* --- ICONA PREFERITI --- */
-
-.link-preferiti:hover .icona-vuota { display: none !important; }
-.link-preferiti:hover .icona-piena { display: inline-block !important; }
-
-
 /* --- DROPDOWN MENU --- */
 
 .dropdown-menu-dark {
@@ -22,25 +15,6 @@
 }
 
 
-/* --- SOTTOMENU RETRO --- */
-
-.dropdown-submenu {
-    position: relative;
-}
-
-.dropdown-submenu .submenu-retro {
-    display: none;
-    position: absolute;
-    left: 100%;
-    top: 0;
-}
-
-@media (min-width: 992px) {
-    .dropdown-submenu:hover > .submenu-retro {
-        display: block;
-    }
-}
-
 
 /* --- FIX MOBILE E TABLET (< 992px) --- */
 
@@ -55,27 +29,6 @@
         background-color: transparent;
         border: none !important;
         padding-bottom: 15px;
-    }
-
-    .dropdown-submenu .submenu-retro {
-        position: static !important;
-        transform: none !important;
-        left: 0;
-        top: 0;
-        width: 100%;
-        border: none !important;
-        padding-left: 0;
-        box-shadow: none !important;
-        background-color: rgba(0, 0, 0, 0.4);
-        display: none;
-        margin-top: 5px;
-        padding-top: 5px;
-        padding-bottom: 5px;
-    }
-
-    /* classe .show aggiunta via JS al tap */
-    .dropdown-submenu .submenu-retro.show {
-        display: block;
     }
 
     .nav-item {
