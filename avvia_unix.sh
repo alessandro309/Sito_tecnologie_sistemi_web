@@ -8,6 +8,6 @@ osascript -e "tell application \"Terminal\" to do script \"cd '$SCRIPT_DIR/serve
 || gnome-terminal -- bash -c "cd '$SCRIPT_DIR/serverChat' && node server; exec bash" 2>/dev/null \
 || xterm -e "cd '$SCRIPT_DIR/serverChat' && node server" &
 
-osascript -e "tell application \"Terminal\" to do script \"cd '$SCRIPT_DIR/RetroShop' && npm run dev\"" 2>/dev/null \
-|| gnome-terminal -- bash -c "cd '$SCRIPT_DIR/RetroShop' && npm run dev; exec bash" 2>/dev/null \
-|| xterm -e "cd '$SCRIPT_DIR/RetroShop' && npm run dev" &
+osascript -e "tell application \"Terminal\" to do script \"cd '$SCRIPT_DIR/RetroShop' && npm run dev -- --host\"" 2>/dev/null \
+|| gnome-terminal -- bash -c "cd '$SCRIPT_DIR/RetroShop' && npm run dev -- --host; exec bash" 2>/dev/null \
+|| xterm -e "cd '$SCRIPT_DIR/RetroShop' && npm run dev -- --host" &
