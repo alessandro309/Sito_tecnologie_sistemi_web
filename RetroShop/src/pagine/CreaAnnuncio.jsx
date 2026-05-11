@@ -37,21 +37,16 @@ const CITTA = [
 
 // Dizionario che dà tutte le console "caricabili" in base al marchio scelto
 const MODELLI_PER_PIATTAFORMA = {
-  PlayStation:  ['PS1', 'PS2', 'PS3', 'PS4', 'PS5', 'PSP', 'PSVita'],
-  Xbox:         ['XBOX originale', 'Xbox360', 'XBOX ONE', 'XBOX Series X|S'],
-  Nintendo:     ['NES', 'SNES', 'Nintendo64', 'GameCube', 'WII', 'WIIu', 'Switch', 'Switch2', 'GameBoy', 'GameBoy Advance', 'DS', '3DS'],
-  Sega:         ['Master System', 'Mega Drive', 'MegaCD', 'GameGear', 'Saturn', 'DreamCast'],
-  Commodore:    ['VIC-20', 'Commodore 64', 'Commodore 128'],
-  Atari:        ['Atari 2600', 'Atari 5200', 'Atari 7800', 'Atari Lynx', 'Atari Jaguar'],
-  Altro:        ['Amiga', 'Arcade / Cabinati'],
+  PlayStation: ['PS1', 'PS2', 'PS3', 'PS4', 'PS5', 'PSP', 'PSVita'],
+  Xbox: ['XBOX originale', 'Xbox360', 'XBOX ONE', 'XBOX Series X|S'],
+  Nintendo: ['NES', 'SNES', 'Nintendo64', 'GameCube', 'WII', 'WIIu', 'Switch', 'Switch2', 'GameBoy', 'GameBoy Advance', 'DS', '3DS'],
+  Sega: ['Master System', 'Mega Drive', 'MegaCD', 'GameGear', 'Saturn', 'DreamCast'],
+  Commodore: ['VIC-20', 'Commodore 64', 'Commodore 128'],
+  Atari: ['Atari 2600', 'Atari 5200', 'Atari 7800', 'Atari Lynx', 'Atari Jaguar'],
+  Altro: ['Amiga', 'Arcade / Cabinati'],
 };
 
-const CONSOLE_PORTATILI = new Set([
-  'PSP', 'PSVita',
-  'GameBoy', 'GameBoy Advance', 'DS', '3DS', 'Switch', 'Switch2',
-  'GameGear',
-  'Atari Lynx',
-]);
+const CONSOLE_PORTATILI = new Set(['PSP', 'PSVita', 'GameBoy', 'GameBoy Advance', 'DS', '3DS', 'Switch', 'Switch2', 'GameGear', 'Atari Lynx',]);
 
 const MAX_FOTO = 10;
 
@@ -71,9 +66,7 @@ export default function CreaAnnuncio() {
   const [cittaAperta, setCittaAperta] = useState(false);
   const cittaRef = useRef(null);
 
-  const portatile = tipologiaBase === 'console' && modello
-    ? CONSOLE_PORTATILI.has(modello)
-    : null;
+  const portatile = tipologiaBase === 'console' && modello ? CONSOLE_PORTATILI.has(modello) : null;
 
   useEffect(() => {
     if (!loading && !utente) navigate('/');
@@ -129,28 +122,26 @@ export default function CreaAnnuncio() {
     const fd = new FormData(e.target);
 
     const datiAnnuncio = {
-      nome:             fd.get('nome'),
-      prezzo:           parseFloat(fd.get('prezzo')),
-      condizione:       fd.get('condizione'),
-      piattaforma:      fd.get('piattaforma'),
-      modello:          modello,
-      tipologia:        tipologiaBase,
-      portatile:        tipologiaBase === 'console' ? portatile : null,
-      utente:           utente.nickname,
-      spedizione:       fd.get('spedizione') === 'on',
+      nome: fd.get('nome'),
+      prezzo: parseFloat(fd.get('prezzo')),
+      condizione: fd.get('condizione'),
+      piattaforma: fd.get('piattaforma'),
+      modello: modello,
+      tipologia: tipologiaBase,
+      portatile: tipologiaBase === 'console' ? portatile : null,
+      utente: utente.nickname,
+      spedizione: fd.get('spedizione') === 'on',
       prezzo_spedizione: fd.get('spedizione') === 'on' ? parseFloat(fd.get('prezzo_spedizione') || 0) : 0,
-      presenza:         presenza,
-      posizione:        posizione,
-      descrizione:      fd.get('descrizione'),
+      presenza: presenza,
+      posizione: posizione,
+      descrizione: fd.get('descrizione'),
     };
 
     try {
       const risposta = await api.creaAnnuncio(datiAnnuncio);
       if (!risposta.ok) {
         const err = await risposta.json();
-        const dettaglio = Array.isArray(err.detail)
-          ? err.detail.map((e) => e.msg).join(', ')
-          : (err.detail || 'Errore nella pubblicazione');
+        const dettaglio = Array.isArray(err.detail) ? err.detail.map((e) => e.msg).join(', ') : (err.detail || 'Errore nella pubblicazione');
         throw new Error(dettaglio);
       }
       const annuncio = await risposta.json();
@@ -195,7 +186,7 @@ export default function CreaAnnuncio() {
                 <div className="text-center p-4">
                   <i className="bi bi-images fs-1 text-secondary mb-3"></i>
                   <h4 className="text-uppercase fw-bold">
-                    {foto.length > 0 ? 'Aggiungi altre foto' : 'Carica le foto'}
+                    {foto.length > 0 ? 'Aggiungi altre foto' : 'Carica le foto (massimo 10)'}
                   </h4>
                   <p className="text-secondary small">
                     {foto.length > 0
@@ -310,7 +301,7 @@ export default function CreaAnnuncio() {
                     type="text"
                     name="posizione"
                     className="form-control bg-transparent border-secondary text-white shadow-none"
-                    placeholder="Località (es. Milano)"
+                    placeholder="Località (es. Roma)"
                     value={posizione}
                     onChange={handlePosizioneInput}
                     autoComplete="off"

@@ -36,28 +36,23 @@ const CITTA = [
 ];
 
 const MODELLI_PER_PIATTAFORMA = {
-  PlayStation:  ['PS1', 'PS2', 'PS3', 'PS4', 'PS5', 'PSP', 'PSVita'],
-  Xbox:         ['XBOX originale', 'Xbox360', 'XBOX ONE', 'XBOX Series X|S'],
-  Nintendo:     ['NES', 'SNES', 'Nintendo64', 'GameCube', 'WII', 'WIIu', 'Switch', 'Switch2', 'GameBoy', 'GameBoy Advance', 'DS', '3DS'],
-  Sega:         ['Master System', 'Mega Drive', 'MegaCD', 'GameGear', 'Saturn', 'DreamCast'],
-  Commodore:    ['VIC-20', 'Commodore 64', 'Commodore 128'],
-  Atari:        ['Atari 2600', 'Atari 5200', 'Atari 7800', 'Atari Lynx', 'Atari Jaguar'],
-  Altro:        ['Amiga', 'Arcade / Cabinati'],
+  PlayStation: ['PS1', 'PS2', 'PS3', 'PS4', 'PS5', 'PSP', 'PSVita'],
+  Xbox: ['XBOX originale', 'Xbox360', 'XBOX ONE', 'XBOX Series X|S'],
+  Nintendo: ['NES', 'SNES', 'Nintendo64', 'GameCube', 'WII', 'WIIu', 'Switch', 'Switch2', 'GameBoy', 'GameBoy Advance', 'DS', '3DS'],
+  Sega: ['Master System', 'Mega Drive', 'MegaCD', 'GameGear', 'Saturn', 'DreamCast'],
+  Commodore: ['VIC-20', 'Commodore 64', 'Commodore 128'],
+  Atari: ['Atari 2600', 'Atari 5200', 'Atari 7800', 'Atari Lynx', 'Atari Jaguar'],
+  Altro: ['Amiga', 'Arcade / Cabinati'],
 };
 
-const CONSOLE_PORTATILI = new Set([
-  'PSP', 'PSVita',
-  'GameBoy', 'GameBoy Advance', 'DS', '3DS', 'Switch', 'Switch2',
-  'GameGear',
-  'Atari Lynx',
-]);
+const CONSOLE_PORTATILI = new Set(['PSP', 'PSVita', 'GameBoy', 'GameBoy Advance', 'DS', '3DS', 'Switch', 'Switch2', 'GameGear','Atari Lynx',]);
 
 const MAX_FOTO = 10;
 
 export default function ModificaAnnuncio() {
-  const { id } = useParams();
+  const {id} = useParams();
   const navigate = useNavigate();
-  const { utente, loading: authLoading } = useAuth();
+  const {utente, loading: authLoading} = useAuth();
 
   const [loadingDati, setLoadingDati] = useState(true);
   const [caricamento, setCaricamento] = useState(false);
@@ -85,9 +80,7 @@ export default function ModificaAnnuncio() {
   const [cittaAperta, setCittaAperta] = useState(false);
   const cittaRef = useRef(null);
 
-  const portatile = tipologiaBase === 'console' && modello
-    ? CONSOLE_PORTATILI.has(modello)
-    : null;
+  const portatile = tipologiaBase === 'console' && modello ? CONSOLE_PORTATILI.has(modello) : null;
 
   const fotoEsistentiVisibili = immaginiEsistenti.filter(img => !immaginiDaRimuovere.has(img.id));
   const totaleFoto = fotoEsistentiVisibili.length + nuoveFoto.length;

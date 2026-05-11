@@ -21,10 +21,10 @@ export default function Registrazione() {
 
   // Regole password — ogni regola ha un testo e una funzione di verifica
   const REGOLE_PASSWORD = [
-    { id: 'lunghezza',  testo: 'Almeno 8 caratteri',           check: (p) => p.length >= 8 },
-    { id: 'maiuscola',  testo: 'Almeno una lettera maiuscola',  check: (p) => /[A-Z]/.test(p) },
-    { id: 'numero',     testo: 'Almeno un numero',              check: (p) => /[0-9]/.test(p) },
-    { id: 'speciale',   testo: 'Almeno un carattere speciale',  check: (p) => /[^A-Za-z0-9]/.test(p) },
+    {id: 'lunghezza', testo: 'Almeno 8 caratteri', check: (p) => p.length >= 8},
+    {id: 'maiuscola', testo: 'Almeno una lettera maiuscola', check: (p) => /[A-Z]/.test(p)},
+    {id: 'numero', testo: 'Almeno un numero', check: (p) => /[0-9]/.test(p)},
+    {id: 'speciale', testo: 'Almeno un carattere speciale', check: (p) => /[^A-Za-z0-9]/.test(p)},
   ];
 
   const regolaOk = (id) => REGOLE_PASSWORD.find((r) => r.id === id)?.check(form.password) ?? false;
@@ -75,7 +75,7 @@ export default function Registrazione() {
       }
 
       if (foto) await api.uploadFotoProfilo(datiUtente.nickname, foto);
-
+      /* LOGIN AUTOMATICO DISABILITATO PER LA PRESENTAZIONE */
       // Login automatico dopo la registrazione
       // const loginRisp = await api.login({ nickname: datiUtente.nickname, password: form.password });
       // if (loginRisp.ok) {

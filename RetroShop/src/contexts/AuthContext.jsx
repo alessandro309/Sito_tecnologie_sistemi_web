@@ -1,8 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { api } from '../api';
 
-// Context globale per l'autenticazione: tutti i componenti possono sapere
-// se c'è un utente loggato senza passare props in giro
+// Context globale per l'autenticazione: tutti i componenti possono sapere se c'è un utente loggato 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {

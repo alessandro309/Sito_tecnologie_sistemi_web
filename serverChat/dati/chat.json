@@ -164,6 +164,17 @@
       "titoloAnnuncio": "Adventure Time + Jojo's Bizarre Adventure",
       "prezzoAnnuncio": 16.79,
       "creatoIl": "2026-05-07T16:59:32.297Z"
+    },
+    {
+      "id": "d9909ae1-6916-4493-8613-6e55f6b55c22",
+      "partecipanti": [
+        "Alex_Rob",
+        "LeonKennedy"
+      ],
+      "idAnnuncio": "34",
+      "titoloAnnuncio": "Controller PS5",
+      "prezzoAnnuncio": 50,
+      "creatoIl": "2026-05-11T19:06:45.942Z"
     }
   ],
   "messaggi": [
@@ -563,6 +574,14 @@
       "mittente": "Alex_Rob",
       "testo": "Grande Tony",
       "ora": "2026-05-07T18:25:06.261Z",
+      "letto": true
+    },
+    {
+      "id": "22848d89-b25f-4f97-9e7c-bff801040505",
+      "conversazioneId": "afae1d64-f6a7-4be6-84f1-e5f26802a243",
+      "mittente": "TonyPitony",
+      "testo": "Funziona?",
+      "ora": "2026-05-11T19:05:53.810Z",
       "letto": true
     }
   ]

@@ -242,7 +242,7 @@ export default function PaginaAnnuncio() {
                     ) : (
                       <>
                         <button
-                          className={`btn pulsante_verde font-monospace px-4 py-2 rounded-2 shadow-sm d-flex align-items-center justify-content-center flex-grow-1 ${acquistaNonDisponibile ? 'btn-acquisto-disabilitato' : ''}`}
+                          className="btn pulsante_verde font-monospace px-4 py-2 rounded-2 shadow-sm d-flex align-items-center justify-content-center flex-grow-1"
                           onClick={() => { setErroreAcquisto(null); setMostraModalAcquisto(true); }}
                           disabled={acquistaNonDisponibile}
                           title={!annuncio.spedizione ? 'Acquisto disponibile solo per annunci con spedizione' : undefined}
@@ -266,10 +266,10 @@ export default function PaginaAnnuncio() {
                 <div className="mb-4 font-monospace small">
                   {[
                     ['Piattaforma', annuncio.piattaforma],
-                    ['Modello',     annuncio.modello],
-                    ['Tipologia',   annuncio.tipologia],
-                    ['Condizioni',  annuncio.condizione],
-                    ['Spedizione',  annuncio.spedizione ? `Sì (€ ${annuncio.prezzo_spedizione})` : 'No'],
+                    ['Modello', annuncio.modello],
+                    ['Tipologia', annuncio.tipologia],
+                    ['Condizioni', annuncio.condizione],
+                    ['Spedizione', annuncio.spedizione ? `Sì (€ ${annuncio.prezzo_spedizione})` : 'No'],
                     ['Consegna a mano', annuncio.presenza ? 'Sì' : 'No'],
                   ].map(([label, valore]) => (
                     <div className="row mb-2" key={label}>

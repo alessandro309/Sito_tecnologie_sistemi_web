@@ -154,7 +154,7 @@ function NavbarDestra() {
   );
 }
 
-export default function Navbar({ children }) {
+export default function Navbar({children}) {
 
   return (
     <header>
