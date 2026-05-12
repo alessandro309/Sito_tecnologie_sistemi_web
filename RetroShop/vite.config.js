@@ -15,9 +15,9 @@ export default defineConfig({
       '/preferiti': 'http://127.0.0.1:8000',
       '/immagini':  'http://127.0.0.1:8000',
       '/static':   'http://127.0.0.1:8000',
-      '/api/chat': 'http://127.0.0.1:3001',
+      '/api/chat': 'http://127.0.0.1:8000',
       '/ws': {
-        target: 'ws://127.0.0.1:3001',
+        target: 'ws://127.0.0.1:8000',
         ws: true,
         rewriteWsOrigin: true,
         configure: (proxy) => {

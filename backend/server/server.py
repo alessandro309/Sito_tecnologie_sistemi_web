@@ -1,7 +1,9 @@
 import os
 import re
 import shutil
+from pathlib import Path
 from fastapi import FastAPI, HTTPException, Depends, UploadFile, File, Request, Response
+from fastapi.responses import FileResponse
 from typing import Annotated, List, Optional
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -13,6 +15,7 @@ from fastapi import Query
 
 from database import database
 from server import schemi
+from server import chat as chat_router
 
 BASE_DIR_IMMAGINI = "static/annunci"
 BASE_DIR_UTENTI = "static/utenti"
@@ -61,7 +64,7 @@ app.add_middleware(
         "http://127.0.0.1:5500",
         "http://localhost:5500",
         "http://127.0.0.1:8000",
-        "http://localhost:8000"
+        "http://localhost:8000",
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -69,6 +72,7 @@ app.add_middleware(
 )
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
+app.include_router(chat_router.router)
 
 
 # Apre la connessione al database per ogni richiesta e la chiude quando ha finito
@@ -547,3 +551,15 @@ def ricerca_annunci(
         query = query.filter(database.AnnuncioDB.posizione.ilike(f"%{regione}%"))
 
     return query.order_by(database.AnnuncioDB.data_pubblicazione.desc()).all()
+
+
+# Invio della pagina react
+_FRONTEND_DIR = Path(__file__).parent.parent.parent / "RetroShop" / "dist"
+
+if _FRONTEND_DIR.exists():
+    @app.get("/{full_path:path}", include_in_schema=False)
+    async def serve_spa(full_path: str):
+        file = _FRONTEND_DIR / full_path
+        if file.exists() and file.is_file():
+            return FileResponse(file)
+        return FileResponse(_FRONTEND_DIR / "index.html")

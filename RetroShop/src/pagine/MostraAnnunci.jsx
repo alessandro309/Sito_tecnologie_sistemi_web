@@ -151,30 +151,45 @@ export default function MostraAnnunci() {
       </Navbar>
 
       <main className="container mb-5">
-        <div className="d-flex justify-content-between align-items-end mb-4 border-bottom border-secondary pb-2 flex-wrap gap-2">
-          <h2 className="font-monospace text-uppercase text-white fw-bold m-0">Risultati della ricerca</h2>
-          <div className="d-flex align-items-center gap-3">
-            <div className="input-group input-group-sm select-ordina rounded-3 overflow-hidden" style={{ width: 'auto' }}>
+        <div className="mb-4 border-bottom border-secondary pb-2">
+          {/* desktop */}
+          <div className="d-none d-sm-flex justify-content-between align-items-center">
+            <h2 className="font-monospace text-uppercase text-white fw-bold m-0">Risultati della ricerca</h2>
+            <div className="d-flex align-items-center gap-3">
+              <div className="input-group input-group-sm select-ordina rounded-3 overflow-hidden" style={{ width: 'auto' }}>
+                <span className="input-group-text border-0 text-secondary select-ordina-addon">
+                  <i className="bi bi-sort-down-alt"></i>
+                </span>
+                <select className="form-select form-select-sm border-0 text-white shadow-none font-monospace select-ordina-select" value={ordinamento} onChange={(e) => { setOrdinamento(e.target.value); setPagina(1); }}>
+                  <option value=""    style={{ background: '#2a2828', color: '#fff' }}>Ordine predefinito</option>
+                  <option value="asc" style={{ background: '#2a2828', color: '#fff' }}>Prezzo ↑ crescente</option>
+                  <option value="desc"style={{ background: '#2a2828', color: '#fff' }}>Prezzo ↓ decrescente</option>
+                </select>
+              </div>
+              <span className="text-white font-monospace small text-nowrap opacity-75">
+                {caricamento ? 'Ricerca in corso...' : totPagine > 1 ? `${annunci.length} annunci · pagina ${pagina} di ${totPagine}` : `Trovati ${annunci.length} annunci`}
+              </span>
+            </div>
+          </div>
+          {/* mobile */}
+          <div className="d-sm-none">
+            <h2 className="font-monospace text-uppercase text-white fw-bold m-0 mb-2">Risultati della ricerca</h2>
+            <div className="input-group input-group-sm select-ordina rounded-3 overflow-hidden w-100">
               <span className="input-group-text border-0 text-secondary select-ordina-addon">
                 <i className="bi bi-sort-down-alt"></i>
               </span>
-              <select
-                className="form-select form-select-sm border-0 text-white shadow-none font-monospace select-ordina-select"
-                value={ordinamento}
-                onChange={(e) => { setOrdinamento(e.target.value); setPagina(1); }}
-              >
+              <select className="form-select form-select-sm border-0 text-white shadow-none font-monospace select-ordina-select" value={ordinamento} onChange={(e) => { setOrdinamento(e.target.value); setPagina(1); }}>
                 <option value=""    style={{ background: '#2a2828', color: '#fff' }}>Ordine predefinito</option>
                 <option value="asc" style={{ background: '#2a2828', color: '#fff' }}>Prezzo ↑ crescente</option>
                 <option value="desc"style={{ background: '#2a2828', color: '#fff' }}>Prezzo ↓ decrescente</option>
               </select>
             </div>
-            <span className="text-white font-monospace small text-nowrap opacity-75">
-              {caricamento
-                ? 'Ricerca in corso...'
-                : totPagine > 1
-                  ? `${annunci.length} annunci · pagina ${pagina} di ${totPagine}`
-                  : `Trovati ${annunci.length} annunci`}
-            </span>
+            {!caricamento && (
+              <div className="d-flex justify-content-between mt-2 px-2 text-white font-monospace small opacity-75">
+                <span>{annunci.length} annunci</span>
+                {totPagine > 1 && <span>pagina {pagina} di {totPagine}</span>}
+              </div>
+            )}
           </div>
         </div>
 

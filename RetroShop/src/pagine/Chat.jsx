@@ -149,7 +149,7 @@ export default function Chat() {
 
       if (pacchetto.tipo !== "messaggio") return;
 
-      const nuovoMsg   = pacchetto.messaggio;
+      const nuovoMsg = pacchetto.messaggio;
       const chatAperta = selezionataRef.current;
 
       if (chatAperta?.id === nuovoMsg.conversazioneId) {
