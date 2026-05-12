@@ -1,12 +1,21 @@
 # Sito_tecnologie_sistemi_web
-Progetto per il corso di Tecnologie e sistemi web
 
-Web Technologies and Systems Course Project
+Progetto sviluppato per il corso di **Tecnologie e Sistemi Web**.
 
+> Project developed for the **Web Technologies and Systems** course.
+
+---
 
 ## Front-End
-Pagine web ```HTLM``` popolate dinamicamente attraverso ```React``` (iniezione del codice HTML) e ```JavaScrip``` (comunicazione con server). Per l'aspetto grafico utilizzo di ```CSS``` e **bootstrap** per semplificare
 
+Le pagine web in `HTML` vengono popolate dinamicamente tramite `React` (rendering dei componenti) e `JavaScript` (comunicazione con il server). Per lo stile grafico si utilizzano `CSS` e **Bootstrap**.
+
+> The web pages written in `HTML` are dynamically populated using `React` (component rendering) and `JavaScript` (server communication). Styling is handled with `CSS` and **Bootstrap**.
+
+---
 
 ## Back-End
-Server ```python``` gestito dalla libreria **FastAPI** con database relazionale in ```PostgreSQL``` gestito dalla libreria python **sqlalchemy**
+
+Il server è scritto in `Python` e gestito tramite la libreria **FastAPI**. Il database relazionale è in `PostgreSQL`, interfacciato attraverso la libreria Python **SQLAlchemy**.
+
+> The server is written in `Python` and managed via the **FastAPI** library. The relational database uses `PostgreSQL`, accessed through the Python library **SQLAlchemy**.
