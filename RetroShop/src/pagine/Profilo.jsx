@@ -451,11 +451,11 @@ export default function Profilo() {
                 </h6>
                 <div className="btn-group w-100 shadow-sm" role="group">
                   <input type="radio" className="btn-check" name="sceltaTema" id="temaScuro" value="dark" checked={tema === 'dark'} onChange={() => setTema('dark')} />
-                  <label className="btn btn-outline-danger text-uppercase fw-bold py-2 rounded-start-1" htmlFor="temaScuro">
+                  <label className="btn btn-outline-accento text-uppercase fw-bold py-2 rounded-start-1" htmlFor="temaScuro">
                     <i className="bi bi-moon-stars-fill me-2"></i>Retro Nes
                   </label>
                   <input type="radio" className="btn-check" name="sceltaTema" id="temaChiaro" value="light" checked={tema === 'light'} onChange={() => setTema('light')} />
-                  <label className="btn btn-outline-danger text-uppercase fw-bold py-2 rounded-end-1" htmlFor="temaChiaro">
+                  <label className="btn btn-outline-accento text-uppercase fw-bold py-2 rounded-end-1" htmlFor="temaChiaro">
                     <i className="bi bi-sun-fill me-2"></i>Modern Wii
                   </label>
                 </div>

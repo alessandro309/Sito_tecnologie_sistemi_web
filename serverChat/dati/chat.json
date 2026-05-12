@@ -175,6 +175,17 @@
       "titoloAnnuncio": "Controller PS5",
       "prezzoAnnuncio": 50,
       "creatoIl": "2026-05-11T19:06:45.942Z"
+    },
+    {
+      "id": "74aa095b-bd83-4d1b-a106-b8d7b7f122f9",
+      "partecipanti": [
+        "TonyPitony",
+        "LeonKennedy"
+      ],
+      "idAnnuncio": "31",
+      "titoloAnnuncio": "Xbox 360",
+      "prezzoAnnuncio": 20,
+      "creatoIl": "2026-05-12T07:46:24.305Z"
     }
   ],
   "messaggi": [

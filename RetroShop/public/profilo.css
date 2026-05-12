@@ -55,6 +55,29 @@
 }
 
 
+/* --- BARRA SELEZIONE TEMA --- */
+
+.btn-outline-accento {
+    color: var(--colore-accento);
+    border-color: var(--colore-accento);
+    background-color: transparent;
+}
+
+.btn-outline-accento:hover {
+    color: white;
+    background-color: var(--colore-accento);
+    border-color: var(--colore-accento);
+}
+
+.btn-check:checked + .btn-outline-accento,
+.btn-outline-accento.active,
+.btn-outline-accento:active {
+    color: white;
+    background-color: var(--colore-accento);
+    border-color: var(--colore-accento);
+}
+
+
 /* --- SIDEBAR NAVIGAZIONE --- */
 
 .sidebar-profilo {
