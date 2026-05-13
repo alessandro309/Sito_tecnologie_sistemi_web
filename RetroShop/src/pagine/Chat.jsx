@@ -423,7 +423,7 @@ export default function Chat() {
                     className="dot-connessione"
                     style={{background: connesso ? "#2ecc71" : "#6c757d"}}
                   />
-                  {connesso ? "live" : "off"}
+                  {connesso ? "connesso" : "disconnesso"}
                 </span>
               </div>
 
@@ -479,9 +479,9 @@ export default function Chat() {
                             className="font-monospace text-truncate"
                             style={{
                               fontSize:   14,
-                              color:      conv.nonLetti > 0 ? "#ddd" : "#666",
+                              color: conv.nonLetti > 0 ? "#ddd" : "#666",
                               fontWeight: conv.nonLetti > 0 ? "bold" : "normal",
-                              maxWidth:   "85%",
+                              maxWidth: "85%",
                             }}
                           >
                             {conv.ultimoMessaggio ?? "Inizia la conversazione"}

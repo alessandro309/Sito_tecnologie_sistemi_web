@@ -4,7 +4,7 @@ import shutil
 from pathlib import Path
 from fastapi import FastAPI, HTTPException, Depends, UploadFile, File, Request, Response
 from fastapi.responses import FileResponse
-from typing import Annotated, List, Optional
+from typing import List, Optional
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
@@ -147,7 +147,7 @@ def crea_annuncio(annuncio: schemi.AnnuncioCreate, db: Session = Depends(get_db)
 @app.post("/annunci/{idAnnuncio}/immagini", response_model=schemi.AnnuncioResponse)
 def carica_immagini_annuncio(
         idAnnuncio: int,
-        immagini: Annotated[List[UploadFile], File(...)],
+        immagini: List[UploadFile] = File(...),
         db: Session = Depends(get_db)
     ):
     annuncio = db.query(database.AnnuncioDB).filter(database.AnnuncioDB.idAnnuncio == idAnnuncio).first()

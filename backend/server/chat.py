@@ -15,19 +15,12 @@ router = APIRouter()
 clienti: Dict[str, Set[WebSocket]] = {}
 
 
-# Carica il db da file; prova prima il percorso principale, poi il vecchio serverChat
 def carica_dati() -> dict:
-    percorsi = [
-        DATA_FILE,
-        os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "serverChat", "dati", "chat.json"),
-    ]
-    for percorso in percorsi:
-        try:
-            with open(percorso, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except Exception:
-            continue
-    return {"conversazioni": [], "messaggi": []}
+    try:
+        with open(DATA_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return {"conversazioni": [], "messaggi": []}
 
 
 # Persiste il db in memoria su file JSON

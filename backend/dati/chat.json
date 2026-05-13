@@ -602,6 +602,22 @@
       "testo": "Ciao",
       "ora": "2026-05-12T18:26:37.609647+00:00",
       "letto": false
+    },
+    {
+      "id": "d04fdbfe-f646-4916-abac-ae9e604ce208",
+      "conversazioneId": "37207b06-563a-4ce2-88aa-06e25990d114",
+      "mittente": "James_Metallica",
+      "testo": "gdfgfdgdgfdfgdgdg",
+      "ora": "2026-05-13T15:07:47.828728+00:00",
+      "letto": false
+    },
+    {
+      "id": "33297720-65ef-4515-8f88-bc136695182b",
+      "conversazioneId": "37207b06-563a-4ce2-88aa-06e25990d114",
+      "mittente": "James_Metallica",
+      "testo": "ciao",
+      "ora": "2026-05-13T15:08:27.275554+00:00",
+      "letto": false
     }
   ]
 }
