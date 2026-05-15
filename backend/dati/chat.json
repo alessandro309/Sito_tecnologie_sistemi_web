@@ -186,6 +186,50 @@
       "titoloAnnuncio": "Xbox 360",
       "prezzoAnnuncio": 20,
       "creatoIl": "2026-05-12T07:46:24.305Z"
+    },
+    {
+      "id": "2c1f0d70-2fbc-4694-9ecb-84afe696072c",
+      "partecipanti": [
+        "TonyPitony",
+        "Alex_Rob"
+      ],
+      "idAnnuncio": "28",
+      "titoloAnnuncio": "Memory card PS1",
+      "prezzoAnnuncio": 5,
+      "creatoIl": "2026-05-15T20:04:55.487783+00:00"
+    },
+    {
+      "id": "ae0f29e3-ff85-4579-b911-d2d06354b730",
+      "partecipanti": [
+        "TonyPitony",
+        "Alex_Rob"
+      ],
+      "idAnnuncio": "40",
+      "titoloAnnuncio": "Nintendo ds",
+      "prezzoAnnuncio": 20,
+      "creatoIl": "2026-05-15T20:06:05.017322+00:00"
+    },
+    {
+      "id": "65a396f2-b4cd-4fa1-befa-5642942f98dc",
+      "partecipanti": [
+        "TonyPitony",
+        "Alex_Rob"
+      ],
+      "idAnnuncio": "41",
+      "titoloAnnuncio": "rwef",
+      "prezzoAnnuncio": 222,
+      "creatoIl": "2026-05-15T20:13:03.471635+00:00"
+    },
+    {
+      "id": "53079c37-f4d1-442e-85d8-362f1125243a",
+      "partecipanti": [
+        "TonyPitony",
+        "Alex_Rob"
+      ],
+      "idAnnuncio": "42",
+      "titoloAnnuncio": "Test",
+      "prezzoAnnuncio": 44.44,
+      "creatoIl": "2026-05-15T20:14:48.382917+00:00"
     }
   ],
   "messaggi": [
@@ -618,6 +662,162 @@
       "testo": "ciao",
       "ora": "2026-05-13T15:08:27.275554+00:00",
       "letto": false
+    },
+    {
+      "id": "f22f4959-86cc-4ef9-a6cd-6c7d49e1c0a9",
+      "conversazioneId": "afae1d64-f6a7-4be6-84f1-e5f26802a243",
+      "mittente": "Alex_Rob",
+      "testo": "fsdsdf",
+      "ora": "2026-05-15T19:58:40.709617+00:00",
+      "letto": true
+    },
+    {
+      "id": "7a6cb95a-e351-4353-bf94-f09b8be79031",
+      "conversazioneId": "ae0f29e3-ff85-4579-b911-d2d06354b730",
+      "mittente": "sistema",
+      "testo": "Acquisto completato: Nintendo ds",
+      "ora": "2026-05-15T20:06:05.026227+00:00",
+      "letto": true,
+      "tipo": "sistema",
+      "acquirente": "TonyPitony",
+      "idAnnuncio": "40",
+      "datiAcquisto": {
+        "nomeAnnuncio": "Nintendo ds",
+        "acquirente": "TonyPitony",
+        "venditore": "Alex_Rob",
+        "prezzoArticolo": 20,
+        "prezzoSpedizione": 10
+      },
+      "rimborsato": true
+    },
+    {
+      "id": "42311477-ee64-4170-bbbe-4b4fe6039d60",
+      "conversazioneId": "ae0f29e3-ff85-4579-b911-d2d06354b730",
+      "mittente": "sistema",
+      "testo": "uihiu",
+      "ora": "2026-05-15T20:09:17.126352+00:00",
+      "letto": true,
+      "tipo": "rimborso",
+      "acquirente": "TonyPitony"
+    },
+    {
+      "id": "865d331b-f8ae-415a-8132-32dc5bb621e1",
+      "conversazioneId": "ae0f29e3-ff85-4579-b911-d2d06354b730",
+      "mittente": "sistema",
+      "testo": "Acquisto completato: Nintendo ds",
+      "ora": "2026-05-15T20:10:47.493664+00:00",
+      "letto": true,
+      "tipo": "sistema",
+      "acquirente": "TonyPitony",
+      "idAnnuncio": "40",
+      "datiAcquisto": {
+        "nomeAnnuncio": "Nintendo ds",
+        "acquirente": "TonyPitony",
+        "venditore": "Alex_Rob",
+        "prezzoArticolo": 20,
+        "prezzoSpedizione": 10
+      },
+      "rimborsato": true
+    },
+    {
+      "id": "d4420bee-f81f-40d2-8b16-636d0ebda245",
+      "conversazioneId": "ae0f29e3-ff85-4579-b911-d2d06354b730",
+      "mittente": "sistema",
+      "testo": "nnnn",
+      "ora": "2026-05-15T20:12:02.036631+00:00",
+      "letto": true,
+      "tipo": "rimborso",
+      "acquirente": "TonyPitony"
+    },
+    {
+      "id": "ae0740b7-b10a-454d-84f3-6ab104c80e06",
+      "conversazioneId": "65a396f2-b4cd-4fa1-befa-5642942f98dc",
+      "mittente": "sistema",
+      "testo": "Acquisto completato: rwef",
+      "ora": "2026-05-15T20:13:03.479642+00:00",
+      "letto": true,
+      "tipo": "sistema",
+      "acquirente": "TonyPitony",
+      "idAnnuncio": "41",
+      "datiAcquisto": {
+        "nomeAnnuncio": "rwef",
+        "acquirente": "TonyPitony",
+        "venditore": "Alex_Rob",
+        "prezzoArticolo": 222,
+        "prezzoSpedizione": 343
+      },
+      "rimborsato": true
+    },
+    {
+      "id": "1521cbe6-0e97-4a09-a14e-ed7b96e27c2e",
+      "conversazioneId": "65a396f2-b4cd-4fa1-befa-5642942f98dc",
+      "mittente": "sistema",
+      "testo": "Fff",
+      "ora": "2026-05-15T20:13:07.985728+00:00",
+      "letto": true,
+      "tipo": "rimborso",
+      "acquirente": "TonyPitony"
+    },
+    {
+      "id": "70203e5b-d513-4531-908a-25b38bfd2ad5",
+      "conversazioneId": "53079c37-f4d1-442e-85d8-362f1125243a",
+      "mittente": "sistema",
+      "testo": "Acquisto completato: Test",
+      "ora": "2026-05-15T20:14:48.391345+00:00",
+      "letto": true,
+      "tipo": "sistema",
+      "acquirente": "TonyPitony",
+      "idAnnuncio": "42",
+      "datiAcquisto": {
+        "nomeAnnuncio": "Test",
+        "acquirente": "TonyPitony",
+        "venditore": "Alex_Rob",
+        "prezzoArticolo": 44.44,
+        "prezzoSpedizione": 33
+      },
+      "rimborsato": true
+    },
+    {
+      "id": "cad3169e-4e43-4edd-a0d1-4884fbc6b06d",
+      "conversazioneId": "53079c37-f4d1-442e-85d8-362f1125243a",
+      "mittente": "TonyPitony",
+      "testo": "vsfds",
+      "ora": "2026-05-15T20:26:42.776064+00:00",
+      "letto": true
+    },
+    {
+      "id": "2070bfd2-1bc4-4ef8-b896-3def2d5c9642",
+      "conversazioneId": "53079c37-f4d1-442e-85d8-362f1125243a",
+      "mittente": "Alex_Rob",
+      "testo": "adas",
+      "ora": "2026-05-15T20:50:03.745382+00:00",
+      "letto": true
+    },
+    {
+      "id": "2f7658c1-14ca-49b0-ba83-a7cb27dd329e",
+      "conversazioneId": "53079c37-f4d1-442e-85d8-362f1125243a",
+      "mittente": "TonyPitony",
+      "testo": "fddfsa",
+      "ora": "2026-05-15T20:51:51.271150+00:00",
+      "letto": false
+    },
+    {
+      "id": "2e21ffb8-a0c2-4d2c-8fff-685ef2f0e9cc",
+      "conversazioneId": "53079c37-f4d1-442e-85d8-362f1125243a",
+      "mittente": "sistema",
+      "testo": "gisfoigss",
+      "ora": "2026-05-15T20:52:28.699454+00:00",
+      "letto": true,
+      "tipo": "rimborso",
+      "acquirente": "TonyPitony"
+    },
+    {
+      "id": "a3a18d60-594d-4a1d-b946-ac7e955273ae",
+      "conversazioneId": "53079c37-f4d1-442e-85d8-362f1125243a",
+      "mittente": "Alex_Rob",
+      "testo": "adsa",
+      "ora": "2026-05-15T21:06:24.652653+00:00",
+      "letto": true
     }
   ]
 }

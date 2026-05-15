@@ -366,7 +366,7 @@ export default function Chat() {
     );
   }
 
-  // Utente non loggato: mostriamo la schermata di accesso
+  // Utente non loggato
   if (!utente) {
     return (
       <>
@@ -402,7 +402,7 @@ export default function Chat() {
         <div className="chat-wrapper">
 
           {/* ── SIDEBAR: lista delle conversazioni ── */}
-          <aside className={`chat-sidebar${!mostraSidebar ? " chat-nascosta-mobile" : ""}`}>
+          <aside className={`chat-sidebar d-md-flex ${mostraSidebar ? "d-flex" : "d-none"}`}>
 
             {/* Header sidebar */}
             <div className="chat-sidebar-header border-bottom border-dark">
@@ -501,7 +501,7 @@ export default function Chat() {
           </aside>
 
           {/* ── PANNELLO PRINCIPALE: chat ── */}
-          <main className={`chat-main${mostraSidebar ? " chat-nascosta-mobile" : ""}`}>
+          <main className={`chat-main d-md-flex ${!mostraSidebar ? "d-flex" : "d-none"}`}>
             {!selezionata ? (
               // Placeholder quando nessuna chat è aperta
               <div className="d-flex flex-column align-items-center justify-content-center h-100 gap-3">

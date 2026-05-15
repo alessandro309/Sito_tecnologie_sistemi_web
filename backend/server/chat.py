@@ -4,7 +4,7 @@ import uuid
 from datetime import datetime, timezone
 from typing import Dict, Set, Optional, Any
 
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect, HTTPException, Query, Body, Request
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect, HTTPException, Query, Body
 from pydantic import BaseModel
 
 DATA_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "dati", "chat.json")
@@ -48,7 +48,7 @@ class NuovaConversazione(BaseModel):
     destinatario: str
     idAnnuncio: Any
     titoloAnnuncio: Optional[str] = ""
-    prezzoAnnuncio: Optional[str] = ""
+    prezzoAnnuncio: Optional[Any] = ""
 
 
 class NuovoMessaggio(BaseModel):

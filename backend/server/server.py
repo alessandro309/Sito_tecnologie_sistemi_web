@@ -353,7 +353,7 @@ def acquista_annuncio(
     db.commit()
 
 
-# Annulla un acquisto e rimette l'annuncio disponibile (solo chi ha comprato può farlo)
+# Annulla un acquisto ed elimina l'annuncio (solo chi ha comprato può farlo)
 @app.post("/annunci/{idAnnuncio}/rimborso", status_code=204)
 def rimborsa_annuncio(
         idAnnuncio: int,
@@ -367,8 +367,11 @@ def rimborsa_annuncio(
     if annuncio.acquirente != utente_corrente:
         raise HTTPException(status_code=403, detail="Solo l'acquirente può richiedere il rimborso")
 
-    annuncio.venduto = False
-    annuncio.acquirente = None
+    cartella_annuncio = os.path.join(BASE_DIR_IMMAGINI, str(idAnnuncio))
+    if os.path.exists(cartella_annuncio):
+        shutil.rmtree(cartella_annuncio)
+
+    db.delete(annuncio)
     db.commit()
 
 

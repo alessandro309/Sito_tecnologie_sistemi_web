@@ -118,26 +118,36 @@ export default function PaginaAnnuncio() {
           titoloAnnuncio: annuncio.nome,
           prezzoAnnuncio: annuncio.prezzo,
         });
-        if (convRes.ok) {
-          const conv = await convRes.json();
-          const prezzoSpedizione = annuncio.prezzo_spedizione ?? 0;
-          await api.inviaMessaggioAcquisto({
-            conversazioneId: conv.id,
-            mittente: 'sistema',
-            testo: `Acquisto completato: ${annuncio.nome}`,
-            tipo: 'sistema',
+        if (!convRes.ok) throw new Error('Creazione conversazione fallita');
+        const conv = await convRes.json();
+        const prezzoSpedizione = annuncio.prezzo_spedizione ?? 0;
+        const msgRes = await api.inviaMessaggioAcquisto({
+          conversazioneId: conv.id,
+          mittente: 'sistema',
+          testo: `Acquisto completato: ${annuncio.nome}`,
+          tipo: 'sistema',
+          acquirente: utente.nickname,
+          idAnnuncio: String(annuncio.idAnnuncio),
+          datiAcquisto: {
+            nomeAnnuncio: annuncio.nome,
             acquirente: utente.nickname,
+            venditore: annuncio.utente,
+            prezzoArticolo: annuncio.prezzo,
+            prezzoSpedizione,
+          },
+        });
+        if (!msgRes.ok) throw new Error('Invio notifica chat fallito');
+        navigate('/chat', {
+          state: {
+            venditore: annuncio.utente,
             idAnnuncio: String(annuncio.idAnnuncio),
-            datiAcquisto: {
-              nomeAnnuncio: annuncio.nome,
-              acquirente: utente.nickname,
-              venditore: annuncio.utente,
-              prezzoArticolo: annuncio.prezzo,
-              prezzoSpedizione,
-            },
-          });
-        }
-      } catch { /* il messaggio chat non è bloccante */ }
+            titoloAnnuncio: annuncio.nome,
+            prezzoAnnuncio: annuncio.prezzo,
+          },
+        });
+      } catch (e) {
+        console.error('Notifica acquisto in chat:', e);
+      }
     } catch (e) {
       setErroreAcquisto(e.message);
     } finally {
