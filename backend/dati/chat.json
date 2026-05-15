@@ -230,6 +230,17 @@
       "titoloAnnuncio": "Test",
       "prezzoAnnuncio": 44.44,
       "creatoIl": "2026-05-15T20:14:48.382917+00:00"
+    },
+    {
+      "id": "82e0b129-9697-409d-b578-127823a39ffa",
+      "partecipanti": [
+        "Alex_Rob",
+        "Luchettino"
+      ],
+      "idAnnuncio": "18",
+      "titoloAnnuncio": "Nintendo Switch",
+      "prezzoAnnuncio": 95,
+      "creatoIl": "2026-05-15T21:34:32.852338+00:00"
     }
   ],
   "messaggi": [
@@ -799,7 +810,7 @@
       "mittente": "TonyPitony",
       "testo": "fddfsa",
       "ora": "2026-05-15T20:51:51.271150+00:00",
-      "letto": false
+      "letto": true
     },
     {
       "id": "2e21ffb8-a0c2-4d2c-8fff-685ef2f0e9cc",
@@ -818,6 +829,32 @@
       "testo": "adsa",
       "ora": "2026-05-15T21:06:24.652653+00:00",
       "letto": true
+    },
+    {
+      "id": "441dc5e2-72a5-44af-b9f1-9760f89b9c0c",
+      "conversazioneId": "82e0b129-9697-409d-b578-127823a39ffa",
+      "mittente": "sistema",
+      "testo": "Acquisto completato: Nintendo Switch",
+      "ora": "2026-05-15T21:34:32.876790+00:00",
+      "letto": true,
+      "tipo": "sistema",
+      "acquirente": "Alex_Rob",
+      "idAnnuncio": "18",
+      "datiAcquisto": {
+        "nomeAnnuncio": "Nintendo Switch",
+        "acquirente": "Alex_Rob",
+        "venditore": "Luchettino",
+        "prezzoArticolo": 95,
+        "prezzoSpedizione": 40
+      }
+    },
+    {
+      "id": "2eae6b09-08f2-410b-80bd-ccfd49f1d1a0",
+      "conversazioneId": "82e0b129-9697-409d-b578-127823a39ffa",
+      "mittente": "Alex_Rob",
+      "testo": "Prova",
+      "ora": "2026-05-15T21:40:38.578649+00:00",
+      "letto": false
     }
   ]
 }

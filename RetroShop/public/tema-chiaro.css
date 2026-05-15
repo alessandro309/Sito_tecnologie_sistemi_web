@@ -444,6 +444,26 @@ body.tema-chiaro .colore-titoli {
     color: #0096D6 !important;
 }
 
+
+/* --- MODAL PAGAMENTO --- */
+
+body.tema-chiaro .carta-input {
+    background-color: #F8F8F8 !important;
+    color: #000000 !important;
+    border-color: #7A7A7A !important;
+}
+
+body.tema-chiaro .carta-input:focus {
+    background-color: rgba(0, 150, 214, 0.03) !important;
+    border-color: #0096D6 !important;
+    color: #000000 !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 150, 214, 0.2) !important;
+}
+
+body.tema-chiaro .carta-input::placeholder {
+    color: #7A7A7A !important;
+}
+
 body.tema-chiaro .pulsante_verde {
     background-color: #2dbe5c !important;
     border-color: #2dbe5c !important;
@@ -520,6 +540,31 @@ body.tema-chiaro .chat-bubble.mia {
 body.tema-chiaro .chat-bubble.altrui {
     background: rgba(0, 0, 0, 0.06) !important;
     border: 1px solid #D0D0D0 !important;
+}
+
+body.tema-chiaro .chat-card-acquisto {
+    background: #F8F8F8 !important;
+}
+
+body.tema-chiaro .chat-card-acquisto-value {
+    color: #333333 !important;
+}
+
+body.tema-chiaro .rimborso-textarea {
+    background-color: #F8F8F8 !important;
+    color: #000000 !important;
+    border-color: #7A7A7A !important;
+}
+
+body.tema-chiaro .rimborso-textarea:focus {
+    background-color: rgba(0, 150, 214, 0.03) !important;
+    border-color: #0096D6 !important;
+    color: #000000 !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 150, 214, 0.2) !important;
+}
+
+body.tema-chiaro .rimborso-textarea::placeholder {
+    color: #7A7A7A !important;
 }
 
 body.tema-chiaro .chat-input-bar {

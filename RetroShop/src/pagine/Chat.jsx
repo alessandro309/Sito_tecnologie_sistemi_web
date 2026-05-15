@@ -315,7 +315,7 @@ export default function Chat() {
     }
   }
 
-  // Conferma che l'acquirente ha ricevuto l'articolo
+  // Conferma che l'acquirente ha ricevuto l'articolo ed elimina l'annuncio
   async function handleConfermaRicezione(msg) {
     setConsegnaInCorso(msg.idAnnuncio);
 
@@ -334,6 +334,15 @@ export default function Chat() {
         tipo: "consegna",
         acquirente: utente.nickname,
       });
+
+      // Eliminiamo l'annuncio ora che la transazione è completata
+      // 404 = già eliminato in precedenza → non blocchiamo
+      if (msg.idAnnuncio) {
+        const res = await api.eliminaAnnuncio(msg.idAnnuncio);
+        if (!res.ok && res.status !== 404) {
+          console.warn("Eliminazione annuncio fallita:", res.status);
+        }
+      }
     } catch (e) {
       alert(e.message);
     } finally {
@@ -638,7 +647,7 @@ export default function Chat() {
 
                         return (
                           <div key={msg.id} className="d-flex justify-content-center mb-4">
-                            <div className="font-monospace rounded-3 overflow-hidden" style={{maxWidth: "92%", minWidth: 320, border: "1px solid rgba(3,235,72,0.35)", background: "#080808"}}>
+                            <div className="font-monospace rounded-3 overflow-hidden chat-card-acquisto" style={{maxWidth: "92%", minWidth: 320, border: "1px solid rgba(3,235,72,0.35)"}}>
 
                               {/* Header verde */}
                               <div className="d-flex align-items-center gap-2 px-4 py-3" style={{background: "rgba(3,235,72,0.13)", borderBottom: "1px solid rgba(3,235,72,0.2)"}}>
@@ -658,7 +667,7 @@ export default function Chat() {
                                   ].map(([label, valore]) => (
                                     <div key={label} className="d-flex justify-content-between gap-3 mb-2">
                                       <span className="text-secondary">{label}</span>
-                                      <span className="text-end" style={{color: "#ccc"}}>{valore}</span>
+                                      <span className="text-end chat-card-acquisto-value">{valore}</span>
                                     </div>
                                   ))}
                                   <div className="d-flex justify-content-between gap-3 pt-2 mt-2" style={{borderTop: "1px solid rgba(3,235,72,0.25)", fontSize: 17}}>
@@ -806,7 +815,7 @@ export default function Chat() {
                   Spiega il motivo per cui vuoi richiedere il rimborso. Il venditore potrà leggere la tua spiegazione.
                 </p>
                 <textarea
-                  className="form-control bg-dark border-secondary text-white font-monospace"
+                  className="form-control bg-dark border-secondary text-white font-monospace rimborso-textarea"
                   rows={5}
                   placeholder="Es: il prodotto non corrisponde alla descrizione, è arrivato danneggiato..."
                   value={modalRimborso.spiegazione}
