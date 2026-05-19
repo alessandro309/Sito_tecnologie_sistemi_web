@@ -335,14 +335,6 @@ export default function Chat() {
         acquirente: utente.nickname,
       });
 
-      // Eliminiamo l'annuncio ora che la transazione è completata
-      // 404 = già eliminato in precedenza → non blocchiamo
-      if (msg.idAnnuncio) {
-        const res = await api.eliminaAnnuncio(msg.idAnnuncio);
-        if (!res.ok && res.status !== 404) {
-          console.warn("Eliminazione annuncio fallita:", res.status);
-        }
-      }
     } catch (e) {
       alert(e.message);
     } finally {

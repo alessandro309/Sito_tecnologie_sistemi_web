@@ -11,7 +11,7 @@ DATA_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "dati
 
 router = APIRouter()
 
-# nickname → set di WebSocket attivi
+# nickname -> set di WebSocket attivi
 clienti: Dict[str, Set[WebSocket]] = {}
 
 

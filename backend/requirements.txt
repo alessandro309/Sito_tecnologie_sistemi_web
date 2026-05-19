@@ -1,0 +1,7 @@
+fastapi #server
+uvicorn[standard] #server, [standard] include il supporto websocket
+sqlalchemy #gestione database 1/2
+psycopg2-binary #gestione database 2/2
+passlib[bcrypt] #hashing password
+pydantic #validazione richieste
+python-multipart #necessario a FastAPI per ricevere file (UploadFile)

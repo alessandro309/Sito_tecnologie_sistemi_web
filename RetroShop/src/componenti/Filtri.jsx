@@ -19,6 +19,7 @@ export default function ModalFiltri() {
   const [condizioni, setCondizioni] = useState([]);
   const [prezzoMin, setPrezzoMin] = useState('');
   const [prezzoMax, setPrezzoMax] = useState('');
+  const [errorePrezzo, setErrorePrezzo] = useState(false);
   const [spedizione, setSpedizione] = useState(false);
   const [consegnaAMano, setConsegnaAMano] = useState(false);
 
@@ -61,6 +62,12 @@ export default function ModalFiltri() {
 
   function handleApplica(e) {
     e.preventDefault();
+
+    if (prezzoMin !== '' && prezzoMax !== '' && Number(prezzoMin) > Number(prezzoMax)) {
+      setErrorePrezzo(true);
+      return;
+    }
+    setErrorePrezzo(false);
 
     // Manteniamo i parametri di ricerca testuale già presenti nell'URL (ricerca, citta)
     const params = new URLSearchParams(window.location.search);
@@ -202,6 +209,11 @@ export default function ModalFiltri() {
                     />
                   </div>
                 </div>
+                {errorePrezzo && (
+                  <small className="text-danger mt-1 d-block" style={{ fontSize: '0.85rem' }}>
+                    Prezzo massimo minore del prezzo minimo.
+                  </small>
+                )}
               </div>
 
               {/* SPEDIZIONE + CONSEGNA A MANO */}
