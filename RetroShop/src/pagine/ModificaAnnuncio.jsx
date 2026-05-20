@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { api, BASE } from '../api';
-import { useAuth } from '../contexts/AuthContext';
+import {useState, useEffect, useRef} from 'react';
+import {useParams, useNavigate} from 'react-router-dom';
+import {api, BASE} from '../api';
+import {useAuth} from '../contexts/AuthContext';
 import Navbar from '../componenti/Navbar';
 import ModalLogin from '../componenti/Login';
 import Footer from '../componenti/Footer';
@@ -45,7 +45,7 @@ const MODELLI_PER_PIATTAFORMA = {
   Altro: ['Amiga', 'Arcade / Cabinati'],
 };
 
-const CONSOLE_PORTATILI = new Set(['PSP', 'PSVita', 'GameBoy', 'GameBoy Advance', 'DS', '3DS', 'Switch', 'Switch2', 'GameGear','Atari Lynx',]);
+const CONSOLE_PORTATILI = new Set(['PSP', 'PSVita', 'GameBoy', 'GameBoy Advance', 'DS', '3DS', 'Switch', 'Switch2', 'GameGear', 'Atari Lynx',]);
 
 const MAX_FOTO = 10;
 
@@ -154,7 +154,7 @@ export default function ModificaAnnuncio() {
     if (disponibili <= 0) return;
     const aggiunte = Array.from(e.target.files)
       .slice(0, disponibili)
-      .map(f => ({ url: URL.createObjectURL(f), file: f }));
+      .map(f => ({url: URL.createObjectURL(f), file: f}));
     setNuoveFoto(prev => [...prev, ...aggiunte]);
     e.target.value = '';
   }
@@ -260,7 +260,7 @@ export default function ModificaAnnuncio() {
               {totaleFoto < MAX_FOTO && (
                 <div
                   className="upload-area border border-dark rounded-4 d-flex flex-column align-items-center justify-content-center position-relative"
-                  style={{ height: totaleFoto > 0 ? 180 : 450 }}
+                  style={{height: totaleFoto > 0 ? 180 : 450}}
                 >
                   <div className="text-center p-4">
                     <i className="bi bi-images fs-1 text-secondary mb-3"></i>
@@ -274,7 +274,7 @@ export default function ModificaAnnuncio() {
                     className="position-absolute top-0 start-0 w-100 h-100 opacity-0"
                     accept="image/*"
                     multiple
-                    style={{ cursor: 'pointer' }}
+                    style={{cursor: 'pointer'}}
                     onChange={handleNuoveFoto}
                   />
                 </div>
@@ -337,7 +337,7 @@ export default function ModificaAnnuncio() {
                       className="form-select border-secondary shadow-none"
                       required
                       value={piattaforma}
-                      onChange={e => { setPiattaforma(e.target.value); setModello(''); }}
+                      onChange={e => {setPiattaforma(e.target.value); setModello('');}}
                     >
                       <option value="" disabled>Piattaforma...</option>
                       {Object.keys(MODELLI_PER_PIATTAFORMA).map(p => <option key={p}>{p}</option>)}
@@ -376,7 +376,7 @@ export default function ModificaAnnuncio() {
                       required
                     />
                     {cittaAperta && (
-                      <ul className="list-group position-absolute w-100 shadow-lg suggerimenti-autocomplete" style={{ top: '100%', zIndex: 1051 }}>
+                      <ul className="list-group position-absolute w-100 shadow-lg suggerimenti-autocomplete" style={{top: '100%', zIndex: 1051}}>
                         {suggerimentiCitta.map((nome) => (
                           <li
                             key={nome}
@@ -410,11 +410,11 @@ export default function ModificaAnnuncio() {
                     />
                   </div>
                   <div className="input-group">
-                    <span className={`input-group-text border-secondary ${spedizione ? 'text-white bg-transparent' : 'text-secondary'}`} style={{ transition: 'color 0.2s' }}>€</span>
+                    <span className={`input-group-text border-secondary ${spedizione ? 'text-white bg-transparent' : 'text-secondary'}`} style={{transition: 'color 0.2s'}}>€</span>
                     <input
                       type="number"
                       className="form-control bg-transparent border-secondary shadow-none"
-                      style={{ color: spedizione ? '#fff' : '#6c757d', transition: 'color 0.2s' }}
+                      style={{color: spedizione ? '#fff' : '#6c757d', transition: 'color 0.2s'}}
                       placeholder="Costo spedizione"
                       step="0.01"
                       min="0"

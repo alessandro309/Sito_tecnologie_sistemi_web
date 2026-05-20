@@ -1,16 +1,16 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import {useState, useEffect} from 'react';
+import {useParams, useNavigate} from 'react-router-dom';
 import Navbar from '../componenti/Navbar';
 import ModalLogin from '../componenti/Login';
 import ModalFiltri from '../componenti/Filtri';
 import Footer from '../componenti/Footer';
-import { api, BASE } from '../api';
-import { useAuth } from '../contexts/AuthContext';
+import {api, BASE} from '../api';
+import {useAuth} from '../contexts/AuthContext';
 
 export default function PaginaAnnuncio() {
-  const { id } = useParams();
+  const {id} = useParams();
   const navigate = useNavigate();
-  const { utente } = useAuth();
+  const {utente} = useAuth();
 
   const [annuncio, setAnnuncio] = useState(null);
   const [nonTrovato, setNonTrovato] = useState(false);
@@ -20,10 +20,10 @@ export default function PaginaAnnuncio() {
   const [acquistoInCorso, setAcquistoInCorso] = useState(false);
   const [acquistoCompletato, setAcquistoCompletato] = useState(false);
   const [erroreAcquisto, setErroreAcquisto] = useState(null);
-  const [datiCarta, setDatiCarta] = useState({ numero: '', intestatario: '', scadenza: '', cvv: '' });
+  const [datiCarta, setDatiCarta] = useState({numero: '', intestatario: '', scadenza: '', cvv: ''});
 
   useEffect(() => {
-    if (!utente) { setSalvato(false); return; }
+    if (!utente) {setSalvato(false); return;}
     api.getPreferiti()
       .then((r) => r.ok ? r.json() : [])
       .then((dati) => setSalvato(dati.some((a) => a.idAnnuncio === parseInt(id))))
@@ -33,7 +33,7 @@ export default function PaginaAnnuncio() {
   useEffect(() => {
     api.annuncio(id)
       .then(async (r) => {
-        if (!r.ok) { setNonTrovato(true); return; }
+        if (!r.ok) {setNonTrovato(true); return;}
         const dati = await r.json();
         setAnnuncio(dati);
         setAcquistoCompletato(dati.venduto ?? false);
@@ -107,7 +107,7 @@ export default function PaginaAnnuncio() {
     if (acquistoInCorso) return;
     window.bootstrap?.Modal.getOrCreateInstance(document.getElementById('modalPagamento'))?.hide();
     setErroreAcquisto(null);
-    setDatiCarta({ numero: '', intestatario: '', scadenza: '', cvv: '' });
+    setDatiCarta({numero: '', intestatario: '', scadenza: '', cvv: ''});
   }
 
   async function handleConfermaAcquisto() {
@@ -122,7 +122,7 @@ export default function PaginaAnnuncio() {
       setAcquistoCompletato(true);
       chiudiModalPagamento();
 
-      // Crea la conversazione in chat tra acquirente e venditore con riepilogo ordine
+      // Crea conversazione chat con riepilogo ordine tra acquirente e venditore
       try {
         const convRes = await api.creaConversazioneChat({
           mittente: utente.nickname,
@@ -266,7 +266,7 @@ export default function PaginaAnnuncio() {
                       <>
                         <button
                           className="btn pulsante_verde font-monospace px-4 py-2 rounded-2 shadow-sm d-flex align-items-center justify-content-center flex-grow-1"
-                          onClick={() => { setErroreAcquisto(null); window.bootstrap?.Modal.getOrCreateInstance(document.getElementById('modalPagamento'))?.show(); }}
+                          onClick={() => {setErroreAcquisto(null); window.bootstrap?.Modal.getOrCreateInstance(document.getElementById('modalPagamento'))?.show();}}
                           disabled={acquistaNonDisponibile}
                           title={!annuncio.spedizione ? 'Acquisto disponibile solo per annunci con spedizione' : undefined}
                         >
@@ -285,7 +285,7 @@ export default function PaginaAnnuncio() {
                   </div>
                 </div>
 
-                {/* Specifiche tecniche dell'articolo */}
+                {/* Specifiche tecniche */}
                 <div className="mb-4 font-monospace small">
                   {[
                     ['Piattaforma', annuncio.piattaforma],
@@ -370,7 +370,7 @@ export default function PaginaAnnuncio() {
                   <span className="text-secondary">Spedizione</span>
                   <span>€ {(annuncio.prezzo_spedizione ?? 0).toFixed(2)}</span>
                 </div>
-                <div className="d-flex justify-content-between align-items-center pt-2" style={{ borderTop: '1px solid rgba(3,235,72,0.18)' }}>
+                <div className="d-flex justify-content-between align-items-center pt-2" style={{borderTop: '1px solid rgba(3,235,72,0.18)'}}>
                   <span className="text-secondary small">Totale</span>
                   <span className="fw-bold fs-5 text-success">
                     € {(annuncio.prezzo + (annuncio.prezzo_spedizione ?? 0)).toFixed(2)}
@@ -394,7 +394,7 @@ export default function PaginaAnnuncio() {
                       onChange={(e) => {
                         let v = e.target.value.replace(/\D/g, '').slice(0, 16);
                         v = v.match(/.{1,4}/g)?.join(' ') ?? v;
-                        setDatiCarta(d => ({ ...d, numero: v }));
+                        setDatiCarta(d => ({...d, numero: v}));
                       }}
                       disabled={acquistoInCorso}
                     />
@@ -408,7 +408,7 @@ export default function PaginaAnnuncio() {
                     className="form-control bg-dark border-secondary text-white font-monospace carta-input"
                     placeholder="Nome Cognome"
                     value={datiCarta.intestatario}
-                    onChange={(e) => setDatiCarta(d => ({ ...d, intestatario: e.target.value }))}
+                    onChange={(e) => setDatiCarta(d => ({...d, intestatario: e.target.value}))}
                     disabled={acquistoInCorso}
                   />
                 </div>
@@ -425,7 +425,7 @@ export default function PaginaAnnuncio() {
                       onChange={(e) => {
                         let v = e.target.value.replace(/\D/g, '').slice(0, 4);
                         if (v.length >= 3) v = v.slice(0, 2) + '/' + v.slice(2);
-                        setDatiCarta(d => ({ ...d, scadenza: v }));
+                        setDatiCarta(d => ({...d, scadenza: v}));
                       }}
                       disabled={acquistoInCorso}
                     />
@@ -438,7 +438,7 @@ export default function PaginaAnnuncio() {
                       placeholder="•••"
                       maxLength={3}
                       value={datiCarta.cvv}
-                      onChange={(e) => setDatiCarta(d => ({ ...d, cvv: e.target.value.replace(/\D/g, '').slice(0, 3) }))}
+                      onChange={(e) => setDatiCarta(d => ({...d, cvv: e.target.value.replace(/\D/g, '').slice(0, 3)}))}
                       disabled={acquistoInCorso}
                     />
                   </div>
@@ -450,7 +450,7 @@ export default function PaginaAnnuncio() {
                   </p>
                 )}
 
-                <p className="text-center text-secondary mb-0" style={{ fontSize: '0.75rem' }}>
+                <p className="text-center text-secondary mb-0" style={{fontSize: '0.75rem'}}>
                   <i className="bi bi-lock-fill me-1"></i>Transazione fittizia, non abbiamo budget per Visa/Mastercard
                 </p>
               </div>

@@ -53,10 +53,10 @@
     transform: scale(1.05);
 }
 
-.card-annuncio .card-body   { padding: 1.5rem !important; }
-.card-annuncio .card-title  { color: #ffffff !important; font-weight: bold; }
+.card-annuncio .card-body { padding: 1.5rem !important; }
+.card-annuncio .card-title { color: #ffffff !important; font-weight: bold; }
 .card-annuncio .text-secondary,
-.card-annuncio p            { color: #e9ecef !important; }
+.card-annuncio p { color: #e9ecef !important; }
 .card-annuncio .text-danger { color: #ff4d4d !important; }
 
 

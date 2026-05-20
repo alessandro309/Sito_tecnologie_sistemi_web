@@ -20,8 +20,8 @@ function formattaOra(iso) {
   const ieri = new Date();
   ieri.setDate(oggi.getDate() - 1);
 
-  const formatOra  = {hour: "2-digit", minute: "2-digit"};
-  const formatData = {day:  "2-digit", month:  "2-digit"};
+  const formatOra = {hour: "2-digit", minute: "2-digit"};
+  const formatData = {day: "2-digit", month: "2-digit"};
 
   if (data.toDateString() === oggi.toDateString())
     return data.toLocaleTimeString("it-IT", formatOra);
@@ -70,9 +70,9 @@ export default function Chat() {
   const nuovaChat = location.state ?? null;
 
 
-  const [conversazioni, setConversazioni] = useState([]);   // lista di tutte le chat
+  const [conversazioni, setConversazioni] = useState([]); // lista di tutte le chat
   const [selezionata, setSelezionata] = useState(null); // chat attualmente aperta
-  const [messaggi, setMessaggi] = useState([]);   // messaggi della chat aperta
+  const [messaggi, setMessaggi] = useState([]); // messaggi della chat aperta
 
   const [testo, setTesto] = useState(""); // testo nel campo di scrittura
   const [ricerca, setRicerca] = useState(""); // testo nella barra di ricerca sidebar
@@ -81,8 +81,8 @@ export default function Chat() {
   const [caricandoConv, setCaricandoConv] = useState(false);
   const [caricandoMsg, setCaricandoMsg] = useState(false);
 
-  const [mostraSidebar, setMostraSidebar] = useState(true);  // su mobile: sidebar o chat
-  const [fotoAnnunci, setFotoAnnunci] = useState({});    // mappa { idAnnuncio → urlFoto }
+  const [mostraSidebar, setMostraSidebar] = useState(true); // su mobile: sidebar o chat
+  const [fotoAnnunci, setFotoAnnunci] = useState({}); // mappa idAnnuncio → urlFoto
 
   const [rimborsoInCorso, setRimborsoInCorso] = useState(null); // idAnnuncio in elaborazione
   const [consegnaInCorso, setConsegnaInCorso] = useState(null); // idAnnuncio in elaborazione
@@ -92,7 +92,7 @@ export default function Chat() {
 
 
 
-  const wsRef  = useRef(null); // connessione WebSocket attiva
+  const wsRef = useRef(null); // connessione WebSocket attiva
   const endRef = useRef(null); // <div> invisibile in fondo ai messaggi, usato per lo scroll
 
   // I handler del WebSocket vengono creati una sola volta e "vedono" solo il valore
@@ -190,7 +190,7 @@ export default function Chat() {
 
 
     fetch("/api/chat/conversazioni", {
-      method:  "POST",
+      method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
         mittente: utente.nickname,
@@ -203,13 +203,13 @@ export default function Chat() {
       .then((r) => r.json())
       .then(async (conv) => {
         // Ricarichiamo la lista e cerchiamo la conversazione appena creata/trovata
-        const lista   = await fetchConversazioni();
+        const lista = await fetchConversazioni();
         const trovata = lista.find((c) => c.id === conv.id) ?? {
           ...conv,
-          altroUtente:     nuovaChat.venditore,
+          altroUtente: nuovaChat.venditore,
           ultimoMessaggio: null,
-          oraUltimo:       conv.creatoIl,
-          nonLetti:        0,
+          oraUltimo: conv.creatoIl,
+          nonLetti: 0,
         };
         apriChat(trovata);
       })
@@ -237,9 +237,9 @@ export default function Chat() {
       ).then((risultati) => {
         const mappa = {};
         risultati.forEach((res, i) => {
-          const annuncio  = res.status === "fulfilled" ? res.value : null;
+          const annuncio = res.status === "fulfilled" ? res.value : null;
           const primaFoto = annuncio?.immagini?.[0]?.url_immagine;
-          mappa[ids[i]]   = primaFoto ? `${BASE}${primaFoto}` : null;
+          mappa[ids[i]] = primaFoto ? `${BASE}${primaFoto}` : null;
         });
         // Aggiornamento additivo: non sovrascriviamo le foto già caricate
         setFotoAnnunci((prev) => ({...prev, ...mappa}));
@@ -505,7 +505,7 @@ export default function Chat() {
                           <span
                             className="font-monospace text-truncate"
                             style={{
-                              fontSize:   14,
+                              fontSize: 14,
                               color: conv.nonLetti > 0 ? "#ddd" : "#666",
                               fontWeight: conv.nonLetti > 0 ? "bold" : "normal",
                               maxWidth: "85%",
@@ -575,8 +575,8 @@ export default function Chat() {
                     disabled={eliminandoChat || haSpedizioneInAttesa}
                     title={haSpedizioneInAttesa ? "Non puoi eliminare la chat con una spedizione in corso" : "Elimina conversazione"}
                     style={{color: haSpedizioneInAttesa ? "#3a3a3a" : "#6c757d", cursor: haSpedizioneInAttesa ? "not-allowed" : "pointer"}}
-                    onMouseEnter={(e) => { if (!haSpedizioneInAttesa) e.currentTarget.style.color = "#dc3545"; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.color = haSpedizioneInAttesa ? "#3a3a3a" : "#6c757d"; }}
+                    onMouseEnter={(e) => {if (!haSpedizioneInAttesa) e.currentTarget.style.color = "#dc3545";}}
+                    onMouseLeave={(e) => {e.currentTarget.style.color = haSpedizioneInAttesa ? "#3a3a3a" : "#6c757d";}}
                   >
                     {eliminandoChat
                       ? <span className="spinner-border" style={{width: 16, height: 16, borderWidth: 2}} />
@@ -607,9 +607,9 @@ export default function Chat() {
                             <div
                               className="font-monospace text-center px-3 py-2 rounded-3"
                               style={{
-                                background: sonoAcquirente ? "rgba(255,17,0,0.05)"  : "rgba(255,17,0,0.12)",
+                                background: sonoAcquirente ? "rgba(255,17,0,0.05)" : "rgba(255,17,0,0.12)",
                                 border: `1px solid ${sonoAcquirente ? "rgba(255,17,0,0.3)" : "rgba(255,17,0,0.7)"}`,
-                                color: sonoAcquirente ? "rgb(255,130,130)"     : "rgb(255,80,80)",
+                                color: sonoAcquirente ? "rgb(255,130,130)" : "rgb(255,80,80)",
                                 fontSize: 13,
                                 maxWidth: "85%",
                               }}
@@ -723,8 +723,8 @@ export default function Chat() {
                                       style={{background: "rgba(3,235,72,0.12)", border: "1px solid rgba(3,235,72,0.5)", color: "rgb(100,220,100)", fontSize: 13, padding: "6px 16px", borderRadius: 6, transition: "all 0.2s"}}
                                       onClick={() => handleConfermaRicezione(msg)}
                                       disabled={consegnaAttiva || rimborsoAttivo}
-                                      onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(3,235,72,0.25)"; e.currentTarget.style.color = "rgb(3,235,72)"; }}
-                                      onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(3,235,72,0.12)"; e.currentTarget.style.color = "rgb(100,220,100)"; }}
+                                      onMouseEnter={(e) => {e.currentTarget.style.background = "rgba(3,235,72,0.25)"; e.currentTarget.style.color = "rgb(3,235,72)";}}
+                                      onMouseLeave={(e) => {e.currentTarget.style.background = "rgba(3,235,72,0.12)"; e.currentTarget.style.color = "rgb(100,220,100)";}}
                                     >
                                       {consegnaAttiva
                                         ? <><span className="spinner-border" style={{width: 12, height: 12, borderWidth: 2}} />Elaborazione...</>
@@ -736,8 +736,8 @@ export default function Chat() {
                                       style={{background: "rgba(220,53,69,0.12)", border: "1px solid rgba(220,53,69,0.5)", color: "#f08080", fontSize: 13, padding: "6px 16px", borderRadius: 6, transition: "all 0.2s"}}
                                       onClick={() => setModalRimborso({aperto: true, msg, spiegazione: ""})}
                                       disabled={rimborsoAttivo || consegnaAttiva}
-                                      onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(220,53,69,0.25)"; e.currentTarget.style.color = "#ff8080"; }}
-                                      onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(220,53,69,0.12)"; e.currentTarget.style.color = "#f08080"; }}
+                                      onMouseEnter={(e) => {e.currentTarget.style.background = "rgba(220,53,69,0.25)"; e.currentTarget.style.color = "#ff8080";}}
+                                      onMouseLeave={(e) => {e.currentTarget.style.background = "rgba(220,53,69,0.12)"; e.currentTarget.style.color = "#f08080";}}
                                     >
                                       {rimborsoAttivo
                                         ? <><span className="spinner-border" style={{width: 12, height: 12, borderWidth: 2}} />Elaborazione...</>
@@ -802,7 +802,7 @@ export default function Chat() {
                     className="btn chat-send-btn"
                     style={{
                       background: testo.trim() && connesso ? "var(--colore-accento)" : "#2a2a2a",
-                      color: testo.trim() && connesso ? "#fff"                  : "#555",
+                      color: testo.trim() && connesso ? "#fff" : "#555",
                       border: `2px solid ${testo.trim() && connesso ? "var(--colore-accento)" : "#2a2a2a"}`,
                     }}
                   >
@@ -883,7 +883,7 @@ export default function Chat() {
         <div
           className="modal d-block modal-backdrop-custom"
           style={{zIndex: 9999}}
-          onClick={(e) => { if (e.target === e.currentTarget) setModalEliminaChat(false); }}
+          onClick={(e) => {if (e.target === e.currentTarget) setModalEliminaChat(false);}}
         >
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content bg-black border border-danger text-white font-monospace shadow-lg">

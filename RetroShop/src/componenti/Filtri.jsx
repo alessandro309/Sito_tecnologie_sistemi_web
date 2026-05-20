@@ -1,12 +1,12 @@
-import { useState, useEffect, useRef } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import {useState, useEffect, useRef} from 'react';
+import {useNavigate, useLocation} from 'react-router-dom';
 
 const CONDIZIONI = [
-  { id: 'condizNuovo',         valore: 'Nuovo',             label: 'Nuovo' },
-  { id: 'condizComeNuovo',     valore: 'Come Nuovo',        label: 'Come Nuovo' },
-  { id: 'condizOttime',        valore: 'Ottime',            label: 'Ottime' },
-  { id: 'condizBuone',         valore: 'Buone',             label: 'Buone' },
-  { id: 'condizPezziRicambio', valore: 'Pezzi di ricambio', label: 'Pezzi di ricambio' },
+  {id: 'condizNuovo', valore: 'Nuovo', label: 'Nuovo'},
+  {id: 'condizComeNuovo', valore: 'Come Nuovo', label: 'Come Nuovo'},
+  {id: 'condizOttime', valore: 'Ottime', label: 'Ottime'},
+  {id: 'condizBuone', valore: 'Buone', label: 'Buone'},
+  {id: 'condizPezziRicambio', valore: 'Pezzi di ricambio', label: 'Pezzi di ricambio'},
 ];
 
 export default function ModalFiltri() {
@@ -76,7 +76,7 @@ export default function ModalFiltri() {
     ['tipologia', 'marca', 'condizioni', 'prezzo_min', 'prezzo_max', 'spedizione', 'presenza']
       .forEach((k) => params.delete(k));
 
-    if (tipologia) params.set('tipologia',  tipologia);
+    if (tipologia) params.set('tipologia', tipologia);
     if (marca) params.set('marca', marca);
     condizioni.forEach((c) => params.append('condizioni', c));
     if (prezzoMin !== '') params.set('prezzo_min', prezzoMin);
@@ -89,7 +89,7 @@ export default function ModalFiltri() {
     window.bootstrap?.Modal.getInstance(el)?.hide();
 
     if (location.pathname === '/annunci') {
-      navigate(`/annunci?${params}`, { replace: true });
+      navigate(`/annunci?${params}`, {replace: true});
     } else {
       navigate(`/annunci?${params}`);
     }
@@ -210,7 +210,7 @@ export default function ModalFiltri() {
                   </div>
                 </div>
                 {errorePrezzo && (
-                  <small className="text-danger mt-1 d-block" style={{ fontSize: '0.85rem' }}>
+                  <small className="text-danger mt-1 d-block" style={{fontSize: '0.85rem'}}>
                     Prezzo massimo minore del prezzo minimo.
                   </small>
                 )}

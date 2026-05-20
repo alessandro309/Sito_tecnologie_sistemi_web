@@ -1,11 +1,11 @@
-import { useState, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { api } from '../api';
-import { useAuth } from '../contexts/AuthContext';
+import {useState, useRef} from 'react';
+import {Link, useNavigate} from 'react-router-dom';
+import {api} from '../api';
+import {useAuth} from '../contexts/AuthContext';
 
 export default function Registrazione() {
   const navigate = useNavigate();
-  const { setUtente } = useAuth();
+  const {setUtente} = useAuth();
 
   const [form, setForm] = useState({
     nome: '', cognome: '', nickname: '', dataNascita: '',
@@ -37,7 +37,7 @@ export default function Registrazione() {
   })();
 
   function aggiorna(campo) {
-    return (e) => setForm((prev) => ({ ...prev, [campo]: e.target.value }));
+    return (e) => setForm((prev) => ({...prev, [campo]: e.target.value}));
   }
 
   function handleFoto(e) {
@@ -76,7 +76,6 @@ export default function Registrazione() {
 
       if (foto) await api.uploadFotoProfilo(datiUtente.nickname, foto);
       /* LOGIN AUTOMATICO DISABILITATO PER LA PRESENTAZIONE */
-      // Login automatico dopo la registrazione
       // const loginRisp = await api.login({ nickname: datiUtente.nickname, password: form.password });
       // if (loginRisp.ok) {
       //   const me = await api.utenteMe();
@@ -104,7 +103,7 @@ export default function Registrazione() {
       </header>
 
       <main className="container mb-5">
-        <div className="bg-black p-4 p-md-5 rounded-4 shadow border border-secondary mx-auto" style={{ maxWidth: 900 }}>
+        <div className="bg-black p-4 p-md-5 rounded-4 shadow border border-secondary mx-auto" style={{maxWidth: 900}}>
           <h2 className="text-uppercase fw-bold mb-4 text-center border-bottom border-secondary pb-3">Registrazione account</h2>
 
           <form id="formRegistrazione" onSubmit={handleSubmit}>
@@ -127,7 +126,7 @@ export default function Registrazione() {
             <div className="row g-3 mb-4">
               <div className="col-md-4">
                 <label className="form-label small text-secondary mb-1">
-                  Data di nascita* <span className="text-danger" style={{ fontSize: '0.7rem' }}>(Solo &gt; 18 anni)</span>
+                  Data di nascita* <span className="text-danger" style={{fontSize: '0.7rem'}}>(Solo &gt; 18 anni)</span>
                 </label>
                 <input type="date" className="form-control rounded-1" max={oggiMeno18} value={form.dataNascita} onChange={aggiorna('dataNascita')} required />
               </div>
@@ -218,10 +217,10 @@ export default function Registrazione() {
                         />
                       ))}
                     </div>
-                    <small className="text-secondary" style={{ fontSize: '0.75rem' }}>
+                    <small className="text-secondary" style={{fontSize: '0.75rem'}}>
                       {forza === 0 && 'Inserisci una password'}
                       {forza === 1 && <span className="text-danger">Molto debole</span>}
-                      {forza === 2 && <span style={{ color: '#fd7e14' }}>Debole</span>}
+                      {forza === 2 && <span style={{color: '#fd7e14'}}>Debole</span>}
                       {forza === 3 && <span className="text-warning">Discreta</span>}
                       {forza === 4 && <span className="text-success">Ottima</span>}
                     </small>
@@ -232,12 +231,12 @@ export default function Registrazione() {
 
             {/* Requisiti password in tempo reale */}
             {form.password && (
-              <div className="mb-4 p-3 rounded-2 border border-secondary" style={{ background: 'rgba(255,255,255,0.03)' }}>
+              <div className="mb-4 p-3 rounded-2 border border-secondary" style={{background: 'rgba(255,255,255,0.03)'}}>
                 <p className="small text-secondary mb-2"><i className="bi bi-shield-lock me-1 text-danger"></i>Requisiti password:</p>
                 <div className="row g-1">
                   {REGOLE_PASSWORD.map((r) => (
                     <div key={r.id} className="col-6">
-                      <small style={{ fontSize: '0.8rem' }} className={r.check(form.password) ? 'text-success' : 'text-secondary'}>
+                      <small style={{fontSize: '0.8rem'}} className={r.check(form.password) ? 'text-success' : 'text-secondary'}>
                         <i className={`bi bi-${r.check(form.password) ? 'check-circle-fill' : 'circle'} me-1`}></i>
                         {r.testo}
                       </small>
@@ -250,7 +249,7 @@ export default function Registrazione() {
             <div className="row g-3 mb-4">
               <div className="col-12">
                 <label className="form-label small text-secondary mb-1">
-                  Foto Profilo <span className="text-secondary" style={{ fontSize: '0.7rem' }}>(Opzionale - Max 2MB)</span>
+                  Foto Profilo <span className="text-secondary" style={{fontSize: '0.7rem'}}>(Opzionale - Max 2MB)</span>
                 </label>
                 <input
                   className="form-control rounded-1 bg-black text-white border-secondary"

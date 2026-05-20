@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import {useState, useEffect} from 'react';
+import {Link, useNavigate} from 'react-router-dom';
+import {useAuth} from '../contexts/AuthContext';
 
 
 // Pulsante sole/luna per cambiare tema — sincronizzato con localStorage
@@ -26,14 +26,14 @@ function PulsanteTema() {
       onClick={toggle}
       className="btn bottone_login font-monospace rounded-1 bg-transparent border-0 p-0 m-0 d-flex align-items-center justify-content-center w-100 w-lg-auto px-4 py-2 text-nowrap"
       title={tema === 'dark' ? 'Passa al tema chiaro' : 'Passa al tema scuro'}
-      style={{ minWidth: 44 }}
+      style={{minWidth: 44}}
     >
       <i className={`bi bi-${tema === 'dark' ? 'sun-fill' : 'moon-stars-fill'} fs-5`}></i>
     </button>
   );
 }
 
-// Struttura dati dei menu console — evita 400 righe di JSX ripetuto
+// Menu console: label, marca, icona
 const CONSOLE_MENUS = [
   {label: 'PLAYSTATION', marca: 'PlayStation', icon: <i className="bi bi-playstation fs-5" />},
   {label: 'XBOX', marca: 'Xbox', icon: <i className="bi bi-xbox fs-5" />},
@@ -41,10 +41,10 @@ const CONSOLE_MENUS = [
   {label: 'SEGA', marca: 'Sega', icon: <img src="/logo_sega.svg" alt="Sega" className="logo-console-svg" />},
   {label: 'COMMODORE', marca: 'Commodore', icon: <img src="/logo_commodore.svg" alt="Commodore" className="logo-console-svg" />},
   {label: 'ATARI', marca: 'Atari', icon: <img src="/logo_atari.svg" alt="Atari" className="logo-console-svg" />},
-  {label: 'ALTRO', marca: 'Altro', icon: null },
+  {label: 'ALTRO', marca: 'Altro', icon: null},
 ];
 
-// Voce della barra console: Link diretto agli annunci filtrati per marca
+// Link diretto agli annunci filtrati per marca
 function ConsoleLink({menu}) {
   // "ALTRO" non ha una marca specifica: porta a tutti gli annunci
   const to = menu.marca ? `/annunci?marca=${encodeURIComponent(menu.marca)}` : '/annunci';
@@ -111,7 +111,7 @@ function NavbarDestra() {
 
   return (
     <div className="d-flex flex-column flex-lg-row align-items-center gap-1 ms-lg-0 w-100 w-lg-auto">
-      {/* ── PULSANTE CHAT (visibile solo se loggato) ── */}
+      {/* Pulsante chat (visibile solo se loggato) */}
       <Link
         to="/chat"
         className="btn bottone_login font-monospace text-uppercase rounded-1 bg-transparent border-0 p-0 m-0 d-flex align-items-center justify-content-center w-100 w-lg-auto px-4 py-2 text-nowrap"
@@ -192,7 +192,7 @@ export default function Navbar({children}) {
         </ul>
       </div>
 
-      {/* Barra di ricerca + eventuale contenuto aggiuntivo (es. filtri) */}
+      {/* Barra di ricerca + eventuale contenuto aggiuntivo */}
       {children}
     </header>
   );

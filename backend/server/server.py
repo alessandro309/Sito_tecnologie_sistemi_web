@@ -175,7 +175,18 @@ def carica_immagini_annuncio(
 
 # Restituisce tutti i dettagli di un annuncio dato il suo ID
 @app.get("/annunci/{idAnnuncio}", response_model=schemi.AnnuncioResponse)
-def get_annuncio(idAnnuncio: int, db: Session = Depends(get_db)):
+def get_annuncio(idAnnuncio: int, request: Request, db: Session = Depends(get_db)):
+    accept = request.headers.get("accept", "")
+    index_html = _FRONTEND_DIR / "index.html"
+    # dato che l'endpoint e l'url per mostrare gli annunci sono gli stessi, facciamo delle distinzioni
+    # Se un utente fa una richiesta annunci partendo da react il backend riceve una richiesta con campi Accept: "*/*"
+    # Se un utente fa una ricerca direttamente da url, il browser fa una richiesta get con campi Accept: "text/html"
+    if "text/html" in accept and index_html.exists(): # restituiamo la pagina html che verrà popolata                                      
+        return FileResponse(index_html, headers={
+            "Cache-Control": "no-store",
+            "Vary": "Accept",
+        })
+
     annuncio = db.query(database.AnnuncioDB).filter(database.AnnuncioDB.idAnnuncio == idAnnuncio).first()
     if annuncio is None:
         raise HTTPException(status_code=404, detail="Annuncio non trovato")

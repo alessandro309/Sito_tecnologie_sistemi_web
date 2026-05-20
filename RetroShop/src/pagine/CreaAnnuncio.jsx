@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { api } from '../api';
-import { useAuth } from '../contexts/AuthContext';
+import {useState, useEffect, useRef} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {api} from '../api';
+import {useAuth} from '../contexts/AuthContext';
 import Navbar from '../componenti/Navbar';
 import ModalLogin from '../componenti/Login';
 import Footer from '../componenti/Footer';
@@ -35,7 +35,7 @@ const CITTA = [
   'Vicenza', 'Viterbo',
 ];
 
-// Dizionario che dà tutte le console "caricabili" in base al marchio scelto
+// Modelli disponibili per ciascuna piattaforma
 const MODELLI_PER_PIATTAFORMA = {
   PlayStation: ['PS1', 'PS2', 'PS3', 'PS4', 'PS5', 'PSP', 'PSVita'],
   Xbox: ['XBOX originale', 'Xbox360', 'XBOX ONE', 'XBOX Series X|S'],
@@ -52,8 +52,8 @@ const MAX_FOTO = 10;
 
 export default function CreaAnnuncio() {
   const navigate = useNavigate();
-  const { utente, loading } = useAuth();
-  const [foto, setFoto] = useState([]); // [{ url, file }]
+  const {utente, loading} = useAuth();
+  const [foto, setFoto] = useState([]); // [{url, file}]
   const [caricamento, setCaricamento] = useState(false);
   const [errore, setErrore] = useState('');
   const [piattaforma, setPiattaforma] = useState('');
@@ -83,10 +83,10 @@ export default function CreaAnnuncio() {
   function handlePosizioneInput(e) {
     const testo = e.target.value;
     setPosizione(testo);
-    if (!testo) { 
+    if (!testo) {
       setSuggerimentiCitta([]);
-      setCittaAperta(false); 
-      return; 
+      setCittaAperta(false);
+      return;
     }
     const trovati = CITTA.filter((c) => c.toLowerCase().startsWith(testo.toLowerCase()));
     setSuggerimentiCitta(trovati);
@@ -103,7 +103,7 @@ export default function CreaAnnuncio() {
     const nuovi = Array.from(e.target.files);
     setFoto((prev) => {
       const disponibili = MAX_FOTO - prev.length;
-      const aggiunte = nuovi.slice(0, disponibili).map((f) => ({ url: URL.createObjectURL(f), file: f }));
+      const aggiunte = nuovi.slice(0, disponibili).map((f) => ({url: URL.createObjectURL(f), file: f}));
       return [...prev, ...aggiunte];
     });
     e.target.value = '';
@@ -118,13 +118,13 @@ export default function CreaAnnuncio() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (foto.length === 0) { 
-      setErrore('Carica almeno una foto.'); 
-      return; 
+    if (foto.length === 0) {
+      setErrore('Carica almeno una foto.');
+      return;
     }
-    if (!spedizione && !presenza) { 
-      setErrore('Seleziona almeno una modalità di consegna.'); 
-      return; 
+    if (!spedizione && !presenza) {
+      setErrore('Seleziona almeno una modalità di consegna.');
+      return;
     }
     setCaricamento(true);
     setErrore('');
@@ -191,7 +191,7 @@ export default function CreaAnnuncio() {
             {foto.length < MAX_FOTO && (
               <div
                 className="upload-area border border-dark rounded-4 d-flex flex-column align-items-center justify-content-center position-relative"
-                style={{ height: foto.length > 0 ? 180 : 450 }}
+                style={{height: foto.length > 0 ? 180 : 450}}
               >
                 <div className="text-center p-4">
                   <i className="bi bi-images fs-1 text-secondary mb-3"></i>
@@ -210,7 +210,7 @@ export default function CreaAnnuncio() {
                   className="position-absolute top-0 start-0 w-100 h-100 opacity-0"
                   accept="image/*"
                   multiple
-                  style={{ cursor: 'pointer' }}
+                  style={{cursor: 'pointer'}}
                   onChange={handleFoto}
                 />
               </div>
@@ -263,7 +263,7 @@ export default function CreaAnnuncio() {
                     className="form-select border-secondary shadow-none"
                     required
                     defaultValue=""
-                    onChange={(e) => { setPiattaforma(e.target.value); setModello(''); }}
+                    onChange={(e) => {setPiattaforma(e.target.value); setModello('');}}
                   >
                     <option value="" disabled>Piattaforma...</option>
                     {Object.keys(MODELLI_PER_PIATTAFORMA).map((p) => (
@@ -318,7 +318,7 @@ export default function CreaAnnuncio() {
                     required
                   />
                   {cittaAperta && (
-                    <ul className="list-group position-absolute w-100 shadow-lg suggerimenti-autocomplete" style={{ top: '100%', zIndex: 1051 }}>
+                    <ul className="list-group position-absolute w-100 shadow-lg suggerimenti-autocomplete" style={{top: '100%', zIndex: 1051}}>
                       {suggerimentiCitta.map((nome) => (
                         <li
                           key={nome}
@@ -355,12 +355,12 @@ export default function CreaAnnuncio() {
                   />
                 </div>
                 <div className="input-group">
-                  <span className={`input-group-text border-secondary ${spedizione ? 'text-white bg-transparent' : 'text-secondary'}`} style={{ transition: 'color 0.2s' }}>€</span>
+                  <span className={`input-group-text border-secondary ${spedizione ? 'text-white bg-transparent' : 'text-secondary'}`} style={{transition: 'color 0.2s'}}>€</span>
                   <input
                     type="number"
                     name="prezzo_spedizione"
                     className="form-control bg-transparent border-secondary shadow-none"
-                    style={{ color: spedizione ? '#fff' : '#6c757d', transition: 'color 0.2s' }}
+                    style={{color: spedizione ? '#fff' : '#6c757d', transition: 'color 0.2s'}}
                     placeholder="Costo spedizione"
                     step="0.01"
                     min="0"

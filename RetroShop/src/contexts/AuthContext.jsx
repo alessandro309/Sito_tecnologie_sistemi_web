@@ -1,16 +1,16 @@
-import { createContext, useContext, useState, useEffect } from 'react';
-import { api } from '../api';
+import {createContext, useContext, useState, useEffect} from 'react';
+import {api} from '../api';
 
-// Context globale per l'autenticazione: tutti i componenti possono sapere se c'è un utente loggato 
+// Context globale per l'autenticazione
 const AuthContext = createContext(null);
 
-export function AuthProvider({ children }) {
+export function AuthProvider({children}) {
   // null = non loggato, oggetto con nickname = loggato
   const [utente, setUtente] = useState(null);
   // loading = true finché non sappiamo se la sessione è attiva o no
   const [loading, setLoading] = useState(true);
 
-  // Al primo caricamento dell'app verifichiamo se l'utente ha già una sessione attiva
+  // Al primo caricamento verifica se c'è una sessione attiva
   useEffect(() => {
     api.utenteMe()
       .then((r) => (r.ok ? r.json() : null))
@@ -19,7 +19,6 @@ export function AuthProvider({ children }) {
         setLoading(false);
       })
       .catch(() => {
-        // In caso di errore di rete assumiamo non loggato
         setUtente(null);
         setLoading(false);
       });
@@ -32,11 +31,10 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ utente, loading, setUtente, logout }}>
+    <AuthContext.Provider value={{utente, loading, setUtente, logout}}>
       {children}
     </AuthContext.Provider>
   );
 }
 
-// Hook comodo per usare il context senza importare useContext ogni volta
 export const useAuth = () => useContext(AuthContext);

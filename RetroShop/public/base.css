@@ -1,9 +1,8 @@
-/* BASE — variabili globali, reset, utilità condivise */
 
 :root {
-    --colore-accento:    rgb(255, 17, 0);
-    --colore-sfondo:     rgb(67, 64, 64);
-    --colore-nero:       #000000;
+    --colore-accento: rgb(255, 17, 0);
+    --colore-sfondo: rgb(67, 64, 64);
+    --colore-nero: #000000;
     --colore-secondario: #6c757d;
 }
 
@@ -37,10 +36,10 @@ body {
     color: white;
 }
 
-/* checkbox/radio rossi — Bootstrap li mostra azzurri di default */
+/* checkbox/radio rossi */
 .form-check-input:checked {
     background-color: var(--colore-accento) !important;
-    border-color:     var(--colore-accento) !important;
+    border-color: var(--colore-accento) !important;
 }
 .form-check-input:focus {
     border-color: var(--colore-accento) !important;

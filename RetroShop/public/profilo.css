@@ -1,7 +1,6 @@
 /* PROFILO — card profilo, pannelli impostazioni, sidebar navigazione */
 
-/* Spazio sopra ogni sezione quando si naviga via hash (#sezioneXxx):
-   evita che l'header sticky copra il titolo della sezione. */
+/* scroll-margin-top: evita che l'header copra le sezioni navigabili via hash */
 #sezioneProfilo,
 #sezioneMieiAnnunci,
 #sezionePreferiti,

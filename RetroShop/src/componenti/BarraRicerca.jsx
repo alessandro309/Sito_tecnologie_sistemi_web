@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import {useState, useEffect, useRef} from 'react';
+import {useNavigate, useSearchParams} from 'react-router-dom';
 
 const CITTA = [
   'Agrigento', 'Alessandria', 'Ancona', 'Andria', 'Aosta', 'Arezzo',
@@ -59,10 +59,10 @@ export default function BarraRicerca() {
   function handleCittaInput(e) {
     const testo = e.target.value;
     setCitta(testo);
-    if (!testo) { 
-      setSuggerimenti([]); 
-      setAperto(false); 
-      return; 
+    if (!testo) {
+      setSuggerimenti([]);
+      setAperto(false);
+      return;
     }
     const trovati = CITTA.filter((c) => c.toLowerCase().startsWith(testo.toLowerCase()));
     setSuggerimenti(trovati);
@@ -126,7 +126,7 @@ export default function BarraRicerca() {
           {aperto && (
             <ul
               className="list-group position-absolute w-100 shadow-lg suggerimenti-autocomplete"
-              style={{ top: '100%', zIndex: 1051 }}
+              style={{top: '100%', zIndex: 1051}}
             >
               {suggerimenti.map((nome) => (
                 <li

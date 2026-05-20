@@ -1,12 +1,12 @@
-import { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { api, BASE } from '../api';
+import {useState, useEffect, useRef} from 'react';
+import {Link, useNavigate, useLocation} from 'react-router-dom';
+import {useAuth} from '../contexts/AuthContext';
+import {api, BASE} from '../api';
 import CardAnnuncio from '../componenti/CardAnnuncio';
 import Footer from '../componenti/Footer';
 
 export default function Profilo() {
-  const { utente, loading } = useAuth();
+  const {utente, loading} = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -25,17 +25,17 @@ export default function Profilo() {
   const [passwordEliminaAccount, setPasswordEliminaAccount] = useState('');
   const [mostraPasswordEliminaAccount, setMostraPasswordEliminaAccount] = useState(false);
 
-  const [formDati, setFormDati] = useState({ nome: '', cognome: '', mail: '', citta: '' });
+  const [formDati, setFormDati] = useState({nome: '', cognome: '', mail: '', citta: ''});
   const [salvaDatiInCorso, setSalvaDatiInCorso] = useState(false);
   const [feedbackDati, setFeedbackDati] = useState(null);
 
   const inputFotoRef = useRef(null);
   const [caricandoFoto, setCaricandoFoto] = useState(false);
 
-  const [formPassword, setFormPassword] = useState({ password_attuale: '', nuova_password: '', conferma_password: '' });
+  const [formPassword, setFormPassword] = useState({password_attuale: '', nuova_password: '', conferma_password: ''});
   const [salvaPasswordInCorso, setSalvaPasswordInCorso] = useState(false);
   const [feedbackPassword, setFeedbackPassword] = useState(null);
-  const [mostraPassword, setMostraPassword] = useState({ attuale: false, nuova: false, conferma: false });
+  const [mostraPassword, setMostraPassword] = useState({attuale: false, nuova: false, conferma: false});
 
   const [sezioneAttiva, setSezioneAttiva] = useState('sezioneProfilo');
 
@@ -44,20 +44,17 @@ export default function Profilo() {
     if (!loading && !utente) navigate('/');
   }, [utente, loading, navigate]);
 
-  // Scrolla alla sezione giusta se l'URL contiene un hash (es. /profilo#sezionePreferiti).
-  // Il setTimeout lascia al browser il tempo di completare le operazioni post-navigazione
-  // prima di eseguire lo scroll; l'offset dell'header è gestito via CSS (scroll-margin-top).
+  // Scrolla alla sezione da hash con setTimeout per attendere il render
   useEffect(() => {
     if (!location.hash || loading) return;
     const id = location.hash.slice(1);
     const timer = setTimeout(() => {
-      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.getElementById(id)?.scrollIntoView({behavior: 'smooth', block: 'start'});
     }, 100);
     return () => clearTimeout(timer);
   }, [location.hash, loading]);
 
-  // Evidenzia la voce attiva nella sidebar in base alla sezione visibile.
-  // Dipende da loading/utente perché il DOM delle sezioni esiste solo dopo il render completo.
+  // Evidenzia nella sidebar la sezione correntemente visibile (IntersectionObserver)
   useEffect(() => {
     if (loading || !utente) return;
     const ids = ['sezioneProfilo', 'sezioneMieiAnnunci', 'sezionePreferiti', 'sezioneImpostazioni'];
@@ -67,7 +64,7 @@ export default function Profilo() {
           if (entry.isIntersecting) setSezioneAttiva(entry.target.id);
         });
       },
-      { rootMargin: '-20% 0px -70% 0px' }
+      {rootMargin: '-20% 0px -70% 0px'}
     );
     ids.forEach((id) => {
       const el = document.getElementById(id);
@@ -114,9 +111,7 @@ export default function Profilo() {
     });
   }, [datiProfilo]);
 
-  // Applica il tema scelto al body e lo salva in localStorage.
-  // Si esegue anche al mount, garantendo che lo stato del body
-  // sia sempre sincronizzato con il valore letto dal localStorage.
+  // Applica e salva il tema in localStorage sincronizzando il body
   useEffect(() => {
     if (tema === 'light') {
       document.body.classList.add('tema-chiaro');
@@ -183,9 +178,9 @@ export default function Profilo() {
       }
       const aggiornato = await res.json();
       setDatiProfilo(aggiornato);
-      setFeedbackDati({ tipo: 'ok', messaggio: 'Dati aggiornati con successo!' });
+      setFeedbackDati({tipo: 'ok', messaggio: 'Dati aggiornati con successo!'});
     } catch (e) {
-      setFeedbackDati({ tipo: 'errore', messaggio: e.message });
+      setFeedbackDati({tipo: 'errore', messaggio: e.message});
     } finally {
       setSalvaDatiInCorso(false);
     }
@@ -195,27 +190,27 @@ export default function Profilo() {
     e.preventDefault();
     setFeedbackPassword(null);
     if (formPassword.nuova_password !== formPassword.conferma_password) {
-      setFeedbackPassword({ tipo: 'errore', messaggio: 'Le nuove password non coincidono' });
+      setFeedbackPassword({tipo: 'errore', messaggio: 'Le nuove password non coincidono'});
       return;
     }
     if (formPassword.nuova_password.length < 6) {
-      setFeedbackPassword({ tipo: 'errore', messaggio: 'La nuova password deve essere di almeno 6 caratteri' });
+      setFeedbackPassword({tipo: 'errore', messaggio: 'La nuova password deve essere di almeno 6 caratteri'});
       return;
     }
     setSalvaPasswordInCorso(true);
     try {
       const res = await api.aggiornaPassword(utente.nickname, {
         password_attuale: formPassword.password_attuale,
-        nuova_password:   formPassword.nuova_password,
+        nuova_password: formPassword.nuova_password,
       });
       if (!res.ok && res.status !== 204) {
         const err = await res.json().catch(() => ({}));
         throw new Error(err.detail || 'Errore durante il cambio password');
       }
-      setFormPassword({ password_attuale: '', nuova_password: '', conferma_password: '' });
-      setFeedbackPassword({ tipo: 'ok', messaggio: 'Password aggiornata con successo!' });
+      setFormPassword({password_attuale: '', nuova_password: '', conferma_password: ''});
+      setFeedbackPassword({tipo: 'ok', messaggio: 'Password aggiornata con successo!'});
     } catch (e) {
-      setFeedbackPassword({ tipo: 'errore', messaggio: e.message });
+      setFeedbackPassword({tipo: 'errore', messaggio: e.message});
     } finally {
       setSalvaPasswordInCorso(false);
     }
@@ -302,10 +297,10 @@ export default function Profilo() {
             <div className="sidebar-profilo sticky-top bg-black" style={{top: 120}}>
               <div className="list-group list-group-flush" id="scroll-spy-nav">
                 {[
-                  { href: '#sezioneProfilo', icon: 'person-fill', label: 'Il mio profilo' },
-                  { href: '#sezioneMieiAnnunci', icon: 'tags-fill', label: 'I miei annunci' },
-                  { href: '#sezionePreferiti', icon: 'floppy-fill', label: 'Annunci preferiti' },
-                  { href: '#sezioneImpostazioni', icon: 'gear-fill', label: 'Impostazioni' },
+                  {href: '#sezioneProfilo', icon: 'person-fill', label: 'Il mio profilo'},
+                  {href: '#sezioneMieiAnnunci', icon: 'tags-fill', label: 'I miei annunci'},
+                  {href: '#sezionePreferiti', icon: 'floppy-fill', label: 'Annunci preferiti'},
+                  {href: '#sezioneImpostazioni', icon: 'gear-fill', label: 'Impostazioni'},
                 ].map((item) => (
                   <a key={item.href} href={item.href} className={`list-group-item list-group-item-action fw-bold text-uppercase py-3${sezioneAttiva === item.href.slice(1) ? ' active' : ''}`}>
                     <i className={`bi bi-${item.icon} me-2`}></i>{item.label}
@@ -321,25 +316,25 @@ export default function Profilo() {
             <section id="sezioneProfilo" className="pb-5 mb-5 border-bottom border-secondary">
               <div className="profilo-card p-4 mb-4 shadow">
                 <div className="d-flex align-items-center gap-4 flex-wrap">
-                  <div className="position-relative" style={{ width: 110, height: 110 }}>
+                  <div className="position-relative" style={{width: 110, height: 110}}>
                     <img
                       src={fotoProfilo}
                       alt="Foto Profilo"
                       className="profilo-avatar rounded-circle shadow"
-                      style={{ cursor: 'pointer', opacity: caricandoFoto ? 0.5 : 1 }}
+                      style={{cursor: 'pointer', opacity: caricandoFoto ? 0.5 : 1}}
                       onClick={() => inputFotoRef.current?.click()}
                     />
                     <button
                       type="button"
                       className="position-absolute bottom-0 end-0 rounded-circle border-0 d-flex align-items-center justify-content-center p-0"
-                      style={{ width: 28, height: 28, background: '#dc3545', cursor: 'pointer' }}
+                      style={{width: 28, height: 28, background: '#dc3545', cursor: 'pointer'}}
                       onClick={() => inputFotoRef.current?.click()}
                       disabled={caricandoFoto}
                       title="Cambia foto profilo"
                     >
                       {caricandoFoto
-                        ? <span className="spinner-border spinner-border-sm text-white" style={{ width: 14, height: 14 }} />
-                        : <i className="bi bi-camera-fill text-white lh-1" style={{ fontSize: '0.75rem' }}></i>
+                        ? <span className="spinner-border spinner-border-sm text-white" style={{width: 14, height: 14}} />
+                        : <i className="bi bi-camera-fill text-white lh-1" style={{fontSize: '0.75rem'}}></i>
                       }
                     </button>
                     <input
@@ -479,7 +474,7 @@ export default function Profilo() {
                         className="form-control bg-transparent text-white border-secondary rounded-1"
                         placeholder="Nome"
                         value={formDati.nome}
-                        onChange={(e) => setFormDati((p) => ({ ...p, nome: e.target.value }))}
+                        onChange={(e) => setFormDati((p) => ({...p, nome: e.target.value}))}
                         required
                       />
                     </div>
@@ -490,7 +485,7 @@ export default function Profilo() {
                         className="form-control bg-transparent text-white border-secondary rounded-1"
                         placeholder="Cognome"
                         value={formDati.cognome}
-                        onChange={(e) => setFormDati((p) => ({ ...p, cognome: e.target.value }))}
+                        onChange={(e) => setFormDati((p) => ({...p, cognome: e.target.value}))}
                         required
                       />
                     </div>
@@ -501,7 +496,7 @@ export default function Profilo() {
                         className="form-control bg-transparent text-white border-secondary rounded-1"
                         placeholder="email@esempio.com"
                         value={formDati.mail}
-                        onChange={(e) => setFormDati((p) => ({ ...p, mail: e.target.value }))}
+                        onChange={(e) => setFormDati((p) => ({...p, mail: e.target.value}))}
                         required
                       />
                     </div>
@@ -512,7 +507,7 @@ export default function Profilo() {
                         className="form-control bg-transparent text-white border-secondary rounded-1"
                         placeholder="Città"
                         value={formDati.citta}
-                        onChange={(e) => setFormDati((p) => ({ ...p, citta: e.target.value }))}
+                        onChange={(e) => setFormDati((p) => ({...p, citta: e.target.value}))}
                       />
                     </div>
                     {feedbackDati && (
@@ -543,10 +538,10 @@ export default function Profilo() {
                 <form onSubmit={handleAggiornaPassword}>
                   <div className="row g-3">
                     {[
-                      { campo: 'attuale',  label: 'Password attuale',        key: 'password_attuale' },
-                      { campo: 'nuova',    label: 'Nuova Password',           key: 'nuova_password'   },
-                      { campo: 'conferma', label: 'Conferma nuova Password',  key: 'conferma_password' },
-                    ].map(({ campo, label, key }) => (
+                      {campo: 'attuale', label: 'Password attuale', key: 'password_attuale'},
+                      {campo: 'nuova', label: 'Nuova Password', key: 'nuova_password'},
+                      {campo: 'conferma', label: 'Conferma nuova Password', key: 'conferma_password'},
+                    ].map(({campo, label, key}) => (
                       <div className="col-md-6" key={key}>
                         <label className="form-label small text-secondary mb-1">{label}</label>
                         <div className="input-group">
@@ -555,13 +550,13 @@ export default function Profilo() {
                             className="form-control bg-transparent text-white border-secondary rounded-start-1"
                             placeholder={label}
                             value={formPassword[key]}
-                            onChange={(e) => setFormPassword((p) => ({ ...p, [key]: e.target.value }))}
+                            onChange={(e) => setFormPassword((p) => ({...p, [key]: e.target.value}))}
                             required
                           />
                           <button
                             type="button"
                             className="btn btn-outline-secondary rounded-end-1"
-                            onClick={() => setMostraPassword((p) => ({ ...p, [campo]: !p[campo] }))}
+                            onClick={() => setMostraPassword((p) => ({...p, [campo]: !p[campo]}))}
                             tabIndex={-1}
                           >
                             <i className={`bi bi-eye${mostraPassword[campo] ? '-slash' : ''}`}></i>
@@ -596,7 +591,7 @@ export default function Profilo() {
                 </div>
                 <button
                   className="btn btn-sm btn-outline-danger text-uppercase fw-bold px-3 rounded-1 ms-3 text-nowrap"
-                  onClick={() => { setErroreEliminaAccount(null); setPasswordEliminaAccount(''); setMostraPasswordEliminaAccount(false); setMostraModalEliminaAccount(true); }}
+                  onClick={() => {setErroreEliminaAccount(null); setPasswordEliminaAccount(''); setMostraPasswordEliminaAccount(false); setMostraModalEliminaAccount(true);}}
                 >
                   <i className="bi bi-person-x me-1"></i>Elimina Account
                 </button>
@@ -613,7 +608,7 @@ export default function Profilo() {
       {annuncioInElimina && (
         <div
           className="modal d-block modal-backdrop-custom"
-          onClick={(e) => { if (e.target === e.currentTarget && !eliminazioneInCorso) setAnnuncioInElimina(null); }}
+          onClick={(e) => {if (e.target === e.currentTarget && !eliminazioneInCorso) setAnnuncioInElimina(null);}}
         >
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content bg-black border border-secondary text-white font-monospace">
@@ -666,7 +661,7 @@ export default function Profilo() {
       {mostraModalEliminaAccount && (
         <div
           className="modal d-block modal-backdrop-custom"
-          onClick={(e) => { if (e.target === e.currentTarget && !eliminaAccountInCorso) { setMostraModalEliminaAccount(false); setPasswordEliminaAccount(''); } }}
+          onClick={(e) => {if (e.target === e.currentTarget && !eliminaAccountInCorso) {setMostraModalEliminaAccount(false); setPasswordEliminaAccount('');}}}
         >
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content bg-black border border-danger text-white font-monospace shadow-lg">
@@ -676,7 +671,7 @@ export default function Profilo() {
                 </h5>
                 <button
                   className="btn-close btn-close-white"
-                  onClick={() => { setMostraModalEliminaAccount(false); setPasswordEliminaAccount(''); }}
+                  onClick={() => {setMostraModalEliminaAccount(false); setPasswordEliminaAccount('');}}
                   disabled={eliminaAccountInCorso}
                 />
               </div>
@@ -717,7 +712,7 @@ export default function Profilo() {
               <div className="modal-footer border-secondary">
                 <button
                   className="btn btn-outline-secondary rounded-1 text-uppercase fw-bold px-3 small"
-                  onClick={() => { setMostraModalEliminaAccount(false); setPasswordEliminaAccount(''); }}
+                  onClick={() => {setMostraModalEliminaAccount(false); setPasswordEliminaAccount('');}}
                   disabled={eliminaAccountInCorso}
                 >
                   Annulla

@@ -1,19 +1,18 @@
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import Navbar from '../componenti/Navbar';
 import BarraRicerca from '../componenti/BarraRicerca';
 import ModalLogin from '../componenti/Login';
 import ModalFiltri from '../componenti/Filtri';
 import Footer from '../componenti/Footer';
 
-// Dati dei 4 box categoria nella home
 const CATEGORIE = [
-  {id:'box_fisse', titolo:'Console\nFisse', align:'left',  filtro:'console_fisse'},
+  {id:'box_fisse', titolo:'Console\nFisse', align:'left', filtro:'console_fisse'},
   {id:'box_portatili', titolo:'Console\nPortatili', align:'right', filtro:'console_portatili'},
-  {id:'box_accessori', titolo:'Accessori', align: 'left',  filtro:'accessori'},
+  {id:'box_accessori', titolo:'Accessori', align:'left', filtro:'accessori'},
   {id:'box_giochi', titolo:'Giochi', align:'right', filtro:'giochi'},
 ];
 
-function BoxCategoria({ id, titolo, align, filtro, index }) {
+function BoxCategoria({id, titolo, align, filtro, index}) {
   const isRight = align === 'right';
 
   return (
@@ -21,11 +20,11 @@ function BoxCategoria({ id, titolo, align, filtro, index }) {
       to={`/annunci?tipologia=${filtro}`}
       className="box_categoria rounded-4 d-flex align-items-center text-decoration-none shadow"
       id={id}
-      style={{ animationDelay: `${index * 0.15}s` }}
+      style={{animationDelay: `${index * 0.15}s`}}
     >
       <div
         className={`${isRight ? 'ms-auto me-4 me-md-5 text-end' : 'ms-4 ms-md-5'} d-flex flex-column justify-content-center`}
-        style={{ zIndex: 2 }}
+        style={{zIndex: 2}}
       >
         <h2 className="text-white fw-bold text-uppercase font-monospace m-0 titolo_box">
           {titolo.split('\n').map((riga, i) => (
@@ -34,7 +33,7 @@ function BoxCategoria({ id, titolo, align, filtro, index }) {
         </h2>
         <span
           className={`font-monospace mt-3 text-uppercase d-flex align-items-center gap-2 text-danger fw-bold scopri_di_piu ${isRight ? 'justify-content-end' : ''}`}
-          style={{ fontSize: '0.9rem' }}
+          style={{fontSize: '0.9rem'}}
         >
           Esplora il catalogo <i className="bi bi-arrow-right fs-5"></i>
         </span>

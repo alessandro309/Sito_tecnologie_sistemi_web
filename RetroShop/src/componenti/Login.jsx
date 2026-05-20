@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { api } from '../api';
-import { useAuth } from '../contexts/AuthContext';
+import {useState} from 'react';
+import {Link} from 'react-router-dom';
+import {api} from '../api';
+import {useAuth} from '../contexts/AuthContext';
 
 // Modal Bootstrap per il login, mostrato ovunque nell'app tramite data-bs-target="#modalLogin"
 export default function ModalLogin() {
-  const { setUtente } = useAuth();
+  const {setUtente} = useAuth();
   const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
   const [mostraPassword, setMostraPassword] = useState(false);
@@ -18,15 +18,13 @@ export default function ModalLogin() {
     setErrore('');
 
     try {
-      const risposta = await api.login({ nickname, password });
+      const risposta = await api.login({nickname, password});
 
       if (risposta.ok) {
-        // Login riuscito: recuperiamo i dati della sessione e aggiorniamo il context
         const me = await api.utenteMe();
         const dati = await me.json();
         setUtente(dati.loggato ? dati : null);
 
-        // Chiudiamo il modal tramite l'API Bootstrap
         const el = document.getElementById('modalLogin');
         window.bootstrap?.Modal.getInstance(el)?.hide();
       } else {
@@ -91,7 +89,6 @@ export default function ModalLogin() {
                 </div>
               </div>
 
-              {/* Messaggio di errore (credenziali sbagliate, server down, ecc.) */}
               {errore && (
                 <div className="alert alert-danger py-2 font-monospace small mb-3">
                   <i className="bi bi-exclamation-triangle-fill me-2"></i>{errore}
@@ -112,7 +109,6 @@ export default function ModalLogin() {
                   to="/registrazione"
                   className="text-danger text-decoration-none fw-bold"
                   onClick={() => {
-                    // Chiudiamo il modal prima di navigare alla pagina di registrazione
                     const el = document.getElementById('modalLogin');
                     window.bootstrap?.Modal.getInstance(el)?.hide();
                   }}

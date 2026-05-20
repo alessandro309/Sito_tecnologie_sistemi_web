@@ -1,11 +1,9 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { BASE } from '../api';
+import {useState} from 'react';
+import {Link} from 'react-router-dom';
+import {BASE} from '../api';
 
-// Componente riutilizzabile per mostrare un annuncio come card.
-// - mostraElimina: true nella pagina profilo, false ovunque altro
-// - onTogglePreferito: se passato, gestisce i preferiti dall'esterno; altrimenti usiamo uno state locale
-export default function CardAnnuncio({ annuncio, mostraElimina = false, onElimina, preferito = false, onTogglePreferito }) {
+// Card annuncio riutilizzabile (mostraElimina e onTogglePreferito opzionali)
+export default function CardAnnuncio({annuncio, mostraElimina = false, onElimina, preferito = false, onTogglePreferito}) {
   const [salvato, setSalvato] = useState(false);
 
   // Se c'è un gestore esterno usiamo il suo stato, altrimenti quello locale
@@ -22,7 +20,7 @@ export default function CardAnnuncio({ annuncio, mostraElimina = false, onElimin
   });
 
   return (
-    <div className="card card-annuncio bg-black border-secondary h-100 text-white shadow overflow-hidden" style={annuncio.venduto ? { filter: 'grayscale(60%)', opacity: 0.8 } : {}}>
+    <div className="card card-annuncio bg-black border-secondary h-100 text-white shadow overflow-hidden" style={annuncio.venduto ? {filter: 'grayscale(60%)', opacity: 0.8} : {}}>
 
       <div className="position-relative">
         <Link to={`/annunci/${annuncio.idAnnuncio}`}>
@@ -32,18 +30,18 @@ export default function CardAnnuncio({ annuncio, mostraElimina = false, onElimin
         {/* Overlay "Acquistato" — visibile solo se l'annuncio è venduto */}
         {annuncio.venduto && (
           <div className="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center card-overlay-venduta">
-            <i className="bi bi-check-circle-fill text-secondary mb-2" style={{ fontSize: '2.2rem' }}></i>
+            <i className="bi bi-check-circle-fill text-secondary mb-2" style={{fontSize: '2.2rem'}}></i>
             <span className="font-monospace text-uppercase fw-bold px-3 py-1 rounded-1 badge-acquistato">
               Acquistato
             </span>
           </div>
         )}
 
-        {/* Bottone rosso in alto a destra: cestino se siamo nel profilo, cuore se siamo nella ricerca */}
+        {/* Cestino nel profilo, cuore nella ricerca */}
         {mostraElimina ? (
           <button
             className="btn btn-elimina-card position-absolute top-0 end-0 m-2 rounded-circle border-secondary d-flex align-items-center justify-content-center p-0"
-            style={{ zIndex: 10 }}
+            style={{zIndex: 10}}
             onClick={() => onElimina?.(annuncio)}
           >
             <i className="bi bi-trash text-danger fs-5 lh-1"></i>
@@ -51,7 +49,7 @@ export default function CardAnnuncio({ annuncio, mostraElimina = false, onElimin
         ) : (
           <button
             className="btn btn-salva position-absolute top-0 end-0 m-2 rounded-circle border-secondary d-flex align-items-center justify-content-center p-0"
-            style={{ zIndex: 10 }}
+            style={{zIndex: 10}}
             onClick={() => onTogglePreferito ? onTogglePreferito(annuncio, !preferito) : setSalvato(!salvato)}
           >
             <i className={`bi ${isSalvato ? 'bi-floppy-fill' : 'bi-floppy'} text-danger fs-5`}></i>
