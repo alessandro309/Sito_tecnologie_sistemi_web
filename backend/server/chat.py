@@ -150,6 +150,19 @@ async def invia_messaggio(dati: NuovoMessaggio):
     return nuovo_msg
 
 
+# Elimina una conversazione e tutti i suoi messaggi
+@router.delete("/api/chat/conversazioni/{conv_id}", status_code=204)
+def elimina_conversazione(conv_id: str, nickname: str = Query(...)):
+    conv = next((c for c in db["conversazioni"] if c["id"] == conv_id), None)
+    if not conv:
+        raise HTTPException(status_code=404, detail="Conversazione non trovata")
+    if nickname not in conv["partecipanti"]:
+        raise HTTPException(status_code=403, detail="Non autorizzato")
+    db["conversazioni"] = [c for c in db["conversazioni"] if c["id"] != conv_id]
+    db["messaggi"] = [m for m in db["messaggi"] if m["conversazioneId"] != conv_id]
+    salva_dati()
+
+
 # Aggiorna campi arbitrari di un messaggio esistente (es. stato acquisto)
 @router.patch("/api/chat/messaggi/{msg_id}")
 def aggiorna_messaggio(msg_id: str, body: Dict[str, Any] = Body(...)):

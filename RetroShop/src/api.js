@@ -154,6 +154,10 @@ const api = {
       body: JSON.stringify(dati),
     }),
 
+  // Elimina una conversazione (e tutti i suoi messaggi) per l'utente corrente
+  eliminaConversazione: (convId, nickname) =>
+    fetch(`/api/chat/conversazioni/${convId}?nickname=${encodeURIComponent(nickname)}`, { method: 'DELETE' }),
+
   // Avvia il rimborso per un annuncio già acquistato
   rimborsaAnnuncio: (idAnnuncio) =>
     apiFetch(`${BASE}/annunci/${idAnnuncio}/rimborso`, { method: 'POST' }),

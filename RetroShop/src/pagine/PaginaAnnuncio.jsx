@@ -13,6 +13,7 @@ export default function PaginaAnnuncio() {
   const { utente } = useAuth();
 
   const [annuncio, setAnnuncio] = useState(null);
+  const [nonTrovato, setNonTrovato] = useState(false);
   const [fotoProfilo, setFotoProfilo] = useState(null);
   const [indiceImmagine, setIndiceImmagine] = useState(0);
   const [salvato, setSalvato] = useState(false);
@@ -32,8 +33,9 @@ export default function PaginaAnnuncio() {
 
   useEffect(() => {
     api.annuncio(id)
-      .then((r) => r.json())
-      .then(async (dati) => {
+      .then(async (r) => {
+        if (!r.ok) { setNonTrovato(true); return; }
+        const dati = await r.json();
         setAnnuncio(dati);
         setAcquistoCompletato(dati.venduto ?? false);
         try {
@@ -44,8 +46,20 @@ export default function PaginaAnnuncio() {
           }
         } catch { /* foto profilo opzionale */ }
       })
-      .catch(console.error);
+      .catch(() => setNonTrovato(true));
   }, [id]);
+
+  if (nonTrovato) {
+    return (
+      <>
+        <Navbar />
+        <div className="container my-5 text-center text-white">
+          <p className="font-monospace fs-4">Annuncio non disponibile</p>
+        </div>
+        <Footer />
+      </>
+    );
+  }
 
   if (!annuncio) {
     return (

@@ -243,17 +243,6 @@
       "creatoIl": "2026-05-15T21:34:32.852338+00:00"
     },
     {
-      "id": "2c467636-88b7-4493-8310-fb7a979a7cb1",
-      "partecipanti": [
-        "Alex_Rob",
-        "TonyPitony"
-      ],
-      "idAnnuncio": "43",
-      "titoloAnnuncio": "nintendo ds",
-      "prezzoAnnuncio": 2,
-      "creatoIl": "2026-05-17T13:43:10.575204+00:00"
-    },
-    {
       "id": "4bf8f88c-98a8-42ff-80c0-ab189f9f9614",
       "partecipanti": [
         "prova",
@@ -689,7 +678,7 @@
       "mittente": "Alex_Rob",
       "testo": "Ciao",
       "ora": "2026-05-12T18:26:37.609647+00:00",
-      "letto": false
+      "letto": true
     },
     {
       "id": "d04fdbfe-f646-4916-abac-ae9e604ce208",
@@ -890,51 +879,6 @@
       "letto": false
     },
     {
-      "id": "e1189bb5-2c8d-4808-a5e1-ac763dd2f511",
-      "conversazioneId": "2c467636-88b7-4493-8310-fb7a979a7cb1",
-      "mittente": "sistema",
-      "testo": "Acquisto completato: nintendo ds",
-      "ora": "2026-05-17T13:43:10.580994+00:00",
-      "letto": true,
-      "tipo": "sistema",
-      "acquirente": "Alex_Rob",
-      "idAnnuncio": "43",
-      "datiAcquisto": {
-        "nomeAnnuncio": "nintendo ds",
-        "acquirente": "Alex_Rob",
-        "venditore": "TonyPitony",
-        "prezzoArticolo": 2,
-        "prezzoSpedizione": 4
-      },
-      "rimborsato": true
-    },
-    {
-      "id": "bb987ccf-aa9d-470f-a80f-95c9fef44a02",
-      "conversazioneId": "2c467636-88b7-4493-8310-fb7a979a7cb1",
-      "mittente": "Alex_Rob",
-      "testo": "fdfsd",
-      "ora": "2026-05-17T13:44:34.937158+00:00",
-      "letto": true
-    },
-    {
-      "id": "be3c1296-738a-45cf-bfb5-dec4952ee04a",
-      "conversazioneId": "2c467636-88b7-4493-8310-fb7a979a7cb1",
-      "mittente": "TonyPitony",
-      "testo": "suca",
-      "ora": "2026-05-17T13:44:44.830978+00:00",
-      "letto": true
-    },
-    {
-      "id": "3cf9e3df-b6b1-4e76-9f4c-9a39e990dd20",
-      "conversazioneId": "2c467636-88b7-4493-8310-fb7a979a7cb1",
-      "mittente": "sistema",
-      "testo": "fa schifo",
-      "ora": "2026-05-17T13:46:16.274145+00:00",
-      "letto": true,
-      "tipo": "rimborso",
-      "acquirente": "Alex_Rob"
-    },
-    {
       "id": "67a60539-c834-49d6-9281-4841bc8c9a48",
       "conversazioneId": "4bf8f88c-98a8-42ff-80c0-ab189f9f9614",
       "mittente": "sistema",
@@ -1020,6 +964,51 @@
       "mittente": "sistema",
       "testo": "Alex_Rob ha confermato la ricezione dell'articolo",
       "ora": "2026-05-17T14:14:53.328088+00:00",
+      "letto": true,
+      "tipo": "consegna",
+      "acquirente": "Alex_Rob"
+    },
+    {
+      "id": "000a55b5-32bf-44a8-b4bc-8b85fc5c2750",
+      "conversazioneId": "d9909ae1-6916-4493-8613-6e55f6b55c22",
+      "mittente": "sistema",
+      "testo": "Acquisto completato: Controller PS5",
+      "ora": "2026-05-20T07:22:53.244500+00:00",
+      "letto": true,
+      "tipo": "sistema",
+      "acquirente": "Alex_Rob",
+      "idAnnuncio": "34",
+      "datiAcquisto": {
+        "nomeAnnuncio": "Controller PS5",
+        "acquirente": "Alex_Rob",
+        "venditore": "LeonKennedy",
+        "prezzoArticolo": 50,
+        "prezzoSpedizione": 5
+      },
+      "consegnaConfermata": true
+    },
+    {
+      "id": "85c598c3-44d4-4b40-b1d2-ed03cf64acc4",
+      "conversazioneId": "d9909ae1-6916-4493-8613-6e55f6b55c22",
+      "mittente": "LeonKennedy",
+      "testo": "Grazie dell'acquisto!",
+      "ora": "2026-05-20T07:25:04.708612+00:00",
+      "letto": true
+    },
+    {
+      "id": "675c10fb-b1da-4b7c-99da-9c78ae077485",
+      "conversazioneId": "d9909ae1-6916-4493-8613-6e55f6b55c22",
+      "mittente": "Alex_Rob",
+      "testo": "Aspetto la spedizione",
+      "ora": "2026-05-20T07:25:28.540530+00:00",
+      "letto": true
+    },
+    {
+      "id": "2005ad06-39a4-476b-b27c-ee2cc9fe699b",
+      "conversazioneId": "d9909ae1-6916-4493-8613-6e55f6b55c22",
+      "mittente": "sistema",
+      "testo": "Alex_Rob ha confermato la ricezione dell'articolo",
+      "ora": "2026-05-20T07:26:35.607639+00:00",
       "letto": true,
       "tipo": "consegna",
       "acquirente": "Alex_Rob"

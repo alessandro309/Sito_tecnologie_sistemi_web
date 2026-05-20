@@ -87,6 +87,8 @@ export default function Chat() {
   const [rimborsoInCorso, setRimborsoInCorso] = useState(null); // idAnnuncio in elaborazione
   const [consegnaInCorso, setConsegnaInCorso] = useState(null); // idAnnuncio in elaborazione
   const [modalRimborso, setModalRimborso] = useState({aperto: false, msg: null, spiegazione: ""});
+  const [eliminandoChat, setEliminandoChat] = useState(false);
+  const [modalEliminaChat, setModalEliminaChat] = useState(false);
 
 
 
@@ -344,6 +346,30 @@ export default function Chat() {
 
 
 
+  // Elimina la conversazione attiva per entrambi i partecipanti
+  async function eliminaChat() {
+    if (!selezionata) return;
+    setModalEliminaChat(false);
+    setEliminandoChat(true);
+    try {
+      const res = await api.eliminaConversazione(selezionata.id, utente.nickname);
+      if (!res.ok && res.status !== 404) throw new Error();
+      setConversazioni((prev) => prev.filter((c) => c.id !== selezionata.id));
+      setSelezionata(null);
+      setMessaggi([]);
+      setMostraSidebar(true);
+    } catch {
+      // noop: errore silenzioso, la chat rimane aperta
+    } finally {
+      setEliminandoChat(false);
+    }
+  }
+
+  // True se nella chat aperta c'è almeno un acquisto non ancora risolto (né consegnato né rimborsato)
+  const haSpedizioneInAttesa = messaggi.some(
+    (m) => m.tipo === "sistema" && !m.rimborsato && !m.consegnaConfermata
+  );
+
   // Conversazioni filtrate in base al testo digitato nella barra di ricerca
   const filtrate = conversazioni.filter(
     (c) =>
@@ -543,6 +569,20 @@ export default function Chat() {
                       </span>
                     </Link>
                   </div>
+                  <button
+                    className="btn btn-link p-1 flex-shrink-0"
+                    onClick={() => setModalEliminaChat(true)}
+                    disabled={eliminandoChat || haSpedizioneInAttesa}
+                    title={haSpedizioneInAttesa ? "Non puoi eliminare la chat con una spedizione in corso" : "Elimina conversazione"}
+                    style={{color: haSpedizioneInAttesa ? "#3a3a3a" : "#6c757d", cursor: haSpedizioneInAttesa ? "not-allowed" : "pointer"}}
+                    onMouseEnter={(e) => { if (!haSpedizioneInAttesa) e.currentTarget.style.color = "#dc3545"; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.color = haSpedizioneInAttesa ? "#3a3a3a" : "#6c757d"; }}
+                  >
+                    {eliminandoChat
+                      ? <span className="spinner-border" style={{width: 16, height: 16, borderWidth: 2}} />
+                      : <i className="bi bi-trash3" style={{fontSize: 18}} />
+                    }
+                  </button>
                 </div>
 
                 {/* Area messaggi: spinner / vuota / lista */}
@@ -833,6 +873,48 @@ export default function Chat() {
                 </button>
               </div>
 
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── MODAL: conferma eliminazione chat ── */}
+      {modalEliminaChat && (
+        <div
+          className="modal d-block modal-backdrop-custom"
+          style={{zIndex: 9999}}
+          onClick={(e) => { if (e.target === e.currentTarget) setModalEliminaChat(false); }}
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content bg-black border border-danger text-white font-monospace shadow-lg">
+              <div className="modal-header border-danger">
+                <h5 className="modal-title text-uppercase fs-6 fw-bold">
+                  <i className="bi bi-trash3 me-2 text-danger" />
+                  Elimina conversazione
+                </h5>
+                <button className="btn-close btn-close-white" onClick={() => setModalEliminaChat(false)} />
+              </div>
+              <div className="modal-body">
+                <p className="text-secondary small mb-0">
+                  Vuoi eliminare la conversazione con{" "}
+                  <span className="text-white fw-bold">{selezionata?.altroUtente}</span>?
+                  {" "}Tutti i messaggi verranno rimossi e l'azione non può essere annullata.
+                </p>
+              </div>
+              <div className="modal-footer border-secondary">
+                <button
+                  className="btn btn-outline-secondary rounded-1 text-uppercase fw-bold px-3 small"
+                  onClick={() => setModalEliminaChat(false)}
+                >
+                  Annulla
+                </button>
+                <button
+                  className="btn btn-danger rounded-1 text-uppercase fw-bold px-3 small"
+                  onClick={eliminaChat}
+                >
+                  <i className="bi bi-trash3 me-1" />Elimina
+                </button>
+              </div>
             </div>
           </div>
         </div>
