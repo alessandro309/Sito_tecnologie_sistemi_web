@@ -263,6 +263,17 @@
       "titoloAnnuncio": "Nintendo DS",
       "prezzoAnnuncio": 69,
       "creatoIl": "2026-05-17T14:12:46.060033+00:00"
+    },
+    {
+      "id": "8462924b-5300-4e30-afe1-dcb515ec33ba",
+      "partecipanti": [
+        "Alex_Rob",
+        "Rick_Roll"
+      ],
+      "idAnnuncio": "3",
+      "titoloAnnuncio": "GameBoy Advance Sp ",
+      "prezzoAnnuncio": 80,
+      "creatoIl": "2026-05-20T12:50:21.489036+00:00"
     }
   ],
   "messaggi": [
@@ -1012,6 +1023,24 @@
       "letto": true,
       "tipo": "consegna",
       "acquirente": "Alex_Rob"
+    },
+    {
+      "id": "4a61e805-cb0f-4422-916d-029f41674a46",
+      "conversazioneId": "8462924b-5300-4e30-afe1-dcb515ec33ba",
+      "mittente": "sistema",
+      "testo": "Acquisto completato: GameBoy Advance Sp",
+      "ora": "2026-05-20T12:50:21.505178+00:00",
+      "letto": true,
+      "tipo": "sistema",
+      "acquirente": "Alex_Rob",
+      "idAnnuncio": "3",
+      "datiAcquisto": {
+        "nomeAnnuncio": "GameBoy Advance Sp ",
+        "acquirente": "Alex_Rob",
+        "venditore": "Rick_Roll",
+        "prezzoArticolo": 80,
+        "prezzoSpedizione": 0
+      }
     }
   ]
 }

@@ -17,7 +17,6 @@ export default function PaginaAnnuncio() {
   const [fotoProfilo, setFotoProfilo] = useState(null);
   const [indiceImmagine, setIndiceImmagine] = useState(0);
   const [salvato, setSalvato] = useState(false);
-  const [mostraModalAcquisto, setMostraModalAcquisto] = useState(false);
   const [acquistoInCorso, setAcquistoInCorso] = useState(false);
   const [acquistoCompletato, setAcquistoCompletato] = useState(false);
   const [erroreAcquisto, setErroreAcquisto] = useState(null);
@@ -106,7 +105,7 @@ export default function PaginaAnnuncio() {
 
   function chiudiModalPagamento() {
     if (acquistoInCorso) return;
-    setMostraModalAcquisto(false);
+    window.bootstrap?.Modal.getOrCreateInstance(document.getElementById('modalPagamento'))?.hide();
     setErroreAcquisto(null);
     setDatiCarta({ numero: '', intestatario: '', scadenza: '', cvv: '' });
   }
@@ -267,7 +266,7 @@ export default function PaginaAnnuncio() {
                       <>
                         <button
                           className="btn pulsante_verde font-monospace px-4 py-2 rounded-2 shadow-sm d-flex align-items-center justify-content-center flex-grow-1"
-                          onClick={() => { setErroreAcquisto(null); setMostraModalAcquisto(true); }}
+                          onClick={() => { setErroreAcquisto(null); window.bootstrap?.Modal.getOrCreateInstance(document.getElementById('modalPagamento'))?.show(); }}
                           disabled={acquistaNonDisponibile}
                           title={!annuncio.spedizione ? 'Acquisto disponibile solo per annunci con spedizione' : undefined}
                         >
@@ -339,12 +338,14 @@ export default function PaginaAnnuncio() {
 
       <Footer />
 
-      {/* Modal pagamento — controllato con stato React, non tramite Bootstrap */}
-      {mostraModalAcquisto && (
-        <div
-          className="modal d-block modal-backdrop-custom"
-          onClick={(e) => { if (e.target === e.currentTarget) chiudiModalPagamento(); }}
-        >
+      {/* Modal pagamento */}
+      <div
+        id="modalPagamento"
+        className="modal fade"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabIndex="-1"
+      >
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content bg-black border border-secondary text-white font-monospace shadow-lg">
 
@@ -477,7 +478,6 @@ export default function PaginaAnnuncio() {
             </div>
           </div>
         </div>
-      )}
 
       <ModalLogin />
       <ModalFiltri />

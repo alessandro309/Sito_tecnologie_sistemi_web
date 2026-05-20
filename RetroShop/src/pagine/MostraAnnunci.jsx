@@ -26,14 +26,23 @@ function pagineDaMostrare(pagina, totPagine) {
 }
 
 export default function MostraAnnunci() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { utente } = useAuth();
 
   const [annunci, setAnnunci] = useState([]);
   const [caricamento, setCaricamento] = useState(true);
   const [errore, setErrore] = useState(false);
-  const [pagina, setPagina] = useState(1);
   const [ordinamento, setOrdinamento] = useState('');
+
+  const pagina = Math.max(1, parseInt(searchParams.get('pagina') ?? '1', 10));
+
+  // Query senza il param pagina: usata per il fetch e come dipendenza dell'effect
+  // così cambiare pagina non scatena un nuovo fetch
+  const qs = (() => { 
+    const p = new URLSearchParams(searchParams); 
+    p.delete('pagina'); 
+    return p.toString(); 
+  })();
   // Teniamo la lista degli id dei preferiti per sapere quali card evidenziare
   const [preferitiIds, setPreferitiIds] = useState([]);
 
@@ -80,13 +89,12 @@ export default function MostraAnnunci() {
     }
   }
 
-  // Ri-esegue la ricerca ogni volta che cambiano i parametri nell'URL
+  // Ri-esegue la ricerca solo quando cambia la query (non quando cambia pagina)
   useEffect(() => {
     setCaricamento(true);
     setErrore(false);
-    setPagina(1);
 
-    api.ricercaAnnunci(searchParams.toString())
+    api.ricercaAnnunci(qs)
       .then((r) => {
         if (!r.ok) throw new Error();
         return r.json();
@@ -99,7 +107,7 @@ export default function MostraAnnunci() {
         setErrore(true);
         setCaricamento(false);
       });
-  }, [searchParams]);
+  }, [qs]);
 
   const annunciOrdinati = ordinamento
     ? [...annunci].sort((a, b) => ordinamento === 'asc' ? a.prezzo - b.prezzo : b.prezzo - a.prezzo)
@@ -109,7 +117,12 @@ export default function MostraAnnunci() {
   const annunciPagina = annunciOrdinati.slice((pagina - 1) * PER_PAGINA, pagina * PER_PAGINA);
 
   function cambiaPagina(n) {
-    setPagina(n);
+    setSearchParams(prev => {
+      const next = new URLSearchParams(prev);
+      if (n === 1) next.delete('pagina');
+      else next.set('pagina', String(n));
+      return next;
+    });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -160,8 +173,8 @@ export default function MostraAnnunci() {
                 <span className="input-group-text border-0 text-secondary select-ordina-addon">
                   <i className="bi bi-sort-down-alt"></i>
                 </span>
-                <select className="form-select form-select-sm border-0 text-white shadow-none font-monospace select-ordina-select" value={ordinamento} onChange={(e) => { setOrdinamento(e.target.value); setPagina(1); }}>
-                  <option value=""    style={{ background: '#2a2828', color: '#fff' }}>Ordine predefinito</option>
+                <select className="form-select form-select-sm border-0 text-white shadow-none font-monospace select-ordina-select" value={ordinamento} onChange={(e) => { setOrdinamento(e.target.value); setSearchParams(prev => { const next = new URLSearchParams(prev); next.delete('pagina'); return next; }); }}>
+                  <option value="" style={{ background: '#2a2828', color: '#fff' }}>Ordine predefinito</option>
                   <option value="asc" style={{ background: '#2a2828', color: '#fff' }}>Prezzo ↑ crescente</option>
                   <option value="desc"style={{ background: '#2a2828', color: '#fff' }}>Prezzo ↓ decrescente</option>
                 </select>
@@ -178,7 +191,7 @@ export default function MostraAnnunci() {
               <span className="input-group-text border-0 text-secondary select-ordina-addon">
                 <i className="bi bi-sort-down-alt"></i>
               </span>
-              <select className="form-select form-select-sm border-0 text-white shadow-none font-monospace select-ordina-select" value={ordinamento} onChange={(e) => { setOrdinamento(e.target.value); setPagina(1); }}>
+              <select className="form-select form-select-sm border-0 text-white shadow-none font-monospace select-ordina-select" value={ordinamento} onChange={(e) => { setOrdinamento(e.target.value); setSearchParams(prev => { const next = new URLSearchParams(prev); next.delete('pagina'); return next; }); }}>
                 <option value=""    style={{ background: '#2a2828', color: '#fff' }}>Ordine predefinito</option>
                 <option value="asc" style={{ background: '#2a2828', color: '#fff' }}>Prezzo ↑ crescente</option>
                 <option value="desc"style={{ background: '#2a2828', color: '#fff' }}>Prezzo ↓ decrescente</option>
