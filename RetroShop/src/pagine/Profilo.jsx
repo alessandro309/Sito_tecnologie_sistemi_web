@@ -44,12 +44,16 @@ export default function Profilo() {
     if (!loading && !utente) navigate('/');
   }, [utente, loading, navigate]);
 
-  // Scrolla alla sezione giusta se l'URL contiene un hash (es. /profilo#sezionePreferiti)
+  // Scrolla alla sezione giusta se l'URL contiene un hash (es. /profilo#sezionePreferiti).
+  // Il setTimeout lascia al browser il tempo di completare le operazioni post-navigazione
+  // prima di eseguire lo scroll; l'offset dell'header è gestito via CSS (scroll-margin-top).
   useEffect(() => {
     if (!location.hash || loading) return;
     const id = location.hash.slice(1);
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const timer = setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+    return () => clearTimeout(timer);
   }, [location.hash, loading]);
 
   // Evidenzia la voce attiva nella sidebar in base alla sezione visibile.
@@ -103,10 +107,10 @@ export default function Profilo() {
   useEffect(() => {
     if (!datiProfilo) return;
     setFormDati({
-      nome:    datiProfilo.nome    ?? '',
+      nome: datiProfilo.nome ?? '',
       cognome: datiProfilo.cognome ?? '',
-      mail:    datiProfilo.mail    ?? '',
-      citta:   datiProfilo.citta   ?? '',
+      mail: datiProfilo.mail ?? '',
+      citta: datiProfilo.citta ?? '',
     });
   }, [datiProfilo]);
 
@@ -295,13 +299,13 @@ export default function Profilo() {
 
           {/* Sidebar di navigazione (visibile solo su desktop) */}
           <div className="col-lg-3 d-none d-lg-block">
-            <div className="sidebar-profilo sticky-top bg-black" style={{ top: 100 }}>
+            <div className="sidebar-profilo sticky-top bg-black" style={{top: 120}}>
               <div className="list-group list-group-flush" id="scroll-spy-nav">
                 {[
-                  { href: '#sezioneProfilo',      icon: 'person-fill', label: 'Il mio profilo' },
-                  { href: '#sezioneMieiAnnunci',  icon: 'tags-fill',   label: 'I miei annunci' },
-                  { href: '#sezionePreferiti',    icon: 'floppy-fill', label: 'Annunci salvati' },
-                  { href: '#sezioneImpostazioni', icon: 'gear-fill',   label: 'Impostazioni' },
+                  { href: '#sezioneProfilo', icon: 'person-fill', label: 'Il mio profilo' },
+                  { href: '#sezioneMieiAnnunci', icon: 'tags-fill', label: 'I miei annunci' },
+                  { href: '#sezionePreferiti', icon: 'floppy-fill', label: 'Annunci preferiti' },
+                  { href: '#sezioneImpostazioni', icon: 'gear-fill', label: 'Impostazioni' },
                 ].map((item) => (
                   <a key={item.href} href={item.href} className={`list-group-item list-group-item-action fw-bold text-uppercase py-3${sezioneAttiva === item.href.slice(1) ? ' active' : ''}`}>
                     <i className={`bi bi-${item.icon} me-2`}></i>{item.label}

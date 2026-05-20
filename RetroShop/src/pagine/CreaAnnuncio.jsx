@@ -83,7 +83,11 @@ export default function CreaAnnuncio() {
   function handlePosizioneInput(e) {
     const testo = e.target.value;
     setPosizione(testo);
-    if (!testo) { setSuggerimentiCitta([]); setCittaAperta(false); return; }
+    if (!testo) { 
+      setSuggerimentiCitta([]);
+      setCittaAperta(false); 
+      return; 
+    }
     const trovati = CITTA.filter((c) => c.toLowerCase().startsWith(testo.toLowerCase()));
     setSuggerimentiCitta(trovati);
     setCittaAperta(trovati.length > 0);
@@ -114,8 +118,14 @@ export default function CreaAnnuncio() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (foto.length === 0) { setErrore('Carica almeno una foto.'); return; }
-    if (!spedizione && !presenza) { setErrore('Seleziona almeno una modalità di consegna.'); return; }
+    if (foto.length === 0) { 
+      setErrore('Carica almeno una foto.'); 
+      return; 
+    }
+    if (!spedizione && !presenza) { 
+      setErrore('Seleziona almeno una modalità di consegna.'); 
+      return; 
+    }
     setCaricamento(true);
     setErrore('');
 

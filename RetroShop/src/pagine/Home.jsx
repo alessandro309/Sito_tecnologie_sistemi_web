@@ -51,7 +51,7 @@ export default function Home() {
       </Navbar>
 
       <main>
-        <div className="container mt-5 mb-5 d-flex flex-column align-items-center gap-4">
+        <div className="container mt-3 mb-5 d-flex flex-column align-items-center gap-4">
           {CATEGORIE.map((cat, i) => (
             <BoxCategoria key={cat.id} {...cat} index={i} />
           ))}

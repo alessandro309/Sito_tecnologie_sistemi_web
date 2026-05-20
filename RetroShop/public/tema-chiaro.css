@@ -253,6 +253,41 @@ body.tema-chiaro #box_giochi {
         url('giochi_totali.png') !important;
 }
 
+/* Linea accent: blu al posto del rosso */
+body.tema-chiaro #box_fisse,
+body.tema-chiaro #box_accessori {
+    border-left: 3px solid rgba(0, 150, 214, 0.6) !important;
+}
+
+body.tema-chiaro #box_portatili,
+body.tema-chiaro #box_giochi {
+    border-right: 3px solid rgba(0, 150, 214, 0.6) !important;
+}
+
+/* Glow blu sull'hover */
+body.tema-chiaro .box_categoria:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25), 0 0 30px rgba(0, 150, 214, 0.3) !important;
+}
+
+/* Pill "Esplora" in tema chiaro: colori blu, testo scuro */
+body.tema-chiaro .scopri_di_piu {
+    background: rgba(0, 150, 214, 0.15);
+    border-color: rgba(0, 150, 214, 0.5);
+    color: #000 !important;
+}
+
+body.tema-chiaro .box_categoria:hover .scopri_di_piu {
+    background: rgba(0, 150, 214, 0.3);
+    border-color: rgba(0, 150, 214, 0.85);
+}
+
+@media (max-width: 768px) {
+    body.tema-chiaro .scopri_di_piu {
+        background: rgba(220, 220, 220, 0.75);
+        border-color: rgba(0, 150, 214, 0.6);
+    }
+}
+
 
 /* --- CREA / MODIFICA ANNUNCIO --- */
 
@@ -359,7 +394,7 @@ body.tema-chiaro .modal-header .modal-title {
 }
 
 body.tema-chiaro .btn-close-white {
-    filter: invert(1) !important;
+    filter: none !important;
 }
 
 body.tema-chiaro .dropdown-divider {

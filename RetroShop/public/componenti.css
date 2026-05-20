@@ -1,15 +1,11 @@
-/* COMPONENTI — elementi riutilizzabili in più pagine */
-
-
-/* --- BARRA DI RICERCA (BarraRicerca.jsx) --- */
 
 .search_bar {
     background-color: rgba(0, 0, 0, 0.5);
 }
 
-/* allineato ai box categoria home (max 1000px) */
+/* allineato ai box categoria home */
 .container.my-4 {
-    max-width: 1000px;
+    max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -37,7 +33,6 @@
     z-index: 1;
 }
 
-/* z-index: 10 evita che la card ingrandita venga coperta dalle vicine */
 .card-annuncio:hover {
     transform: translateY(-5px) scale(1.03);
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8) !important;

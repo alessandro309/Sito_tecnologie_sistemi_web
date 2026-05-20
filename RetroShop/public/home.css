@@ -1,6 +1,4 @@
-/* HOME — box categorie e menu navigazione */
 
-/* --- MENU NAVIGAZIONE CATEGORIE --- */
 
 .colore_menu {
     background-color: rgba(0, 0, 0, 0.67);
@@ -16,18 +14,29 @@
 
 .box_categoria {
     width: 100%;
-    max-width: 1000px;
+    max-width: 1200px;
     height: 230px;
     position: relative;
     overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
     animation: entrata_box 0.5s ease;
     animation-fill-mode: backwards;
 }
 
 .box_categoria:hover {
     transform: scale(1.02);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8) !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 17, 0, 0.3) !important;
+}
+
+/* Linea accent colorata sul lato del testo */
+#box_fisse,
+#box_accessori {
+    border-left: 3px solid rgba(255, 17, 0, 0.6) !important;
+}
+
+#box_portatili,
+#box_giochi {
+    border-right: 3px solid rgba(255, 17, 0, 0.6) !important;
 }
 
 .titolo_box {
@@ -35,11 +44,42 @@
     letter-spacing: 2px;
 }
 
+/* "Esplora il catalogo" come pill/badge */
+.scopri_di_piu {
+    width: fit-content;
+    background: rgba(255, 17, 0, 0.18);
+    border: 1px solid rgba(255, 17, 0, 0.45);
+    border-radius: 999px;
+    padding: 0.25rem 0.85rem;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.box_categoria:hover .scopri_di_piu {
+    background: rgba(255, 17, 0, 0.32);
+    border-color: rgba(255, 17, 0, 0.8);
+}
+
+/* su mobile: pill più opaca per leggibilità */
+@media (max-width: 768px) {
+    .scopri_di_piu {
+        background: rgba(0, 0, 0, 0.4);
+        border-color: rgba(255, 17, 0, 0.6);
+        margin-top: 0 !important;
+        position: absolute;
+        bottom: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        white-space: nowrap;
+    }
+}
+
 .box_categoria .scopri_di_piu i {
     transition: transform 0.3s ease;
 }
 .box_categoria:hover .scopri_di_piu i {
-    transform: translateX(8px);
+    transform: translateX(5px);
 }
 
 #box_fisse {
@@ -84,4 +124,11 @@
     background-repeat: no-repeat;
     background-color: #000;
     border: 1px solid rgba(255, 17, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+    #box_giochi {
+        background-size: 100% 100%, contain;
+        background-position: left center, right center;
+    }
 }
