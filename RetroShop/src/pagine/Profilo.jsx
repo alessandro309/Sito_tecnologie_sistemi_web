@@ -44,15 +44,11 @@ export default function Profilo() {
     if (!loading && !utente) navigate('/');
   }, [utente, loading, navigate]);
 
-  // Scrolla alla sezione da hash con setTimeout per attendere il render
+  // Scrolla alla sezione da hash solo dopo che tutti i dati sono stati caricati
   useEffect(() => {
-    if (!location.hash || loading) return;
-    const id = location.hash.slice(1);
-    const timer = setTimeout(() => {
-      document.getElementById(id)?.scrollIntoView({behavior: 'smooth', block: 'start'});
-    }, 100);
-    return () => clearTimeout(timer);
-  }, [location.hash, loading]);
+    if (!location.hash || loading || caricamentoAnnunci || caricamentoPreferiti) return;
+    document.getElementById(location.hash.slice(1))?.scrollIntoView({behavior: 'smooth', block: 'start'});
+  }, [location.hash, loading, caricamentoAnnunci, caricamentoPreferiti]);
 
   // Evidenzia nella sidebar la sezione correntemente visibile (IntersectionObserver)
   useEffect(() => {

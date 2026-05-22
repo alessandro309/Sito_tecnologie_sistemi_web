@@ -9,9 +9,6 @@ import ModalFiltri from "../componenti/Filtri";
 
 
 // Converte un timestamp ISO in una stringa leggibile per l'utente:
-// - oggi  → "14:32"
-// - ieri  → "Ieri 14:32"
-// - prima → "23/04"
 function formattaOra(iso) {
   if (!iso) return "";
 
@@ -33,7 +30,6 @@ function formattaOra(iso) {
 }
 
 // Restituisce le prime due iniziali di un nickname
-// "Mario Rossi" → "MR",  "mario" → "MA"
 function inizialiDa(nome = "") {
   const parole = nome.trim().split(" ");
   if (parole.length >= 2)
@@ -82,7 +78,7 @@ export default function Chat() {
   const [caricandoMsg, setCaricandoMsg] = useState(false);
 
   const [mostraSidebar, setMostraSidebar] = useState(true); // su mobile: sidebar o chat
-  const [fotoAnnunci, setFotoAnnunci] = useState({}); // mappa idAnnuncio → urlFoto
+  const [fotoAnnunci, setFotoAnnunci] = useState({}); // mappa idAnnuncio -> urlFoto
 
   const [rimborsoInCorso, setRimborsoInCorso] = useState(null); // idAnnuncio in elaborazione
   const [consegnaInCorso, setConsegnaInCorso] = useState(null); // idAnnuncio in elaborazione
@@ -95,21 +91,23 @@ export default function Chat() {
   const wsRef = useRef(null); // connessione WebSocket attiva
   const endRef = useRef(null); // <div> invisibile in fondo ai messaggi, usato per lo scroll
 
-  // I handler del WebSocket vengono creati una sola volta e "vedono" solo il valore
-  // iniziale dello state. Per avere sempre il valore aggiornato usiamo un ref,
-  // che aggiorniamo ad ogni render tramite l'useEffect dedicato qui sotto.
+  // la web socket viene creata solo al mount della pagina e vede solo il valore 
+  // che selezionata aveva al mount (non aggiornato quando si cambia lo stato) con ref possiamo rimediare 
+  // aggiornando il riferimento
   const selezionataRef = useRef(null);
 
   // Flag che impedisce di aprire la stessa nuovaChat due volte
-  // (in React StrictMode gli effetti vengono eseguiti due volte in sviluppo)
   const nuovaChatProcessata = useRef(false);
 
 
 
   useEffect(() => {
+    // impedisce lo scroll sull'intera pagina (ci sono due scroll serparati per chat e messaggi)
     document.body.style.overflow = "hidden";
+    // impedisce effetto rimbalzo da mobile
     document.body.style.overscrollBehavior = "none";
     return () => {
+      // quando la pagina viene smontata togliamo questi effetti
       document.body.style.overflow = "";
       document.body.style.overscrollBehavior = "";
     };
@@ -224,7 +222,7 @@ export default function Chat() {
     setCaricandoConv(true);
 
     try {
-      const risposta = await fetch(`/api/chat/conversazioni?nickname=${utente.nickname}`);
+      const risposta = await api.conversazioni(utente.nickname);
       const lista = await risposta.json();
       setConversazioni(lista);
 
@@ -241,7 +239,6 @@ export default function Chat() {
           const primaFoto = annuncio?.immagini?.[0]?.url_immagine;
           mappa[ids[i]] = primaFoto ? `${BASE}${primaFoto}` : null;
         });
-        // Aggiornamento additivo: non sovrascriviamo le foto già caricate
         setFotoAnnunci((prev) => ({...prev, ...mappa}));
       });
 
@@ -263,7 +260,7 @@ export default function Chat() {
       prev.map((c) => (c.id === conv.id ? {...c, nonLetti: 0} : c))
     );
 
-    fetch(`/api/chat/messaggi?conversazioneId=${conv.id}&nickname=${utente.nickname}`)
+    api.messaggi(conv.id, utente.nickname)
       .then((r) => r.json())
       .then(setMessaggi)
       .catch(console.error)
@@ -289,7 +286,7 @@ export default function Chat() {
     try {
       // Comunichiamo il rimborso al sistema di pagamento
       const res = await api.rimborsaAnnuncio(msg.idAnnuncio);
-      // 404 = annuncio già eliminato → non blocchiamo, procediamo comunque
+      // 404 = annuncio già eliminato
       const errore = !res.ok && res.status !== 204 && res.status !== 404;
       if (errore) {
         const dettaglio = await res.json().catch(() => ({}));
@@ -429,6 +426,7 @@ export default function Chat() {
         <div className="chat-wrapper">
 
           {/* ── SIDEBAR: lista delle conversazioni ── */}
+
           <aside className={`chat-sidebar d-md-flex ${mostraSidebar ? "d-flex" : "d-none"}`}>
 
             {/* Header sidebar */}

@@ -74,14 +74,14 @@ export default function Registrazione() {
         throw new Error(err.detail || 'Errore durante la registrazione');
       }
 
-      if (foto) await api.uploadFotoProfilo(datiUtente.nickname, foto);
-      /* LOGIN AUTOMATICO DISABILITATO PER LA PRESENTAZIONE */
-      // const loginRisp = await api.login({ nickname: datiUtente.nickname, password: form.password });
-      // if (loginRisp.ok) {
-      //   const me = await api.utenteMe();
-      //   const datiMe = await me.json();
-      //   setUtente(datiMe.loggato ? datiMe : null);
-      // }
+      // Login automatico e caricamento foto profilo se necessario
+      if (foto) {
+        const loginRisp = await api.login({ nickname: datiUtente.nickname, password: form.password });
+        if (loginRisp.ok) {
+          await api.uploadFotoProfilo(datiUtente.nickname, foto);
+          await api.logout(); // logout per la presentazione, "disabilitazione del login automatico"
+        }
+      }
       navigate('/');
     } catch (err) {
       setErrore(err.message);

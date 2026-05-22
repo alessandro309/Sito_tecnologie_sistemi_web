@@ -28,7 +28,6 @@
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 17, 0, 0.3) !important;
 }
 
-/* Linea accent colorata sul lato del testo */
 #box_fisse,
 #box_accessori {
     border-left: 3px solid rgba(255, 17, 0, 0.6) !important;
@@ -44,7 +43,7 @@
     letter-spacing: 2px;
 }
 
-/* "Esplora il catalogo" come pill/badge */
+/* "Esplora il catalogo" */
 .scopri_di_piu {
     width: fit-content;
     background: rgba(255, 17, 0, 0.18);

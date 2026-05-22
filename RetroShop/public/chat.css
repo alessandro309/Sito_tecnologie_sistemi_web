@@ -1,9 +1,4 @@
-/* CHAT — layout, sidebar conversazioni, bolle messaggi */
 
-
-/* --- LAYOUT PRINCIPALE --- */
-
-/* position: fixed + inset: 0 per occupare tutto il viewport sotto la navbar */
 .chat-container {
     position: fixed;
     inset: 0;

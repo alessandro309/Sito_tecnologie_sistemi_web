@@ -103,7 +103,10 @@ export default function CreaAnnuncio() {
     const nuovi = Array.from(e.target.files);
     setFoto((prev) => {
       const disponibili = MAX_FOTO - prev.length;
-      const aggiunte = nuovi.slice(0, disponibili).map((f) => ({url: URL.createObjectURL(f), file: f}));
+      const aggiunte = nuovi.slice(0, disponibili).map((f) => ({
+        url: URL.createObjectURL(f), 
+        file: f
+      }));
       return [...prev, ...aggiunte];
     });
     e.target.value = '';

@@ -188,17 +188,6 @@
       "creatoIl": "2026-05-12T07:46:24.305Z"
     },
     {
-      "id": "2c1f0d70-2fbc-4694-9ecb-84afe696072c",
-      "partecipanti": [
-        "TonyPitony",
-        "Alex_Rob"
-      ],
-      "idAnnuncio": "28",
-      "titoloAnnuncio": "Memory card PS1",
-      "prezzoAnnuncio": 5,
-      "creatoIl": "2026-05-15T20:04:55.487783+00:00"
-    },
-    {
       "id": "ae0f29e3-ff85-4579-b911-d2d06354b730",
       "partecipanti": [
         "TonyPitony",
@@ -959,7 +948,7 @@
       "mittente": "Alex_Rob",
       "testo": "fdsfs",
       "ora": "2026-05-17T14:13:54.167754+00:00",
-      "letto": false
+      "letto": true
     },
     {
       "id": "dd7405f4-aefe-4db0-b89d-96153de8d957",
@@ -1041,6 +1030,14 @@
         "prezzoArticolo": 80,
         "prezzoSpedizione": 0
       }
+    },
+    {
+      "id": "25083687-62ba-46c0-a8e0-6d34c26d1de2",
+      "conversazioneId": "d229622a-21c1-4993-bfbc-a77c696ca713",
+      "mittente": "Alex_Rob",
+      "testo": "Prova",
+      "ora": "2026-05-22T09:03:50.517186+00:00",
+      "letto": false
     }
   ]
 }

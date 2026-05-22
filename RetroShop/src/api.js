@@ -1,12 +1,10 @@
 const BASE = '';
 
-// Wrapper su fetch che include sempre i cookie di sessione
+// Fetch che aggiunge sempre i cookie di sessione nella richiesta
 const apiFetch = (url, opts = {}) =>
   fetch(url, { credentials: 'include', ...opts });
 
 const api = {
-
-  // --- Autenticazione ---
 
   // Controlla se c'è una sessione attiva e restituisce i dati dell'utente loggato
   utenteMe: () =>
@@ -129,6 +127,14 @@ const api = {
     apiFetch(`${BASE}/preferiti/${idAnnuncio}`, { method: 'DELETE' }),
 
   // --- Chat ---
+
+  // Recupera tutte le conversazioni di un utente
+  conversazioni: (nickname) =>
+    apiFetch(`/api/chat/conversazioni?nickname=${nickname}`),
+
+  // Recupera i messaggi di una conversazione specifica
+  messaggi: (conversazioneId, nickname) =>
+    apiFetch(`/api/chat/messaggi?conversazioneId=${conversazioneId}&nickname=${nickname}`),
 
   // Apre una nuova conversazione tra acquirente e venditore
   creaConversazioneChat: (dati) =>

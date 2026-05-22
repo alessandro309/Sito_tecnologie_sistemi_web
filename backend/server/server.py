@@ -84,6 +84,18 @@ def get_db():
         db.close()
 
 
+# Usata dagli endpoint protetti: legge il cookie, trova la sessione e restituisce chi è loggato
+def ottieni_utente_loggato(request: Request, db: Session = Depends(get_db)):
+    sessione_id = request.cookies.get("sessione_retroshop")
+    if not sessione_id:
+        raise HTTPException(status_code=401, detail="Non autenticato")
+
+    sessione = db.query(database.SessioneDB).filter(database.SessioneDB.id_sessione == sessione_id).first()
+    if not sessione or sessione.data_scadenza < datetime.now():
+        raise HTTPException(status_code=401, detail="Sessione scaduta o non valida")
+    return sessione.nickname_utente
+
+
 # Crea un nuovo account utente controllando che nickname e mail non siano già usati da qualcun altro
 @app.post("/utenti/registrazione", response_model=schemi.UtenteResponse)
 def registra_utente(utente: schemi.UtenteCreate, db: Session = Depends(get_db)):
@@ -105,11 +117,9 @@ def registra_utente(utente: schemi.UtenteCreate, db: Session = Depends(get_db)):
 
 # Carica la foto profilo dell'utente nella sua cartella e aggiorna il link nel database
 @app.post("/utenti/{nickname}/foto", response_model=schemi.UtenteResponse)
-def carica_foto_profilo(
-        nickname: str,
-        foto: UploadFile = File(...),
-        db: Session = Depends(get_db)
-    ):
+def carica_foto_profilo(nickname: str, foto: UploadFile = File(...), utente_corrente: str = Depends(ottieni_utente_loggato), db: Session = Depends(get_db)):
+    if utente_corrente != nickname:
+        raise HTTPException(status_code=403, detail="Non autorizzato")
     utente = db.query(database.UtenteDB).filter(database.UtenteDB.nickname == nickname).first()
     if not utente:
         raise HTTPException(status_code=404, detail="Utente non trovato")
@@ -129,7 +139,13 @@ def carica_foto_profilo(
 
 # Pubblica un nuovo annuncio e crea subito la cartella dove andranno le sue immagini
 @app.post("/annunci/", response_model=schemi.AnnuncioResponse)
-def crea_annuncio(annuncio: schemi.AnnuncioCreate, db: Session = Depends(get_db)):
+def crea_annuncio(
+        annuncio: schemi.AnnuncioCreate,
+        utente_corrente: str = Depends(ottieni_utente_loggato),
+        db: Session = Depends(get_db)
+    ):
+    if annuncio.utente != utente_corrente:
+        raise HTTPException(status_code=403, detail="Non autorizzato")
     if not db.query(database.UtenteDB).filter(database.UtenteDB.nickname == annuncio.utente).first():
         raise HTTPException(status_code=404, detail="Utente non trovato.")
 
@@ -148,11 +164,14 @@ def crea_annuncio(annuncio: schemi.AnnuncioCreate, db: Session = Depends(get_db)
 def carica_immagini_annuncio(
         idAnnuncio: int,
         immagini: List[UploadFile] = File(...),
+        utente_corrente: str = Depends(ottieni_utente_loggato),
         db: Session = Depends(get_db)
     ):
     annuncio = db.query(database.AnnuncioDB).filter(database.AnnuncioDB.idAnnuncio == idAnnuncio).first()
     if not annuncio:
         raise HTTPException(status_code=404, detail="Annuncio non trovato")
+    if annuncio.utente != utente_corrente:
+        raise HTTPException(status_code=403, detail="Non autorizzato")
 
     cartella_annuncio = os.path.join(BASE_DIR_IMMAGINI, str(idAnnuncio))
     os.makedirs(cartella_annuncio, exist_ok=True)
@@ -227,18 +246,6 @@ def login(credenziali: schemi.LoginRequest, response: Response, db: Session = De
         expires=scadenza
     )
     return {"message": "Login effettuato con successo", "utente": utente.nickname}
-
-
-# Usata dagli endpoint protetti: legge il cookie, trova la sessione e restituisce chi è loggato
-def ottieni_utente_loggato(request: Request, db: Session = Depends(get_db)):
-    sessione_id = request.cookies.get("sessione_retroshop")
-    if not sessione_id:
-        raise HTTPException(status_code=401, detail="Non autenticato")
-
-    sessione = db.query(database.SessioneDB).filter(database.SessioneDB.id_sessione == sessione_id).first()
-    if not sessione or sessione.data_scadenza < datetime.now():
-        raise HTTPException(status_code=401, detail="Sessione scaduta o non valida")
-    return sessione.nickname_utente
 
 
 # Aggiorna i dati personali dell'utente (solo l'utente stesso può farlo)

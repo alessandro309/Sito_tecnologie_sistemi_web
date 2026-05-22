@@ -22,7 +22,7 @@ export default function App() {
           <Route path="/crea-annuncio" element={<CreaAnnuncio />} />
           <Route path="/annunci/:id/modifica" element={<ModificaAnnuncio />} />
           <Route path="/profilo" element={<Profilo />} />
-           <Route path="/chat" element={<Chat />} />
+          <Route path="/chat" element={<Chat />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
